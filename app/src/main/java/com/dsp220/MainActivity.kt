@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
@@ -21,6 +22,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.downloader.Downloader
@@ -186,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            // WebChromeClient diisi dengan penanganan Fullscreen (Gambar 2)
+            // WebChromeClient diisi dengan penanganan Fullscreen
             webChromeClient = object : WebChromeClient() {
                 override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
                     if (customView != null) {
@@ -357,7 +363,7 @@ class MainActivity : AppCompatActivity() {
         youtubeWebView.evaluateJavascript("javascript:$jsHook", null)
     }
 
-    // Fungsi Memicu Minimize Player (Tab Kecil Gambar 1) pada Web YouTube
+    // Fungsi Memicu Minimize Player pada Web YouTube
     private fun minimizeYouTubePlayer() {
         val jsMinimize = """
             (function() {
@@ -430,52 +436,64 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Kelas Bridge dengan Coroutine & Penanganan JSON Aman
     inner class AndroidBridge {
 
         @JavascriptInterface
         fun autoExtractYouTubeAudio(url: String) {
             val cleanUrl = sanitizeYouTubeUrl(url)
-            
-            if (cleanUrl == lastExtractedUrl || cleanUrl.isBlank()) return
-            lastExtractedUrl = cleanUrl
+            if (cleanUrl.isBlank() || cleanUrl == lastExtractedUrl) return
 
-            extractYouTubeAudio(cleanUrl)
+            lastExtractedUrl = cleanUrl
+            extractYouTubeAudioInternal(cleanUrl)
         }
 
         @JavascriptInterface
         fun extractYouTubeAudio(url: String) {
             val cleanUrl = sanitizeYouTubeUrl(url)
-            
-            Thread {
+            extractYouTubeAudioInternal(cleanUrl)
+        }
+
+        private fun extractYouTubeAudioInternal(cleanUrl: String) {
+            CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val extractor = ServiceList.YouTube.getStreamExtractor(cleanUrl)
                     extractor.fetchPage()
 
-                    val audioStreams = extractor.audioStreams
-                    val videoStreams = extractor.videoStreams
-
-                    val playableUrl = when {
-                        !audioStreams.isNullOrEmpty() -> audioStreams[0].url
-                        !videoStreams.isNullOrEmpty() -> videoStreams[0].url
-                        else -> null
-                    }
+                    val videoTitle = extractor.name ?: "Unknown Track"
+                    val playableUrl = extractor.audioStreams?.firstOrNull()?.url
+                        ?: extractor.videoStreams?.firstOrNull()?.url
 
                     if (playableUrl != null) {
-                        runOnUiThread {
-                            dspWebView.evaluateJavascript("javascript:onAudioExtracted('$playableUrl');", null)
+                        val safeUrlJson = JSONObject.quote(playableUrl)
+                        val safeTitleJson = JSONObject.quote(videoTitle)
+
+                        withContext(Dispatchers.Main) {
+                            dspWebView.evaluateJavascript(
+                                "onAudioExtracted($safeUrlJson, $safeTitleJson);",
+                                null
+                            )
                         }
                     } else {
-                        runOnUiThread {
-                            dspWebView.evaluateJavascript("javascript:onExtractionFailed('Format audio tidak ditemukan.');", null)
+                        val safeErrorMsg = JSONObject.quote("Format audio tidak ditemukan.")
+                        withContext(Dispatchers.Main) {
+                            dspWebView.evaluateJavascript(
+                                "onExtractionFailed($safeErrorMsg);",
+                                null
+                            )
                         }
                     }
                 } catch (e: Exception) {
-                    runOnUiThread {
-                        val errorClean = e.toString().replace("'", "\\'")
-                        dspWebView.evaluateJavascript("javascript:onExtractionFailed('$errorClean');", null)
+                    Log.e("AndroidBridge", "Gagal mengekstrak audio YouTube dari: $cleanUrl", e)
+                    val safeErrorMsg = JSONObject.quote(e.message ?: "Terjadi kesalahan ekstraksi")
+                    withContext(Dispatchers.Main) {
+                        dspWebView.evaluateJavascript(
+                            "onExtractionFailed($safeErrorMsg);",
+                            null
+                        )
                     }
                 }
-            }.start()
+            }
         }
     }
 
@@ -486,7 +504,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // 2. Keluar dari Fullscreen Video (Gambar 2) jika sedang Fullscreen
+        // 2. Keluar dari Fullscreen Video jika sedang Fullscreen
         if (customView != null) {
             youtubeWebView.webChromeClient?.onHideCustomView()
             return
@@ -496,7 +514,7 @@ class MainActivity : AppCompatActivity() {
         if (youtubeWebView.visibility == View.VISIBLE) {
             val currentUrl = youtubeWebView.url ?: ""
             if (currentUrl.contains("/watch") || currentUrl.contains("/shorts/")) {
-                // Jika sedang menonton video, ubah video jadi Tab Kecil (Gambar 1)
+                // Jika sedang menonton video, ubah video jadi Tab Kecil
                 minimizeYouTubePlayer()
             } else if (youtubeWebView.canGoBack()) {
                 youtubeWebView.goBack()
