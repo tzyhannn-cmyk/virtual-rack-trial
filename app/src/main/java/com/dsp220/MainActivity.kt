@@ -37,6 +37,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var layoutActivation: LinearLayout
     private lateinit var layoutMainContent: View
 
+    // Custom View untuk Fullscreen Video YouTube
+    private var customView: View? = null
+    private var customViewCallback: WebChromeClient.CustomViewCallback? = null
+
     // License Preferences
     private lateinit var licensePrefs: LicensePreferences
 
@@ -163,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             loadUrl("file:///android_asset/index.html")
         }
 
-        // 3. SETUP WEBVIEW YOUTUBE (DENGAN AUTO INTERCEPTOR & AUTO AD-SKIP)
+        // 3. SETUP WEBVIEW YOUTUBE (DENGAN FULLSCREEN SUPPORT & MINI-PLAYER)
         youtubeWebView = WebView(this).apply {
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -182,7 +186,51 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            webChromeClient = WebChromeClient()
+            // WebChromeClient diisi dengan penanganan Fullscreen (Gambar 2)
+            webChromeClient = object : WebChromeClient() {
+                override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                    if (customView != null) {
+                        onHideCustomView()
+                        return
+                    }
+                    customView = view
+                    customViewCallback = callback
+
+                    // Menampilkan tampilan video Layar Penuh (Fullscreen)
+                    val decorView = window.decorView as FrameLayout
+                    decorView.addView(customView, FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    ))
+
+                    // Menyembunyikan System UI / Status Bar
+                    @Suppress("DEPRECATION")
+                    window.decorView.systemUiVisibility = (
+                        View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+
+                    // Sembunyikan UI utama aplikasi
+                    layoutMainContent.visibility = View.GONE
+                }
+
+                override fun onHideCustomView() {
+                    if (customView == null) return
+
+                    val decorView = window.decorView as FrameLayout
+                    decorView.removeView(customView)
+                    customView = null
+                    customViewCallback?.onCustomViewHidden()
+
+                    // Mengembalikan System UI
+                    @Suppress("DEPRECATION")
+                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+
+                    // Tampilkan kembali UI utama aplikasi
+                    layoutMainContent.visibility = View.VISIBLE
+                }
+            }
 
             settings.apply {
                 javaScriptEnabled = true
@@ -309,6 +357,29 @@ class MainActivity : AppCompatActivity() {
         youtubeWebView.evaluateJavascript("javascript:$jsHook", null)
     }
 
+    // Fungsi Memicu Minimize Player (Tab Kecil Gambar 1) pada Web YouTube
+    private fun minimizeYouTubePlayer() {
+        val jsMinimize = """
+            (function() {
+                var btn = document.querySelector('button.player-minimize-button, .header-back-button, button[aria-label*="Minimize"], button[aria-label*="Mengecilkan"]');
+                if (btn) {
+                    btn.click();
+                    return true;
+                }
+                return false;
+            })();
+        """.trimIndent()
+
+        youtubeWebView.evaluateJavascript(jsMinimize) { result ->
+            // Jika tidak ada tombol minimize yang terdeteksi, baru jalankan goBack()
+            if (result == "false" || result == "null") {
+                if (youtubeWebView.canGoBack()) {
+                    youtubeWebView.goBack()
+                }
+            }
+        }
+    }
+
     private fun initNewPipeExtractor() {
         try {
             NewPipe.init(object : Downloader() {
@@ -409,14 +480,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // Mencegah navigasi tombol back jika layar masih ter-lock
+        // 1. Mencegah navigasi tombol back jika layar masih ter-lock
         if (!licensePrefs.isActivated(this)) {
             super.onBackPressed()
             return
         }
 
-        if (youtubeWebView.visibility == View.VISIBLE && youtubeWebView.canGoBack()) {
-            youtubeWebView.goBack()
+        // 2. Keluar dari Fullscreen Video (Gambar 2) jika sedang Fullscreen
+        if (customView != null) {
+            youtubeWebView.webChromeClient?.onHideCustomView()
+            return
+        }
+
+        // 3. Penanganan Tombol Back di Tab YouTube
+        if (youtubeWebView.visibility == View.VISIBLE) {
+            val currentUrl = youtubeWebView.url ?: ""
+            if (currentUrl.contains("/watch") || currentUrl.contains("/shorts/")) {
+                // Jika sedang menonton video, ubah video jadi Tab Kecil (Gambar 1)
+                minimizeYouTubePlayer()
+            } else if (youtubeWebView.canGoBack()) {
+                youtubeWebView.goBack()
+            } else {
+                super.onBackPressed()
+            }
         } else if (dspWebView.visibility == View.VISIBLE && dspWebView.canGoBack()) {
             dspWebView.goBack()
         } else {
