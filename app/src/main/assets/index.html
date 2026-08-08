@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Complete Pro Audio DSP System & Visualizer - XTA DLMS Matrix</title>
+    
+    <!-- Fonts & Tailwind CSS CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@600;800;900&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .font-lcd { font-family: 'VT323', monospace; }
+        .font-brand { font-family: 'Orbitron', sans-serif; }
+        .font-label { font-family: 'Roboto Condensed', sans-serif; }
+
+        /* --- HARDWARE SCREWS --- */
+        .rack-screw-black {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #444 0%, #111 70%, #000 100%);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.9); position: relative;
+        }
+        .rack-screw-silver {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 50%, #475569 100%);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.8);
+            border: 1px solid #334155; position: relative;
+        }
+        .rack-screw-silver::after {
+            content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 2px;
+            background-color: #1e293b; transform: translateY(-50%) rotate(45deg);
+        }
+
+        /* --- RCF PLAYER RACK --- */
+        .rcf-cyan-panel {
+            background: linear-gradient(180deg, #155e75 0%, #0e7490 40%, #0891b2 75%, #06b6d4 100%);
+            border-top: 1px solid #22d3ee; border-bottom: 1px solid #083344;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 6px 16px rgba(0,0,0,0.8);
+        }
+
+        /* --- XTA BLUE PANEL --- */
+        .xta-blue-panel {
+            background: linear-gradient(180deg, #1b2850 0%, #101a38 50%, #0a1024 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.9);
+            border-top: 1px solid #32477a; border-bottom: 1px solid #050812;
+        }
+        .xta-lcd {
+            background: #2a4010; border: 2px solid #0f1a05;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 6px rgba(110, 220, 40, 0.2);
+        }
+        .lcd-text-green { color: #8aff2e; text-shadow: 0 0 4px rgba(138, 255, 46, 0.7); }
+
+        /* --- REALISTIC XTA RECTANGULAR LEDS --- */
+        .xta-led-housing {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
+            padding: 2px 3px;
+            border-radius: 2px;
+        }
+
+        .xta-led {
+            width: 8px;
+            height: 3px;
+            border-radius: 1px;
+            background-color: #0d131f;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background-color 0.05s ease, box-shadow 0.05s ease;
+            position: relative;
+        }
+
+        .xta-led-red { background: radial-gradient(circle, #380a0a 0%, #170404 100%); border-color: #451212; }
+        .xta-led-red.active {
+            background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ff4d4d 40%, #dc2626 100%);
+            box-shadow: 0 0 8px #ef4444, 0 0 2px #ffffff;
+            border-color: #fca5a5;
+        }
+
+        .xta-led-yellow { background: radial-gradient(circle, #382d0a 0%, #171204 100%); border-color: #453712; }
+        .xta-led-yellow.active {
+            background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ffe04d 40%, #ca8a04 100%);
+            box-shadow: 0 0 8px #eab308, 0 0 2px #ffffff;
+            border-color: #fef08a;
+        }
+
+        .xta-led-green { background: radial-gradient(circle, #0a3814 0%, #041708 100%); border-color: #12451d; }
+        .xta-led-green.active {
+            background: radial-gradient(circle at 40% 40%, #ffffff 0%, #4dff88 40%, #16a34a 100%);
+            box-shadow: 0 0 8px #22c55e, 0 0 2px #ffffff;
+            border-color: #86efac;
+        }
+
+        /* Encoder Knob */
+        .encoder-knob {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #475569 70%, #1e293b 100%);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.8);
+            border: 1px solid #0f172a; position: relative; cursor: ns-resize; user-select: none; touch-action: none;
+            will-change: transform;
+        }
+        @media (min-width: 640px) { .encoder-knob { width: 34px; height: 34px; } }
+        .knob-dot {
+            position: absolute; top: 3px; left: 50%; width: 3px; height: 3px;
+            background-color: #0f172a; transform: translateX(-50%); border-radius: 50%;
+        }
+
+        /* --- BBE RACK HARDWARE STYLING --- */
+        .bbe-chassis {
+            background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 20%, #94a3b8 50%, #64748b 80%, #475569 100%);
+            border: 1px solid #334155;
+        }
+        .bbe-red-panel {
+            background: linear-gradient(180deg, #dc2626 0%, #b91c1c 40%, #991b1b 75%, #7f1d1d 100%);
+            border: 2px solid #450a0a;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(255,255,255,0.2);
+        }
+        .bbe-knob {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 45%, #64748b 85%, #334155 100%);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.8);
+            border: 1px solid #1e293b; position: relative; cursor: ns-resize; user-select: none; touch-action: none;
+            will-change: transform;
+        }
+        @media (min-width: 640px) { .bbe-knob { width: 40px; height: 40px; } }
+        .bbe-knob-pointer {
+            position: absolute; top: 4px; left: 50%; width: 2px; height: 10px;
+            background-color: #0f172a; transform: translateX(-50%); border-radius: 2px;
+        }
+
+        /* BUTTONS & LEDS */
+        .push-btn {
+            background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
+            border: 1px solid #334155; box-shadow: 0 2px 3px rgba(0,0,0,0.6); cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .push-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
+        .push-btn-active {
+            background: linear-gradient(180deg, #fef08a 0%, #eab308 100%) !important;
+            border-color: #854d0e !important; color: #000 !important;
+            box-shadow: 0 0 6px rgba(234, 179, 8, 0.8) !important;
+        }
+        .ch-btn-active {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%) !important;
+            border-color: #0369a1 !important; color: #fff !important;
+            box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
+        }
+        .dvc-btn-active {
+            background: linear-gradient(180deg, #4ade80 0%, #15803d 100%) !important;
+            color: #ffffff !important; border-color: #14532d !important;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.9) !important;
+        }
+
+        .led-dot { width: 5px; height: 5px; border-radius: 50%; background-color: #1e293b; transition: background-color 0.1s, box-shadow 0.1s; }
+        .led-red.active { background-color: #ef4444; box-shadow: 0 0 6px #ef4444; }
+        .led-yellow.active { background-color: #eab308; box-shadow: 0 0 6px #eab308; }
+        .led-green.active { background-color: #22c55e; box-shadow: 0 0 6px #22c55e; }
+
+        .btn-mute-active {
+            background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%) !important;
+            color: #ffffff !important; border-color: #7f1d1d !important;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.9) !important;
+        }
+
+        .rocker-switch {
+            width: 12px; height: 22px; background: #000; border-radius: 2px;
+            border: 1px solid #444; position: relative; cursor: pointer;
+        }
+        .rocker-switch::before {
+            content: ''; position: absolute; top: 2px; left: 2px; right: 2px; height: 8px;
+            background: #ef4444; border-radius: 1px; box-shadow: 0 0 4px #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-stone-950 min-h-screen flex items-center justify-center p-1 overflow-x-hidden select-none">
+
+    <!-- INPUT FILE UNTUK IMPOR PRESET JSON -->
+    <input type="file" id="preset-file-input" accept=".json" class="hidden">
+
+    <div class="w-full max-w-5xl flex flex-col gap-1.5 my-auto">
+        
+        <!-- 1. RCF PLAYER RACK -->
+        <div class="w-full bg-black rounded overflow-hidden shadow-2xl border border-stone-800 flex relative">
+            <div class="w-4 sm:w-6 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+
+            <div class="flex-1 rcf-cyan-panel flex flex-nowrap items-center justify-between px-2 sm:px-3 py-1.5 my-[1px] gap-2 overflow-hidden min-w-0">
+                <div class="flex flex-col items-start shrink-0 pr-1.5 border-r border-cyan-300/40">
+                    <span class="font-brand text-white font-black text-xs sm:text-sm tracking-tighter leading-none drop-shadow">RCF</span>
+                    <span class="font-label text-[6px] sm:text-[8px] text-cyan-100 tracking-widest font-bold">MEDIA PLAYER & DVC</span>
+                </div>
+
+                <!-- TOMBOL FILE, YOUTUBE EXTRACTOR, & PLAYBACK -->
+                <div class="flex items-center gap-1 shrink-0">
+                    <input type="file" id="audio-file-input" accept="audio/*" class="hidden">
+                    <button onclick="document.getElementById('audio-file-input').click()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white hover:bg-slate-100 flex items-center gap-1">📂 <span>File</span></button>
+                    
+                    <input type="text" id="ytUrlInput" placeholder="Link YouTube..." class="text-[8px] sm:text-[10px] px-1.5 py-0.5 rounded bg-black/70 text-amber-300 border border-cyan-400/50 w-24 sm:w-32 focus:outline-none">
+                    <button id="extractYtBtn" onclick="sendUrlToAndroid()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-950 bg-cyan-300 hover:bg-white">EXTRACT</button>
+
+                    <button onclick="skipAudio(-5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Mundur 5 detik">⏪ -5s</button>
+                    <button id="btn-play-pause" onclick="togglePlayPause()" class="push-btn text-[8px] sm:text-[10px] font-bold px-2 py-0.5 rounded text-slate-800 disabled:opacity-50" disabled>▶ PLAY</button>
+                    <button onclick="skipAudio(5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Maju 5 detik">⏩ +5s</button>
+                </div>
+
+                <div class="bg-black/80 border border-cyan-400/50 rounded px-2 py-0.5 flex-1 max-w-xs overflow-hidden">
+                    <div class="font-lcd text-amber-300 text-xs truncate" id="audio-status-text">SIAP: SILAHKAN PILIH LAGU / YOUTUBE</div>
+                    <div class="flex justify-between font-mono text-[8px] text-cyan-200 mt-0.5">
+                        <span id="audio-time-curr">00:00</span>
+                        <span id="audio-time-dur">00:00</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0 border-l border-cyan-300/40 pl-1.5">
+                    <button id="btn-dvc-toggle" onclick="toggleDvcEngine()" class="push-btn dvc-btn-active text-[8px] sm:text-[10px] px-2 py-0.5 rounded font-extrabold tracking-wide transition">🛡️ DVC: ON</button>
+                    <div class="rocker-switch" title="Power Switch"></div>
+                </div>
+
+                <audio id="audio-player" crossorigin="anonymous" loop class="hidden"></audio>
+            </div>
+
+            <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+        </div>
+
+        <!-- 2. XTA DLMS RACK -->
+        <div class="w-full bg-black rounded overflow-hidden shadow-2xl border border-stone-800 flex relative">
+            <div class="w-4 sm:w-6 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
+            </div>
+
+            <div class="flex-1 xta-blue-panel flex flex-nowrap items-center justify-between px-2 sm:px-3 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
+                <div class="flex flex-col items-start shrink-0 pr-1 border-r border-blue-900/60">
+                    <span class="font-brand text-amber-400 font-extrabold text-xs sm:text-sm tracking-tighter leading-none">xta</span>
+                    <span class="font-label text-[5px] sm:text-[7px] text-blue-200 tracking-widest uppercase">ELECTRONICS</span>
+                    <span class="font-mono text-[6px] sm:text-[8px] text-emerald-400 font-bold mt-0.5">DP220</span>
+                </div>
+
+                <!-- TOMBOL INPUT A & B -->
+                <div class="flex items-center gap-1.5 px-1 border-r border-blue-900/60 shrink-0">
+                    <div class="flex flex-col items-center gap-0.5">
+                        <span class="text-[6px] text-amber-300 font-mono font-bold">IN A</span>
+                        <button onclick="selectChannel('IN_A')" id="btn-ch-IN_A" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold">SEL</button>
+                    </div>
+                    <div class="flex flex-col items-center gap-0.5">
+                        <span class="text-[6px] text-amber-300 font-mono font-bold">IN B</span>
+                        <button onclick="selectChannel('IN_B')" id="btn-ch-IN_B" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold">SEL</button>
+                    </div>
+                </div>
+
+                <!-- DISPLAY LCD DLMS -->
+                <div class="xta-lcd rounded px-2 py-0.5 w-36 sm:w-56 shrink-0">
+                    <div class="lcd-text-green font-lcd text-xs sm:text-sm leading-tight tracking-wider">
+                        <div class="flex justify-between">
+                            <span id="dlms-lcd-title" class="truncate">OUT1: SUB-LOW</span>
+                            <span id="dlms-lcd-page">1/4</span>
+                        </div>
+                        <div class="flex justify-between text-amber-200 mt-0.5">
+                            <span id="dlms-lcd-param" class="bg-green-950/80 px-0.5 rounded truncate">HPF FREQ:</span>
+                            <span id="dlms-lcd-val" class="font-bold shrink-0">20.0 Hz</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOMBOL NAVIGASI MATRIX & PRESET -->
+                <div class="grid grid-cols-3 gap-0.5 shrink-0">
+                    <button id="nav-xover" class="push-btn push-btn-active text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('XOVER')">XOVER</button>
+                    <button id="nav-peq" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('PEQ')">PEQ</button>
+                    <button id="nav-gain" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('GAIN_POL')">GAIN</button>
+                    
+                    <button id="nav-comp" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('COMPRESSOR')">COMP</button>
+                    <button id="nav-lim" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('LIMITER')">LIMITER</button>
+                    <button id="nav-delay" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('DELAY')">DELAY</button>
+                    
+                    <button id="nav-matrix" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('MATRIX')">MATRIX</button>
+                    <button id="nav-save" onclick="saveXtaPreset()" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">SAVE</button>
+                    <button id="nav-load" onclick="loadXtaPreset()" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">LOAD</button>
+                </div>
+
+                <!-- ENCODER KNOBS -->
+                <div class="flex items-center gap-1.5 sm:gap-2 px-1 border-x border-blue-900/60 shrink-0">
+                    <div class="flex flex-col items-center">
+                        <div class="encoder-knob" id="knob-param"><div class="knob-dot"></div></div>
+                        <span class="font-label text-blue-200 text-[7px] sm:text-[9px] mt-0.5">PARAM</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="encoder-knob" id="knob-value"><div class="knob-dot"></div></div>
+                        <span class="font-label text-blue-200 text-[7px] sm:text-[9px] mt-0.5">VALUE</span>
+                    </div>
+                </div>
+
+                <!-- OUTPUT METERS -->
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <!-- OUT 1 -->
+                    <div class="flex flex-col items-center gap-0.5">
+                        <span class="text-[5px] sm:text-[6px] text-blue-300 font-mono font-bold">OUT 1</span>
+                        <div class="xta-led-housing flex gap-0.5 items-center">
+                            <div class="flex flex-col gap-[1px]">
+                                <div class="xta-led xta-led-red" id="led-clip-OUT1"></div>
+                                <div class="xta-led xta-led-yellow" id="led-lim-OUT1"></div>
+                                <div class="xta-led xta-led-green" id="led-3-OUT1"></div>
+                                <div class="xta-led xta-led-green" id="led-6-OUT1"></div>
+                                <div class="xta-led xta-led-green" id="led-12-OUT1"></div>
+                                <div class="xta-led xta-led-green" id="led-sig-OUT1"></div>
+                            </div>
+                            <div class="flex flex-col gap-[1px] font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">
+                                <span>CLIP</span><span>LIM</span><span>-3</span><span>-6</span><span>-12</span><span>SIG</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-0.5">
+                            <button onclick="selectChannel('OUT1')" id="btn-ch-OUT1" class="push-btn ch-btn-active text-[6px] sm:text-[7px] px-1 py-0.5 rounded font-bold">SEL</button>
+                            <button onclick="toggleMute('OUT1')" id="btn-mute-OUT1" class="push-btn text-[6px] sm:text-[7px] px-1 py-0.5 rounded font-bold">M</button>
+                        </div>
+                    </div>
+
+                    <!-- OUT 2 -->
+                    <div class="flex flex-col items-center gap-0.5">
+                        <span class="text-[5px] sm:text-[6px] text-blue-300 font-mono font-bold">OUT 2</span>
+                        <div class="xta-led-housing flex gap-0.5 items-center">
+                            <div class="flex flex-col gap-[1px]">
+                                <div class="xta-led xta-led-red" id="led-clip-OUT2"></div>
+                                <div class="xta-led xta-led-yellow" id="led-lim-OUT2"></div>
+                                <div class="xta-led xta-led-green" id="led-3-OUT2"></div>
+                                <div class="xta-led xta-led-green" id="led-6-OUT2"></div>
+                                <div class="xta-led xta-led-green" id="led-12-OUT2"></div>
+                                <div class="xta-led xta-led-green" id="led-sig-OUT2"></div>
+                            </div>
+                            <div class="flex flex-col gap-[1px] font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">
+                                <span>CLIP</span><span>LIM</span><span>-3</span><span>-6</span><span>-12</span><span>SIG</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-0.5">
+                            <button onclick="selectChannel('OUT2')" id="btn-ch-OUT2" class="push-btn text-[6px] sm:text-[7px] px-1 py-0.5 rounded font-bold">SEL</button>
+                            <button onclick="toggleMute('OUT2')" id="btn-mute-OUT2" class="push-btn text-[6px] sm:text-[7px] px-1 py-0.5 rounded font-bold">M</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
+            </div>
+        </div>
+
+        <!-- 3. BBE CHANNEL 1 RACK -->
+        <div class="w-full bbe-chassis rounded overflow-hidden shadow-2xl flex relative">
+            <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+
+            <div class="flex-1 bbe-red-panel flex flex-nowrap items-center justify-between px-2 sm:px-4 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
+                <div class="flex flex-col shrink-0">
+                    <span class="font-brand text-white font-extrabold text-xs sm:text-base italic tracking-tighter drop-shadow-md">D82</span>
+                    <span class="font-label text-[6px] sm:text-[8px] text-red-100 font-bold tracking-wider uppercase">LOW-SUB SHELF</span>
+                    <span class="font-mono text-[5px] sm:text-[7px] text-red-200">CHANNEL 1 ENHANCER</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-0.5 shrink-0">
+                    <div class="flex items-center gap-1">
+                        <div class="led-dot led-green" id="bbe1-led-in"></div>
+                        <div class="led-dot led-red" id="bbe1-led-out"></div>
+                    </div>
+                    <button id="bbe1-btn-process" onclick="toggleBbeShelf(1)" class="w-5 h-5 rounded-full bg-stone-900 border border-slate-600 shadow-md flex items-center justify-center active:scale-95 transition">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-inner"></div>
+                    </button>
+                    <span class="text-[6px] sm:text-[7px] text-white font-bold tracking-wider font-label">PROCESS</span>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-6 my-auto">
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe1-knob-freq"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">FREQUENCY</span>
+                        <span id="bbe1-val-freq" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">50 Hz</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe1-knob-q"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">Q FACTOR</span>
+                        <span id="bbe1-val-q" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.71</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe1-knob-gain"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">GAIN</span>
+                        <span id="bbe1-val-gain" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.0 dB</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex gap-1.5 bg-black/50 p-1 rounded border border-red-950/80">
+                        <div class="flex flex-col items-center gap-0.5 text-[5px] font-mono text-red-200 leading-none">
+                            <span>CLIP</span><span>0</span><span>-6</span><span>-12</span><span>-20</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5 justify-center">
+                            <div class="led-dot led-red" id="bbe1-led-clip"></div>
+                            <div class="led-dot led-green" id="bbe1-led-0"></div>
+                            <div class="led-dot led-green" id="bbe1-led-6"></div>
+                            <div class="led-dot led-yellow" id="bbe1-led-12"></div>
+                            <div class="led-dot led-green" id="bbe1-led-20"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end">
+                        <span class="font-brand text-red-500 font-black text-base sm:text-2xl italic tracking-tighter drop-shadow stroke-white">BBE</span>
+                        <span class="text-[5px] sm:text-[6px] text-red-200 font-mono -mt-1">LO-SUB PROCESSOR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+        </div>
+
+        <!-- 4. BBE CHANNEL 2 RACK -->
+        <div class="w-full bbe-chassis rounded overflow-hidden shadow-2xl flex relative">
+            <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+
+            <div class="flex-1 bbe-red-panel flex flex-nowrap items-center justify-between px-2 sm:px-4 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
+                <div class="flex flex-col shrink-0">
+                    <span class="font-brand text-white font-extrabold text-xs sm:text-base italic tracking-tighter drop-shadow-md">D82</span>
+                    <span class="font-label text-[6px] sm:text-[8px] text-red-100 font-bold tracking-wider uppercase">MID-HIGH SHELF</span>
+                    <span class="font-mono text-[5px] sm:text-[7px] text-red-200">CHANNEL 2 ENHANCER</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-0.5 shrink-0">
+                    <div class="flex items-center gap-1">
+                        <div class="led-dot led-green" id="bbe2-led-in"></div>
+                        <div class="led-dot led-red" id="bbe2-led-out"></div>
+                    </div>
+                    <button id="bbe2-btn-process" onclick="toggleBbeShelf(2)" class="w-5 h-5 rounded-full bg-stone-900 border border-slate-600 shadow-md flex items-center justify-center active:scale-95 transition">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-inner"></div>
+                    </button>
+                    <span class="text-[6px] sm:text-[7px] text-white font-bold tracking-wider font-label">PROCESS</span>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-6 my-auto">
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe2-knob-freq"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">FREQUENCY</span>
+                        <span id="bbe2-val-freq" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">4.00 kHz</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe2-knob-q"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">Q FACTOR</span>
+                        <span id="bbe2-val-q" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.71</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe2-knob-gain"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">GAIN</span>
+                        <span id="bbe2-val-gain" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.0 dB</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex gap-1.5 bg-black/50 p-1 rounded border border-red-950/80">
+                        <div class="flex flex-col items-center gap-0.5 text-[5px] font-mono text-red-200 leading-none">
+                            <span>CLIP</span><span>0</span><span>-6</span><span>-12</span><span>-20</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5 justify-center">
+                            <div class="led-dot led-red" id="bbe2-led-clip"></div>
+                            <div class="led-dot led-green" id="bbe2-led-0"></div>
+                            <div class="led-dot led-green" id="bbe2-led-6"></div>
+                            <div class="led-dot led-yellow" id="bbe2-led-12"></div>
+                            <div class="led-dot led-green" id="bbe2-led-20"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end">
+                        <span class="font-brand text-red-500 font-black text-base sm:text-2xl italic tracking-tighter drop-shadow stroke-white">BBE</span>
+                        <span class="text-[5px] sm:text-[6px] text-red-200 font-mono -mt-1">MID-HI PROCESSOR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT AUDIO ENGINE & CONTROLS -->
+    <script>
+        /* --- INTEGRASI ANDROID BRIDGE & AUDIO STREAMING --- */
+        function sendUrlToAndroid() {
+            const url = document.getElementById('ytUrlInput').value.trim();
+            if (!url) return alert('Masukkan link YouTube terlebih dahulu!');
+            
+            if (window.AndroidBridge) {
+                document.getElementById('extractYtBtn').innerText = "EXTRACTING...";
+                window.AndroidBridge.extractYouTubeAudio(url);
+            } else {
+                alert("Fitur ekstrak hanya berfungsi di dalam aplikasi Android.");
+            }
+        }
+
+        function onAudioExtracted(audioUrl) {
+            const extractBtn = document.getElementById('extractYtBtn');
+            if (extractBtn) extractBtn.innerText = "EXTRACT";
+            
+            initAudioEngine();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const audioPlayer = document.getElementById('audio-player');
+            if (!sourceNode && audioPlayer) {
+                sourceNode = audioCtx.createMediaElementSource(audioPlayer);
+                sourceNode.connect(dsp.splitter);
+            }
+
+            if (audioPlayer) {
+                audioPlayer.src = audioUrl;
+                audioPlayer.play();
+            }
+
+            const btnPlayPause = document.getElementById('btn-play-pause');
+            if (btnPlayPause) {
+                btnPlayPause.disabled = false;
+                btnPlayPause.textContent = '❚❚ PAUSE';
+            }
+
+            const audioStatus = document.getElementById('audio-status-text');
+            if (audioStatus) {
+                audioStatus.textContent = 'PLAYING: EXTRACTED YOUTUBE AUDIO';
+            }
+        }
+
+        function onExtractionFailed(errorMsg) {
+            const extractBtn = document.getElementById('extractYtBtn');
+            if (extractBtn) extractBtn.innerText = "EXTRACT";
+            alert("Ekstraksi Gagal: " + errorMsg);
+        }
+
+        function playAudioStream(streamUrl) {
+            initAudioEngine();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const audioPlayer = document.getElementById('audio-player');
+            if (!sourceNode && audioPlayer) {
+                sourceNode = audioCtx.createMediaElementSource(audioPlayer);
+                sourceNode.connect(dsp.splitter);
+            }
+
+            if (audioPlayer) {
+                audioPlayer.src = streamUrl;
+                audioPlayer.play();
+            }
+
+            const btnPlayPause = document.getElementById('btn-play-pause');
+            if (btnPlayPause) {
+                btnPlayPause.disabled = false;
+                btnPlayPause.textContent = '❚❚ PAUSE';
+            }
+
+            const audioStatus = document.getElementById('audio-status-text');
+            if (audioStatus) {
+                audioStatus.textContent = 'PLAYING: YOUTUBE AUDIO STREAM';
+            }
+        }
+
+        /* --- STATE UTAMA & CONFIG DSP --- */
+        let activeChannel = 'OUT1'; 
+        let activeDlmsMenu = 'XOVER';
+        let currentParamIdx = 0;
+        let muteState = { OUT1: false, OUT2: false };
+        let isDvcEnabled = true;
+
+        const PRESET_STORAGE_KEY = 'xta_dp226_user_preset_v1';
+
+        /* --- FUNGSI SAVE PRESET --- */
+        function saveXtaPreset() {
+            try {
+                const presetObj = {
+                    version: '1.2',
+                    timestamp: new Date().toISOString(),
+                    dlmsData: dlmsData,
+                    bbeRackData: bbeRackData,
+                    muteState: muteState,
+                    isDvcEnabled: isDvcEnabled
+                };
+
+                localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetObj));
+                
+                lcdTitle.textContent = "SYSTEM MEMORY";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "PRESET SAVED!";
+                
+                setTimeout(() => { renderDlmsLcd(); }, 1500);
+
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetObj, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `xta_dsp_preset_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+
+            } catch (e) {
+                console.error("Gagal menyimpan preset:", e);
+                alert("Gagal menyimpan preset.");
+            }
+        }
+
+        /* --- FUNGSI LOAD PRESET --- */
+        function loadXtaPreset() {
+            const savedJson = localStorage.getItem(PRESET_STORAGE_KEY);
+            if (savedJson) {
+                const choice = confirm("Preset ditemukan di memori browser!\n\n• Klik [OK] untuk memuat dari Browser Local Storage.\n• Klik [Batal] untuk memilih file preset .json dari HP/Komputer Anda.");
+                if (choice) {
+                    applyPresetObj(JSON.parse(savedJson));
+                    return;
+                }
+            }
+            document.getElementById('preset-file-input').click();
+        }
+
+        document.getElementById('preset-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const parsedObj = JSON.parse(evt.target.result);
+                        applyPresetObj(parsedObj);
+                    } catch(err) {
+                        alert("File JSON preset tidak valid atau rusak.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function applyPresetObj(parsedObj) {
+            try {
+                const sourceDlms = parsedObj.dlmsData || parsedObj;
+                Object.keys(sourceDlms).forEach(ch => {
+                    if (dlmsData[ch]) {
+                        Object.keys(sourceDlms[ch]).forEach(menuKey => {
+                            if (dlmsData[ch][menuKey] && Array.isArray(dlmsData[ch][menuKey])) {
+                                sourceDlms[ch][menuKey].forEach((savedItem, idx) => {
+                                    if (dlmsData[ch][menuKey][idx]) {
+                                        dlmsData[ch][menuKey][idx].val = savedItem.val;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                if (parsedObj.bbeRackData) {
+                    [1, 2].forEach(r => {
+                        if (parsedObj.bbeRackData[r]) {
+                            bbeRackData[r].active = parsedObj.bbeRackData[r].active;
+                            bbeRackData[r].freq = parsedObj.bbeRackData[r].freq;
+                            bbeRackData[r].q = parsedObj.bbeRackData[r].q;
+                            bbeRackData[r].gain = parsedObj.bbeRackData[r].gain;
+                            updateBbeUi(r);
+                        }
+                    });
+                }
+
+                if (parsedObj.muteState) {
+                    muteState.OUT1 = !!parsedObj.muteState.OUT1;
+                    muteState.OUT2 = !!parsedObj.muteState.OUT2;
+                    ['OUT1', 'OUT2'].forEach(ch => {
+                        const btn = document.getElementById(`btn-mute-${ch}`);
+                        if (btn) {
+                            if (muteState[ch]) btn.classList.add('btn-mute-active');
+                            else btn.classList.remove('btn-mute-active');
+                        }
+                    });
+                }
+
+                if (typeof parsedObj.isDvcEnabled === 'boolean') {
+                    isDvcEnabled = parsedObj.isDvcEnabled;
+                    const btn = document.getElementById('btn-dvc-toggle');
+                    if (btn) {
+                        if (isDvcEnabled) {
+                            btn.classList.add('dvc-btn-active');
+                            btn.textContent = '🛡️ DVC: ON';
+                        } else {
+                            btn.classList.remove('dvc-btn-active');
+                            btn.textContent = '⚠️ DVC: OFF';
+                        }
+                    }
+                }
+
+                syncAllDspNodes();
+                renderDlmsLcd();
+
+                lcdTitle.textContent = "SYSTEM MEMORY";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "PRESET LOADED!";
+
+                setTimeout(() => { renderDlmsLcd(); }, 1500);
+
+            } catch (e) {
+                console.error("Gagal menerapkan preset:", e);
+                alert("Format file preset tidak sesuai.");
+            }
+        }
+
+        const bbeRackData = {
+            1: { active: true, freq: 50, q: 0.71, gain: 0.0, minFreq: 20, maxFreq: 200 },
+            2: { active: true, freq: 4000, q: 0.71, gain: 0.0, minFreq: 1000, maxFreq: 16000 }
+        };
+
+        function createPeqParams(defaultFreqs) {
+            const list = [];
+            for (let b = 1; b <= 5; b++) {
+                list.push(
+                    { band: b, key: `peq_${b}_freq`, name: `PEQ ${b} FREQ`, val: defaultFreqs[b-1], min: 20, max: 20000, step: 10, unit: 'Hz' },
+                    { band: b, key: `peq_${b}_gain`, name: `PEQ ${b} GAIN`, val: 0.0, min: -15, max: 15, step: 0.5, unit: 'dB' },
+                    { band: b, key: `peq_${b}_q`, name: `PEQ ${b} Q-FAC`, val: 1.41, min: 0.3, max: 10.0, step: 0.1, unit: '' },
+                    { band: b, key: `peq_${b}_type`, name: `PEQ ${b} TYPE`, val: (b===1?'LOW SHELF':(b===5?'HIGH SHELF':'PEAKING')), type: 'select', options: ['PEAKING', 'LOW SHELF', 'HIGH SHELF'] }
+                );
+            }
+            return list;
+        }
+
+        const dlmsData = {
+            IN_A: {
+                label: 'IN A: MASTER LEFT',
+                PEQ: [],
+                GAIN_POL: [
+                    { key: 'gain', name: 'INPUT A GAIN', val: 0.0, min: -12, max: 12, step: 0.5, unit: 'dB' },
+                    { key: 'polarity', name: 'POLARITY', val: 'NORMAL (0°)', type: 'select', options: ['NORMAL (0°)', 'INVERT (180°)'] }
+                ],
+                COMPRESSOR: [
+                    { key: 'compThresh', name: 'COMP THRESH', val: -12.0, min: -40, max: 0, step: 0.5, unit: 'dB' },
+                    { key: 'compRatio', name: 'COMP RATIO', val: '4:1', type: 'select', options: ['1:1', '2:1', '3:1', '4:1', '5:1', '6:1', '7:1', '8:1', '9:1', '10:1', '12:1', '20:1'] },
+                    { key: 'compAttack', name: 'COMP ATTACK', val: 15, min: 1, max: 200, step: 1, unit: 'ms' },
+                    { key: 'compRelease', name: 'COMP RELEASE', val: 150, min: 10, max: 1000, step: 10, unit: 'ms' },
+                    { key: 'compMakeup', name: 'COMP MAKEUP', val: 0.0, min: 0, max: 18, step: 0.5, unit: 'dB' }
+                ],
+                DELAY: [
+                    { key: 'delay', name: 'INPUT A DELAY', val: 0.0, min: 0, max: 500, step: 0.5, unit: 'ms' },
+                    { key: 'dist', name: 'CALC DIST', val: 0.0, min: 0, max: 171.5, step: 0.05, unit: 'm', readonly: true }
+                ],
+                MATRIX: [
+                    { key: 'matrixInfo', name: 'IN A ROUTING', val: 'SELECT OUT 1/2', type: 'select', options: ['SELECT OUT 1/2'] }
+                ]
+            },
+            IN_B: {
+                label: 'IN B: MASTER RIGHT',
+                PEQ: [],
+                GAIN_POL: [
+                    { key: 'gain', name: 'INPUT B GAIN', val: 0.0, min: -12, max: 12, step: 0.5, unit: 'dB' },
+                    { key: 'polarity', name: 'POLARITY', val: 'NORMAL (0°)', type: 'select', options: ['NORMAL (0°)', 'INVERT (180°)'] }
+                ],
+                COMPRESSOR: [
+                    { key: 'compThresh', name: 'COMP THRESH', val: -12.0, min: -40, max: 0, step: 0.5, unit: 'dB' },
+                    { key: 'compRatio', name: 'COMP RATIO', val: '4:1', type: 'select', options: ['1:1', '2:1', '3:1', '4:1', '5:1', '6:1', '7:1', '8:1', '9:1', '10:1', '12:1', '20:1'] },
+                    { key: 'compAttack', name: 'COMP ATTACK', val: 15, min: 1, max: 200, step: 1, unit: 'ms' },
+                    { key: 'compRelease', name: 'COMP RELEASE', val: 150, min: 10, max: 1000, step: 10, unit: 'ms' },
+                    { key: 'compMakeup', name: 'COMP MAKEUP', val: 0.0, min: 0, max: 18, step: 0.5, unit: 'dB' }
+                ],
+                DELAY: [
+                    { key: 'delay', name: 'INPUT B DELAY', val: 0.0, min: 0, max: 500, step: 0.5, unit: 'ms' },
+                    { key: 'dist', name: 'CALC DIST', val: 0.0, min: 0, max: 171.5, step: 0.05, unit: 'm', readonly: true }
+                ],
+                MATRIX: [
+                    { key: 'matrixInfo', name: 'IN B ROUTING', val: 'SELECT OUT 1/2', type: 'select', options: ['SELECT OUT 1/2'] }
+                ]
+            },
+            OUT1: {
+                label: 'OUT1: SUB-LOW (CH 1)',
+                XOVER: [
+                    { key: 'hpfFreq', name: 'HPF FREQ', val: 20.0, min: 20, max: 100, step: 1, unit: 'Hz' },
+                    { key: 'hpfSlope', name: 'HPF SLOPE', val: 'LR 24', type: 'select', options: ['BW 12', 'BW 24', 'LR 12', 'LR 24', 'Bessel 12', 'Bessel 24'] },
+                    { key: 'lpfFreq', name: 'LPF FREQ', val: 100.0, min: 100, max: 500, step: 5, unit: 'Hz' },
+                    { key: 'lpfSlope', name: 'LPF SLOPE', val: 'LR 24', type: 'select', options: ['BW 12', 'BW 24', 'LR 12', 'LR 24', 'Bessel 12', 'Bessel 24'] }
+                ],
+                PEQ: createPeqParams([30, 45, 60, 80, 100]),
+                GAIN_POL: [
+                    { key: 'gain', name: 'OUT1 GAIN', val: 0.0, min: -12, max: 12, step: 0.5, unit: 'dB' },
+                    { key: 'polarity', name: 'POLARITY', val: 'NORMAL (0°)', type: 'select', options: ['NORMAL (0°)', 'INVERT (180°)'] }
+                ],
+                COMPRESSOR: [
+                    { key: 'compThresh', name: 'COMP THRESH', val: -6.0, min: -40, max: 0, step: 0.5, unit: 'dB' },
+                    { key: 'compRatio', name: 'COMP RATIO', val: '4:1', type: 'select', options: ['1:1', '2:1', '3:1', '4:1', '5:1', '6:1', '7:1', '8:1', '9:1', '10:1', '12:1', '20:1'] },
+                    { key: 'compAttack', name: 'COMP ATTACK', val: 20, min: 1, max: 200, step: 1, unit: 'ms' },
+                    { key: 'compRelease', name: 'COMP RELEASE', val: 200, min: 10, max: 1000, step: 10, unit: 'ms' },
+                    { key: 'compMakeup', name: 'COMP MAKEUP', val: 0.0, min: 0, max: 18, step: 0.5, unit: 'dB' }
+                ],
+                LIMITER: [
+                    { key: 'limThresh', name: 'LIM THRESH', val: -3.0, min: -20, max: 10, step: 0.5, unit: 'dB' },
+                    { key: 'limAttack', name: 'LIM ATTACK', val: 10, min: 1, max: 100, step: 1, unit: 'ms' },
+                    { key: 'limRelease', name: 'LIM RELEASE', val: 100, min: 10, max: 1000, step: 10, unit: 'ms' }
+                ],
+                DELAY: [
+                    { key: 'delay', name: 'OUT1 DELAY', val: 0.0, min: 0, max: 500, step: 0.5, unit: 'ms' },
+                    { key: 'dist', name: 'CALC DIST', val: 0.0, min: 0, max: 171.5, step: 0.05, unit: 'm', readonly: true }
+                ],
+                MATRIX: [
+                    { key: 'routeSource', name: 'INPUT SOURCE', val: 'INPUT A', type: 'select', options: ['INPUT A', 'INPUT B', 'SUM (A+B)', 'LINK OUT 2', 'OFF'] },
+                    { key: 'outAssign', name: 'OUTPUT DEST', val: 'LEFT (CH 1)', type: 'select', options: ['LEFT (CH 1)', 'RIGHT (CH 2)', 'BOTH (L+R)', 'OFF'] }
+                ]
+            },
+            OUT2: {
+                label: 'OUT2: MID-HIGH (CH 2)',
+                XOVER: [
+                    { key: 'hpfFreq', name: 'HPF FREQ', val: 100.0, min: 100, max: 1000, step: 10, unit: 'Hz' },
+                    { key: 'hpfSlope', name: 'HPF SLOPE', val: 'LR 24', type: 'select', options: ['BW 12', 'BW 24', 'LR 12', 'LR 24', 'Bessel 12', 'Bessel 24'] },
+                    { key: 'lpfFreq', name: 'LPF FREQ', val: 16000.0, min: 1000, max: 16000, step: 100, unit: 'Hz' },
+                    { key: 'lpfSlope', name: 'LPF SLOPE', val: 'LR 24', type: 'select', options: ['BW 12', 'BW 24', 'LR 12', 'LR 24', 'Bessel 12', 'Bessel 24'] }
+                ],
+                PEQ: createPeqParams([200, 800, 2500, 6000, 12000]),
+                GAIN_POL: [
+                    { key: 'gain', name: 'OUT2 GAIN', val: 0.0, min: -12, max: 12, step: 0.5, unit: 'dB' },
+                    { key: 'polarity', name: 'POLARITY', val: 'NORMAL (0°)', type: 'select', options: ['NORMAL (0°)', 'INVERT (180°)'] }
+                ],
+                COMPRESSOR: [
+                    { key: 'compThresh', name: 'COMP THRESH', val: -6.0, min: -40, max: 0, step: 0.5, unit: 'dB' },
+                    { key: 'compRatio', name: 'COMP RATIO', val: '2:1', type: 'select', options: ['1:1', '2:1', '3:1', '4:1', '5:1', '6:1', '7:1', '8:1', '9:1', '10:1', '12:1', '20:1'] },
+                    { key: 'compAttack', name: 'COMP ATTACK', val: 10, min: 1, max: 200, step: 1, unit: 'ms' },
+                    { key: 'compRelease', name: 'COMP RELEASE', val: 100, min: 10, max: 1000, step: 10, unit: 'ms' },
+                    { key: 'compMakeup', name: 'COMP MAKEUP', val: 0.0, min: 0, max: 18, step: 0.5, unit: 'dB' }
+                ],
+                LIMITER: [
+                    { key: 'limThresh', name: 'LIM THRESH', val: 0.0, min: -20, max: 10, step: 0.5, unit: 'dB' },
+                    { key: 'limAttack', name: 'LIM ATTACK', val: 5, min: 1, max: 100, step: 1, unit: 'ms' },
+                    { key: 'limRelease', name: 'LIM RELEASE', val: 50, min: 10, max: 1000, step: 10, unit: 'ms' }
+                ],
+                DELAY: [
+                    { key: 'delay', name: 'OUT2 DELAY', val: 0.0, min: 0, max: 500, step: 0.5, unit: 'ms' },
+                    { key: 'dist', name: 'CALC DIST', val: 0.0, min: 0, max: 171.5, step: 0.05, unit: 'm', readonly: true }
+                ],
+                MATRIX: [
+                    { key: 'routeSource', name: 'INPUT SOURCE', val: 'INPUT B', type: 'select', options: ['INPUT A', 'INPUT B', 'SUM (A+B)', 'LINK OUT 1', 'OFF'] },
+                    { key: 'outAssign', name: 'OUTPUT DEST', val: 'RIGHT (CH 2)', type: 'select', options: ['LEFT (CH 1)', 'RIGHT (CH 2)', 'BOTH (L+R)', 'OFF'] }
+                ]
+            }
+        };
+
+        // AUDIO ENGINE & CACHE
+        let audioCtx = null;
+        let sourceNode = null;
+        let domLeds = {};
+
+        const dsp = {
+            splitter: null, merger: null, dvcHeadroomGain: null, dvcSoftClipper: null, dvcBrickwallLimiter: null,
+            IN_A: { gain: null, delay: null, peq: [], comp: null, makeup: null, analyser: null },
+            IN_B: { gain: null, delay: null, peq: [], comp: null, makeup: null, analyser: null },
+            OUT1: { routeA: null, routeB: null, routeOut2: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, shelfFilter: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null },
+            OUT2: { routeA: null, routeB: null, routeOut1: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, shelfFilter: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null }
+        };
+
+        function generateSoftClipCurve() {
+            const samples = 1024;
+            const curve = new Float32Array(samples);
+            for (let i = 0; i < samples; i++) {
+                let x = (i * 2) / samples - 1;
+                curve[i] = (1.5 * x) - (0.5 * Math.pow(x, 3));
+            }
+            return curve;
+        }
+
+        function cacheDomElements() {
+            ['OUT1', 'OUT2'].forEach(ch => {
+                domLeds[`sig_${ch}`] = document.getElementById(`led-sig-${ch}`);
+                domLeds[`m12_${ch}`] = document.getElementById(`led-12-${ch}`);
+                domLeds[`m6_${ch}`] = document.getElementById(`led-6-${ch}`);
+                domLeds[`m3_${ch}`] = document.getElementById(`led-3-${ch}`);
+                domLeds[`lim_${ch}`] = document.getElementById(`led-lim-${ch}`);
+                domLeds[`clip_${ch}`] = document.getElementById(`led-clip-${ch}`);
+            });
+            [1, 2].forEach(r => {
+                domLeds[`bbe${r}_clip`] = document.getElementById(`bbe${r}-led-clip`);
+                domLeds[`bbe${r}_0`] = document.getElementById(`bbe${r}-led-0`);
+                domLeds[`bbe${r}_6`] = document.getElementById(`bbe${r}-led-6`);
+                domLeds[`bbe${r}_12`] = document.getElementById(`bbe${r}-led-12`);
+                domLeds[`bbe${r}_20`] = document.getElementById(`bbe${r}-led-20`);
+            });
+        }
+
+        function initAudioEngine() {
+            if (audioCtx) return;
+
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            cacheDomElements();
+
+            dsp.splitter = audioCtx.createChannelSplitter(2);
+            dsp.merger = audioCtx.createChannelMerger(2);
+
+            dsp.dvcHeadroomGain = audioCtx.createGain();
+            dsp.dvcSoftClipper = audioCtx.createWaveShaper();
+            dsp.dvcSoftClipper.curve = generateSoftClipCurve();
+            dsp.dvcSoftClipper.oversample = 'none';
+
+            dsp.dvcBrickwallLimiter = audioCtx.createDynamicsCompressor();
+            dsp.dvcBrickwallLimiter.threshold.value = -1.0;
+            dsp.dvcBrickwallLimiter.ratio.value = 20;
+
+            ['IN_A', 'IN_B'].forEach((ch, chIdx) => {
+                dsp[ch].gain = audioCtx.createGain();
+                dsp[ch].delay = audioCtx.createDelay(1.0);
+                dsp[ch].comp = audioCtx.createDynamicsCompressor();
+                dsp[ch].makeup = audioCtx.createGain();
+                dsp[ch].analyser = audioCtx.createAnalyser();
+                dsp[ch].analyser.fftSize = 32;
+
+                dsp.splitter.connect(dsp[ch].gain, chIdx);
+                dsp[ch].gain.connect(dsp[ch].delay);
+                dsp[ch].delay.connect(dsp[ch].comp);
+                dsp[ch].comp.connect(dsp[ch].makeup);
+                dsp[ch].makeup.connect(dsp[ch].analyser);
+            });
+
+            /* MATRIX ROUTING NODES UNTUK OUTPUT 1 & OUTPUT 2 */
+            ['OUT1', 'OUT2'].forEach((ch) => {
+                dsp[ch].routeA = audioCtx.createGain();
+                dsp[ch].routeB = audioCtx.createGain();
+
+                dsp.IN_A.analyser.connect(dsp[ch].routeA);
+                dsp.IN_B.analyser.connect(dsp[ch].routeB);
+
+                dsp[ch].peq = Array.from({length: 5}, () => audioCtx.createBiquadFilter());
+                dsp[ch].comp = audioCtx.createDynamicsCompressor();
+                dsp[ch].makeup = audioCtx.createGain();
+                dsp[ch].hpf1 = audioCtx.createBiquadFilter();
+                dsp[ch].hpf2 = audioCtx.createBiquadFilter();
+                dsp[ch].lpf1 = audioCtx.createBiquadFilter();
+                dsp[ch].lpf2 = audioCtx.createBiquadFilter();
+                dsp[ch].gain = audioCtx.createGain();
+                dsp[ch].delay = audioCtx.createDelay(1.0);
+                dsp[ch].shelfFilter = audioCtx.createBiquadFilter();
+                dsp[ch].shelfFilter.type = (ch === 'OUT1') ? 'lowshelf' : 'highshelf';
+
+                dsp[ch].limiter = audioCtx.createDynamicsCompressor();
+                dsp[ch].limiter.ratio.value = 20;
+                dsp[ch].mute = audioCtx.createGain();
+                dsp[ch].analyser = audioCtx.createAnalyser();
+                dsp[ch].analyser.fftSize = 32;
+
+                dsp[ch].sendL = audioCtx.createGain();
+                dsp[ch].sendR = audioCtx.createGain();
+
+                dsp[ch].routeA.connect(dsp[ch].peq[0]);
+                dsp[ch].routeB.connect(dsp[ch].peq[0]);
+
+                let prev = dsp[ch].peq[0];
+                for (let i = 1; i < 5; i++) {
+                    prev.connect(dsp[ch].peq[i]);
+                    prev = dsp[ch].peq[i];
+                }
+
+                prev.connect(dsp[ch].comp);
+                dsp[ch].comp.connect(dsp[ch].makeup);
+                dsp[ch].makeup.connect(dsp[ch].hpf1);
+                dsp[ch].hpf1.connect(dsp[ch].hpf2);
+                dsp[ch].hpf2.connect(dsp[ch].lpf1);
+                dsp[ch].lpf1.connect(dsp[ch].lpf2);
+                dsp[ch].lpf2.connect(dsp[ch].gain);
+                dsp[ch].gain.connect(dsp[ch].delay);
+                dsp[ch].delay.connect(dsp[ch].shelfFilter);
+                dsp[ch].shelfFilter.connect(dsp[ch].limiter);
+
+                dsp[ch].limiter.connect(dsp[ch].mute);
+                dsp[ch].mute.connect(dsp[ch].analyser);
+
+                dsp[ch].analyser.connect(dsp[ch].sendL);
+                dsp[ch].analyser.connect(dsp[ch].sendR);
+
+                dsp[ch].sendL.connect(dsp.merger, 0, 0); 
+                dsp[ch].sendR.connect(dsp.merger, 0, 1); 
+            });
+
+            dsp.OUT1.routeOut2 = audioCtx.createGain();
+            dsp.OUT2.routeOut1 = audioCtx.createGain();
+
+            dsp.OUT1.gain.connect(dsp.OUT2.routeOut1);
+            dsp.OUT2.routeOut1.connect(dsp.OUT2.peq[0]);
+
+            dsp.OUT2.gain.connect(dsp.OUT1.routeOut2);
+            dsp.OUT1.routeOut2.connect(dsp.OUT1.peq[0]);
+
+            dsp.merger.connect(dsp.dvcHeadroomGain);
+            dsp.dvcHeadroomGain.connect(dsp.dvcSoftClipper);
+            dsp.dvcSoftClipper.connect(dsp.dvcBrickwallLimiter);
+            dsp.dvcBrickwallLimiter.connect(audioCtx.destination);
+
+            syncAllDspNodes();
+            requestAnimationFrame(updateMeters);
+        }
+
+        function dbToLinear(db) { return Math.pow(10, db / 20); }
+
+        function toggleDvcEngine() {
+            isDvcEnabled = !isDvcEnabled;
+            const btn = document.getElementById('btn-dvc-toggle');
+            if (isDvcEnabled) {
+                btn.classList.add('dvc-btn-active');
+                btn.textContent = '🛡️ DVC: ON';
+            } else {
+                btn.classList.remove('dvc-btn-active');
+                btn.textContent = '⚠️ DVC: OFF';
+            }
+            syncAllDspNodes();
+        }
+
+        function toggleBbeShelf(rackNum) {
+            bbeRackData[rackNum].active = !bbeRackData[rackNum].active;
+            updateBbeUi(rackNum);
+            syncAllDspNodes();
+        }
+
+        function applyCrossoverFilter(node1, node2, type, slope, freq) {
+            node1.type = type;
+            node1.frequency.value = freq;
+            node2.type = type;
+            node2.frequency.value = freq;
+
+            switch (slope) {
+                case 'BW 12':
+                    node1.Q.value = 0.7071;
+                    node2.type = 'allpass';
+                    break;
+                case 'LR 12':
+                    node1.Q.value = 0.5000;
+                    node2.type = 'allpass';
+                    break;
+                case 'Bessel 12':
+                    node1.Q.value = 0.5773;
+                    node2.type = 'allpass';
+                    break;
+                case 'BW 24':
+                    node1.Q.value = 0.5412;
+                    node2.Q.value = 1.3065;
+                    break;
+                case 'LR 24':
+                case '24dB LR':
+                    node1.Q.value = 0.7071;
+                    node2.Q.value = 0.7071;
+                    break;
+                case 'Bessel 24':
+                    node1.Q.value = 0.5219;
+                    node2.Q.value = 0.8055;
+                    break;
+                default:
+                    node1.Q.value = 0.7071;
+                    node2.Q.value = 0.7071;
+                    break;
+            }
+        }
+
+        function syncAllDspNodes() {
+            if (!audioCtx) return;
+
+            dsp.dvcHeadroomGain.gain.value = isDvcEnabled ? dbToLinear(-5.0) : 1.0;
+
+            if (dsp.OUT1.shelfFilter) {
+                const bbe1 = bbeRackData[1];
+                dsp.OUT1.shelfFilter.frequency.value = bbe1.freq;
+                dsp.OUT1.shelfFilter.Q.value = bbe1.q;
+                dsp.OUT1.shelfFilter.gain.value = bbe1.active ? bbe1.gain : 0.0;
+            }
+            if (dsp.OUT2.shelfFilter) {
+                const bbe2 = bbeRackData[2];
+                dsp.OUT2.shelfFilter.frequency.value = bbe2.freq;
+                dsp.OUT2.shelfFilter.Q.value = bbe2.q;
+                dsp.OUT2.shelfFilter.gain.value = bbe2.active ? bbe2.gain : 0.0;
+            }
+
+            ['IN_A', 'IN_B', 'OUT1', 'OUT2'].forEach(ch => {
+                const data = dlmsData[ch];
+                const gVal = (data.GAIN_POL.find(i => i.key === 'gain') || {}).val || 0;
+                const polVal = (data.GAIN_POL.find(i => i.key === 'polarity') || {}).val;
+                const polFactor = polVal === 'INVERT (180°)' ? -1 : 1;
+                const dVal = (data.DELAY.find(i => i.key === 'delay') || {}).val || 0;
+
+                dsp[ch].gain.gain.value = dbToLinear(gVal) * polFactor;
+                dsp[ch].delay.delayTime.value = dVal / 1000;
+
+                if (ch === 'OUT1' || ch === 'OUT2') {
+                    const peqList = data.PEQ;
+                    for (let b = 1; b <= 5; b++) {
+                        const filterNode = dsp[ch].peq[b - 1];
+                        filterNode.frequency.value = peqList.find(i => i.key === `peq_${b}_freq`).val;
+                        filterNode.gain.value = peqList.find(i => i.key === `peq_${b}_gain`).val;
+                        filterNode.Q.value = peqList.find(i => i.key === `peq_${b}_q`).val;
+
+                        const typeStr = peqList.find(i => i.key === `peq_${b}_type`).val;
+                        if (typeStr === 'LOW SHELF') filterNode.type = 'lowshelf';
+                        else if (typeStr === 'HIGH SHELF') filterNode.type = 'highshelf';
+                        else filterNode.type = 'peaking';
+                    }
+                }
+
+                const compData = data.COMPRESSOR;
+                dsp[ch].comp.threshold.value = compData.find(i => i.key === 'compThresh').val;
+                dsp[ch].comp.ratio.value = parseFloat((compData.find(i => i.key === 'compRatio').val).split(':')[0]) || 1;
+                dsp[ch].comp.attack.value = compData.find(i => i.key === 'compAttack').val / 1000;
+                dsp[ch].comp.release.value = compData.find(i => i.key === 'compRelease').val / 1000;
+                dsp[ch].makeup.gain.value = dbToLinear(compData.find(i => i.key === 'compMakeup').val);
+
+                if (ch === 'OUT1' || ch === 'OUT2') {
+                    dsp[ch].mute.gain.value = muteState[ch] ? 0 : 1;
+
+                    const matrixSource = data.MATRIX ? data.MATRIX.find(i => i.key === 'routeSource') : null;
+                    const routeVal = matrixSource ? matrixSource.val : (ch === 'OUT1' ? 'INPUT A' : 'INPUT B');
+
+                    if (ch === 'OUT1') {
+                        if (routeVal === 'INPUT A') {
+                            dsp.OUT1.routeA.gain.value = 1.0;
+                            dsp.OUT1.routeB.gain.value = 0.0;
+                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                        } else if (routeVal === 'INPUT B') {
+                            dsp.OUT1.routeA.gain.value = 0.0;
+                            dsp.OUT1.routeB.gain.value = 1.0;
+                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                        } else if (routeVal === 'SUM (A+B)') {
+                            dsp.OUT1.routeA.gain.value = 0.707;
+                            dsp.OUT1.routeB.gain.value = 0.707;
+                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                        } else if (routeVal === 'LINK OUT 2') {
+                            dsp.OUT1.routeA.gain.value = 0.0;
+                            dsp.OUT1.routeB.gain.value = 0.0;
+                            dsp.OUT1.routeOut2.gain.value = 1.0;
+                        } else {
+                            dsp.OUT1.routeA.gain.value = 0.0;
+                            dsp.OUT1.routeB.gain.value = 0.0;
+                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                        }
+                    } else if (ch === 'OUT2') {
+                        if (routeVal === 'INPUT A') {
+                            dsp.OUT2.routeA.gain.value = 1.0;
+                            dsp.OUT2.routeB.gain.value = 0.0;
+                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                        } else if (routeVal === 'INPUT B') {
+                            dsp.OUT2.routeA.gain.value = 0.0;
+                            dsp.OUT2.routeB.gain.value = 1.0;
+                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                        } else if (routeVal === 'SUM (A+B)') {
+                            dsp.OUT2.routeA.gain.value = 0.707;
+                            dsp.OUT2.routeB.gain.value = 0.707;
+                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                        } else if (routeVal === 'LINK OUT 1') {
+                            dsp.OUT2.routeA.gain.value = 0.0;
+                            dsp.OUT2.routeB.gain.value = 0.0;
+                            dsp.OUT2.routeOut1.gain.value = 1.0;
+                        } else {
+                            dsp.OUT2.routeA.gain.value = 0.0;
+                            dsp.OUT2.routeB.gain.value = 0.0;
+                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                        }
+                    }
+
+                    const matrixOut = data.MATRIX ? data.MATRIX.find(i => i.key === 'outAssign') : null;
+                    const outVal = matrixOut ? matrixOut.val : (ch === 'OUT1' ? 'LEFT (CH 1)' : 'RIGHT (CH 2)');
+
+                    if (dsp[ch].sendL && dsp[ch].sendR) {
+                        if (outVal === 'LEFT (CH 1)') {
+                            dsp[ch].sendL.gain.value = 1.0;
+                            dsp[ch].sendR.gain.value = 0.0;
+                        } else if (outVal === 'RIGHT (CH 2)') {
+                            dsp[ch].sendL.gain.value = 0.0;
+                            dsp[ch].sendR.gain.value = 1.0;
+                        } else if (outVal === 'BOTH (L+R)') {
+                            dsp[ch].sendL.gain.value = 0.707;
+                            dsp[ch].sendR.gain.value = 0.707;
+                        } else { 
+                            dsp[ch].sendL.gain.value = 0.0;
+                            dsp[ch].sendR.gain.value = 0.0;
+                        }
+                    }
+
+                    const xover = data.XOVER;
+                    const hpfFreq = xover.find(i => i.key === 'hpfFreq').val;
+                    const hpfSlope = xover.find(i => i.key === 'hpfSlope').val;
+                    const lpfFreq = xover.find(i => i.key === 'lpfFreq').val;
+                    const lpfSlope = xover.find(i => i.key === 'lpfSlope').val;
+
+                    applyCrossoverFilter(dsp[ch].hpf1, dsp[ch].hpf2, 'highpass', hpfSlope, hpfFreq);
+                    applyCrossoverFilter(dsp[ch].lpf1, dsp[ch].lpf2, 'lowpass', lpfSlope, lpfFreq);
+
+                    const lim = data.LIMITER;
+                    dsp[ch].limiter.threshold.value = lim.find(i => i.key === 'limThresh').val;
+                    dsp[ch].limiter.attack.value = lim.find(i => i.key === 'limAttack').val / 1000;
+                    dsp[ch].limiter.release.value = lim.find(i => i.key === 'limRelease').val / 1000;
+                }
+            });
+        }
+
+        const audioFileLoader = document.getElementById('audio-file-input');
+        const audioPlayer = document.getElementById('audio-player');
+        const btnPlayPause = document.getElementById('btn-play-pause');
+        const audioStatus = document.getElementById('audio-status-text');
+
+        audioFileLoader.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                initAudioEngine();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+
+                audioPlayer.src = URL.createObjectURL(file);
+
+                if(!sourceNode) {
+                    sourceNode = audioCtx.createMediaElementSource(audioPlayer);
+                    sourceNode.connect(dsp.splitter);
+                }
+
+                audioPlayer.play();
+                btnPlayPause.disabled = false;
+                btnPlayPause.textContent = '❚❚ PAUSE';
+                audioStatus.textContent = `PLAYING: ${file.name.toUpperCase()}`;
+            }
+        });
+
+        function togglePlayPause() {
+            if (!audioPlayer.src) return;
+            initAudioEngine();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                btnPlayPause.textContent = '❚❚ PAUSE';
+            } else {
+                audioPlayer.pause();
+                btnPlayPause.textContent = '▶ PLAY';
+            }
+        }
+
+        function skipAudio(seconds) {
+            if (audioPlayer && audioPlayer.src) {
+                audioPlayer.currentTime = Math.max(0, Math.min(audioPlayer.duration || 0, audioPlayer.currentTime + seconds));
+            }
+        }
+
+        function formatTime(sec) {
+            if (isNaN(sec)) return "00:00";
+            let m = Math.floor(sec / 60);
+            let s = Math.floor(sec % 60);
+            return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            document.getElementById('audio-time-curr').textContent = formatTime(audioPlayer.currentTime);
+            document.getElementById('audio-time-dur').textContent = formatTime(audioPlayer.duration);
+        });
+
+        function setLedState(el, active) {
+            if (el && el._active !== active) {
+                el._active = active;
+                if (active) el.classList.add('active');
+                else el.classList.remove('active');
+            }
+        }
+
+        const dataArray = new Uint8Array(32);
+        let lastMeterUpdate = 0;
+        const meterChannels = ['OUT1', 'OUT2'];
+
+        function updateMeters(now) {
+            if (audioCtx && (now - lastMeterUpdate > 33)) {
+                lastMeterUpdate = now;
+                const isAudioPlaying = audioPlayer && !audioPlayer.paused;
+
+                for (let idx = 0; idx < 2; idx++) {
+                    const ch = meterChannels[idx];
+                    const analyser = dsp[ch].analyser;
+                    let rms = 0;
+
+                    if (analyser && isAudioPlaying) {
+                        analyser.getByteTimeDomainData(dataArray);
+                        let sum = 0;
+                        for (let i = 0; i < 32; i++) {
+                            const v = (dataArray[i] - 128) * 0.0078125;
+                            sum += v * v;
+                        }
+                        rms = Math.sqrt(sum * 0.03125);
+                    }
+
+                    setLedState(domLeds[`sig_${ch}`], rms > 0.005);
+                    setLedState(domLeds[`m12_${ch}`], rms > 0.04);
+                    setLedState(domLeds[`m6_${ch}`], rms > 0.12);
+                    setLedState(domLeds[`m3_${ch}`], rms > 0.28);
+
+                    const compRed = dsp[ch].comp ? dsp[ch].comp.reduction : 0;
+                    const limRed = dsp[ch].limiter ? dsp[ch].limiter.reduction : 0;
+                    const isLimiterActive = (compRed < -0.5) || (limRed < -0.5) || (rms > 0.52);
+
+                    setLedState(domLeds[`lim_${ch}`], isLimiterActive);
+                    setLedState(domLeds[`clip_${ch}`], rms > 0.72);
+
+                    if (ch === 'OUT1') updateBbeLadders(1, rms);
+                    if (ch === 'OUT2') updateBbeLadders(2, rms);
+                }
+            }
+            requestAnimationFrame(updateMeters);
+        }
+
+        /* METERS BBE: HANYA MENYALA JIKA PROCESS TOMBOL ON */
+        function updateBbeLadders(rackNum, rms) {
+            const isProcessOn = bbeRackData[rackNum] && bbeRackData[rackNum].active;
+
+            setLedState(domLeds[`bbe${rackNum}_20`], isProcessOn && rms > 0.01);
+            setLedState(domLeds[`bbe${rackNum}_12`], isProcessOn && rms > 0.08);
+            setLedState(domLeds[`bbe${rackNum}_6`], isProcessOn && rms > 0.20);
+            setLedState(domLeds[`bbe${rackNum}_0`], isProcessOn && rms > 0.40);
+            setLedState(domLeds[`bbe${rackNum}_clip`], isProcessOn && rms > 0.65);
+        }
+
+        function updateBbeUi(rackNum) {
+            const data = bbeRackData[rackNum];
+            const ledIn = document.getElementById(`bbe${rackNum}-led-in`);
+            const ledOut = document.getElementById(`bbe${rackNum}-led-out`);
+
+            setLedState(ledIn, data.active);
+            setLedState(ledOut, !data.active);
+
+            let freqStr = data.freq >= 1000 
+                ? (data.freq / 1000).toFixed(2) + ' kHz' 
+                : Math.round(data.freq) + ' Hz';
+            
+            document.getElementById(`bbe${rackNum}-val-freq`).textContent = freqStr;
+            document.getElementById(`bbe${rackNum}-val-q`).textContent = data.q.toFixed(2);
+            document.getElementById(`bbe${rackNum}-val-gain`).textContent = (data.gain > 0 ? '+' : '') + data.gain.toFixed(1) + ' dB';
+
+            /* UPDATE ROTASI VISUAL KNOP BBE (-135deg SD +135deg) */
+            const freqMin = rackNum === 1 ? 20 : 1000;
+            const freqMax = rackNum === 1 ? 200 : 16000;
+            const freqAngle = -135 + ((data.freq - freqMin) / (freqMax - freqMin)) * 270;
+            const kFreq = document.getElementById(`bbe${rackNum}-knob-freq`);
+            if (kFreq) kFreq.style.transform = `rotate(${freqAngle}deg)`;
+
+            const qMin = 0.1, qMax = 10.0;
+            const qAngle = -135 + ((data.q - qMin) / (qMax - qMin)) * 270;
+            const kQ = document.getElementById(`bbe${rackNum}-knob-q`);
+            if (kQ) kQ.style.transform = `rotate(${qAngle}deg)`;
+
+            const gMin = -15.0, gMax = 15.0;
+            const gAngle = -135 + ((data.gain - gMin) / (gMax - gMin)) * 270;
+            const kGain = document.getElementById(`bbe${rackNum}-knob-gain`);
+            if (kGain) kGain.style.transform = `rotate(${gAngle}deg)`;
+        }
+
+        const lcdTitle = document.getElementById('dlms-lcd-title');
+        const lcdPage = document.getElementById('dlms-lcd-page');
+        const lcdParam = document.getElementById('dlms-lcd-param');
+        const lcdVal = document.getElementById('dlms-lcd-val');
+
+        function selectChannel(ch) {
+            activeChannel = ch;
+            currentParamIdx = 0;
+            document.querySelectorAll('[id^="btn-ch-"]').forEach(b => b.classList.remove('ch-btn-active'));
+            const btn = document.getElementById(`btn-ch-${ch}`);
+            if (btn) btn.classList.add('ch-btn-active');
+            renderDlmsLcd();
+        }
+
+        function setDlmsMenu(menuKey) {
+            activeDlmsMenu = menuKey;
+            currentParamIdx = 0;
+            const menuBtns = ['xover', 'peq', 'gain', 'comp', 'lim', 'delay', 'matrix'];
+            menuBtns.forEach(m => {
+                const btn = document.getElementById(`nav-${m}`);
+                if (btn) btn.classList.remove('push-btn-active');
+            });
+            const keyMap = {
+                'XOVER': 'xover', 'PEQ': 'peq', 'GAIN_POL': 'gain',
+                'COMPRESSOR': 'comp', 'LIMITER': 'lim', 'DELAY': 'delay', 'MATRIX': 'matrix'
+            };
+            const activeBtnId = keyMap[menuKey];
+            if (activeBtnId && document.getElementById(`nav-${activeBtnId}`)) {
+                document.getElementById(`nav-${activeBtnId}`).classList.add('push-btn-active');
+            }
+            renderDlmsLcd();
+        }
+
+        function toggleMute(ch) {
+            muteState[ch] = !muteState[ch];
+            const btn = document.getElementById(`btn-mute-${ch}`);
+            if (btn) {
+                if (muteState[ch]) btn.classList.add('btn-mute-active');
+                else btn.classList.remove('btn-mute-active');
+            }
+            syncAllDspNodes();
+        }
+
+        function renderDlmsLcd() {
+            const chData = dlmsData[activeChannel];
+            if (!chData) return;
+
+            lcdTitle.textContent = chData.label;
+            let paramList = chData[activeDlmsMenu];
+
+            if (!paramList || paramList.length === 0) {
+                lcdPage.textContent = "N/A";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "N/A FOR THIS CH";
+                return;
+            }
+
+            if (currentParamIdx >= paramList.length) currentParamIdx = 0;
+            if (currentParamIdx < 0) currentParamIdx = paramList.length - 1;
+
+            const item = paramList[currentParamIdx];
+            lcdPage.textContent = `${currentParamIdx + 1}/${paramList.length}`;
+            lcdParam.textContent = item.name + ":";
+
+            let valDisplay = item.val;
+            if (item.unit) valDisplay += " " + item.unit;
+            lcdVal.textContent = valDisplay;
+        }
+
+        function adjustDlmsParam(delta) {
+            const chData = dlmsData[activeChannel];
+            if (!chData) return;
+            const paramList = chData[activeDlmsMenu];
+            if (!paramList || paramList.length === 0) return;
+
+            currentParamIdx += (delta > 0 ? 1 : -1);
+            if (currentParamIdx >= paramList.length) currentParamIdx = 0;
+            if (currentParamIdx < 0) currentParamIdx = paramList.length - 1;
+
+            renderDlmsLcd();
+        }
+
+        function adjustDlmsValue(delta) {
+            const chData = dlmsData[activeChannel];
+            if (!chData) return;
+            const paramList = chData[activeDlmsMenu];
+            if (!paramList || paramList.length === 0) return;
+
+            const item = paramList[currentParamIdx];
+            if (!item || item.readonly) return;
+
+            if (item.type === 'select') {
+                const idx = item.options.indexOf(item.val);
+                let newIdx = idx + (delta > 0 ? 1 : -1);
+                if (newIdx < 0) newIdx = 0;
+                if (newIdx >= item.options.length) newIdx = item.options.length - 1;
+                item.val = item.options[newIdx];
+            } else {
+                let step = item.step || 1;
+                let newVal = item.val + (delta > 0 ? step : -step);
+                if (item.min !== undefined && newVal < item.min) newVal = item.min;
+                if (item.max !== undefined && newVal > item.max) newVal = item.max;
+
+                if (step < 1) {
+                    const decimals = (step.toString().split('.')[1] || '').length;
+                    newVal = parseFloat(newVal.toFixed(decimals));
+                } else {
+                    newVal = Math.round(newVal);
+                }
+                item.val = newVal;
+            }
+
+            if (item.key === 'delay') {
+                const distItem = paramList.find(i => i.key === 'dist');
+                if (distItem) {
+                    distItem.val = parseFloat((item.val * 0.343).toFixed(2));
+                }
+            }
+
+            syncAllDspNodes();
+            renderDlmsLcd();
+        }
+
+        /* --- SISTEM INTERAKSI DRAG KNOB (SMOOTH & PRESISI) --- */
+        function setupKnobDrag(element, onDrag) {
+            let startY = 0;
+            let isDragging = false;
+
+            function handleStart(y) {
+                isDragging = true;
+                startY = y;
+            }
+
+            function handleMove(y, e) {
+                if (!isDragging) return;
+                if (e && e.cancelable) e.preventDefault();
+                const deltaY = startY - y; // Tarik ke atas (+) positif, bawah (-) negatif
+                startY = y;
+                onDrag(deltaY);
+            }
+
+            function handleEnd() {
+                isDragging = false;
+            }
+
+            element.addEventListener('mousedown', (e) => {
+                handleStart(e.clientY);
+                const onMouseMove = (me) => handleMove(me.clientY, me);
+                const onMouseUp = () => {
+                    handleEnd();
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                };
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('mouseup', onMouseUp);
+            });
+
+            element.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    handleStart(e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            element.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1) {
+                    handleMove(e.touches[0].clientY, e);
+                }
+            }, { passive: false });
+
+            element.addEventListener('touchend', handleEnd);
+            element.addEventListener('touchcancel', handleEnd);
+        }
+
+        /* --- LOGIKA ROTASI & KONTROL KNOB XTA --- */
+        let xtaParamAngle = 0;
+        let xtaParamAccumulator = 0;
+
+        const knobParamEl = document.getElementById('knob-param');
+        if (knobParamEl) {
+            setupKnobDrag(knobParamEl, (deltaY) => {
+                const degDelta = deltaY * 1.2;
+                xtaParamAngle += degDelta;
+                knobParamEl.style.transform = `rotate(${xtaParamAngle}deg)`;
+
+                xtaParamAccumulator += degDelta;
+                const tickThreshold = 18;
+                if (Math.abs(xtaParamAccumulator) >= tickThreshold) {
+                    const steps = Math.floor(Math.abs(xtaParamAccumulator) / tickThreshold) * Math.sign(xtaParamAccumulator);
+                    adjustDlmsParam(steps);
+                    xtaParamAccumulator %= tickThreshold;
+                }
+            });
+        }
+
+        let xtaValueAngle = 0;
+        let xtaValueAccumulator = 0;
+
+        const knobValueEl = document.getElementById('knob-value');
+        if (knobValueEl) {
+            setupKnobDrag(knobValueEl, (deltaY) => {
+                const degDelta = deltaY * 1.2;
+                xtaValueAngle += degDelta;
+                knobValueEl.style.transform = `rotate(${xtaValueAngle}deg)`;
+
+                xtaValueAccumulator += degDelta;
+                const tickThreshold = 12;
+                if (Math.abs(xtaValueAccumulator) >= tickThreshold) {
+                    const steps = Math.floor(Math.abs(xtaValueAccumulator) / tickThreshold) * Math.sign(xtaValueAccumulator);
+                    adjustDlmsValue(steps);
+                    xtaValueAccumulator %= tickThreshold;
+                }
+            });
+        }
+
+        /* --- LOGIKA ROTASI & KONTROL KNOB BBE (SENSITIVITAS DIANULIR) --- */
+        [1, 2].forEach(rack => {
+            const data = bbeRackData[rack];
+
+            const kFreq = document.getElementById(`bbe${rack}-knob-freq`);
+            if (kFreq) {
+                setupKnobDrag(kFreq, (deltaY) => {
+                    const stepPerPx = (rack === 1) ? 0.5 : 40;
+                    let newFreq = data.freq + (deltaY * stepPerPx);
+                    const minF = (rack === 1) ? 20 : 1000;
+                    const maxF = (rack === 1) ? 200 : 16000;
+                    data.freq = Math.min(maxF, Math.max(minF, rack === 1 ? Math.round(newFreq) : newFreq));
+                    updateBbeUi(rack);
+                    syncAllDspNodes();
+                });
+            }
+
+            const kQ = document.getElementById(`bbe${rack}-knob-q`);
+            if (kQ) {
+                setupKnobDrag(kQ, (deltaY) => {
+                    const stepPerPx = 0.02;
+                    let newQ = data.q + (deltaY * stepPerPx);
+                    data.q = Math.min(10.0, Math.max(0.1, newQ));
+                    updateBbeUi(rack);
+                    syncAllDspNodes();
+                });
+            }
+
+            const kGain = document.getElementById(`bbe${rack}-knob-gain`);
+            if (kGain) {
+                setupKnobDrag(kGain, (deltaY) => {
+                    const stepPerPx = 0.1;
+                    let newGain = data.gain + (deltaY * stepPerPx);
+                    data.gain = Math.min(15.0, Math.max(-15.0, newGain));
+                    updateBbeUi(rack);
+                    syncAllDspNodes();
+                });
+            }
+        });
+
+        // INISIALISASI AWAL UI
+        renderDlmsLcd();
+        updateBbeUi(1);
+        updateBbeUi(2);
+    </script>
+</body>
+</html>
