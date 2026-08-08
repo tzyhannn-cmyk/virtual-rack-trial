@@ -502,13 +502,15 @@
             }
         }
 
-        function onAudioExtracted(audioUrl) {
+        // Fungsi ini dipanggil dari Android setelah audio & judul berhasil diekstrak
+        function onAudioExtracted(audioUrl, title) {
             const extractBtn = document.getElementById('extractYtBtn');
             if (extractBtn) extractBtn.innerText = "EXTRACT";
             
             initAudioEngine();
             if (audioCtx.state === 'suspended') audioCtx.resume();
 
+            // 1. Set sumber audio dan putar
             const audioPlayer = document.getElementById('audio-player');
             if (!sourceNode && audioPlayer) {
                 sourceNode = audioCtx.createMediaElementSource(audioPlayer);
@@ -517,7 +519,9 @@
 
             if (audioPlayer) {
                 audioPlayer.src = audioUrl;
-                audioPlayer.play();
+                audioPlayer.play().catch(function(error) {
+                    console.log("Autoplay diblokir oleh browser/webview:", error);
+                });
             }
 
             const btnPlayPause = document.getElementById('btn-play-pause');
@@ -526,9 +530,11 @@
                 btnPlayPause.textContent = '❚❚ PAUSE';
             }
 
+            // 2. Ubah teks pada layar display
             const audioStatus = document.getElementById('audio-status-text');
             if (audioStatus) {
-                audioStatus.textContent = 'PLAYING: EXTRACTED YOUTUBE AUDIO';
+                const songTitle = title ? title.toUpperCase() : "EXTRACTED YOUTUBE AUDIO";
+                audioStatus.textContent = "PLAYING: " + songTitle;
             }
         }
 
