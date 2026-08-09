@@ -16,6 +16,28 @@
         .font-brand { font-family: 'Orbitron', sans-serif; }
         .font-label { font-family: 'Roboto Condensed', sans-serif; }
 
+        /* --- CSS TEKS BERJALAN (MARQUEE) --- */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee-scroll 15s linear infinite;
+        }
+
+        @keyframes marquee-scroll {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-100%, 0);
+            }
+        }
+
         /* --- HARDWARE SCREWS --- */
         .rack-screw-black {
             width: 8px; height: 8px; border-radius: 50%;
@@ -197,16 +219,16 @@
                     <input type="file" id="audio-file-input" accept="audio/*" class="hidden">
                     <button onclick="document.getElementById('audio-file-input').click()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white hover:bg-slate-100 flex items-center gap-1">📂 <span>File</span></button>
                     
-                    <input type="text" id="ytUrlInput" placeholder="Link YouTube..." class="text-[8px] sm:text-[10px] px-1.5 py-0.5 rounded bg-black/70 text-amber-300 border border-cyan-400/50 w-24 sm:w-32 focus:outline-none">
-                    <button id="extractYtBtn" onclick="sendUrlToAndroid()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-950 bg-cyan-300 hover:bg-white">EXTRACT</button>
-
                     <button onclick="skipAudio(-5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Mundur 5 detik">⏪ -5s</button>
                     <button id="btn-play-pause" onclick="togglePlayPause()" class="push-btn text-[8px] sm:text-[10px] font-bold px-2 py-0.5 rounded text-slate-800 disabled:opacity-50" disabled>▶ PLAY</button>
                     <button onclick="skipAudio(5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Maju 5 detik">⏩ +5s</button>
                 </div>
-
+                
+                <!-- KOTAK DISPLAY JUDUL BERJALAN -->
                 <div class="bg-black/80 border border-cyan-400/50 rounded px-2 py-0.5 flex-1 max-w-xs overflow-hidden">
-                    <div class="font-lcd text-amber-300 text-xs truncate" id="audio-status-text">SIAP: SILAHKAN PILIH LAGU / YOUTUBE</div>
+                    <div class="marquee-container">
+                        <div class="font-lcd text-amber-300 text-xs marquee-text" id="audio-status-text">SIAP: SILAHKAN PILIH LAGU / YOUTUBE</div>
+                    </div>
                     <div class="flex justify-between font-mono text-[8px] text-cyan-200 mt-0.5">
                         <span id="audio-time-curr">00:00</span>
                         <span id="audio-time-dur">00:00</span>
@@ -577,12 +599,11 @@
 
         const PRESET_STORAGE_KEY = 'xta_dp226_user_preset_v1';
 
-        /* --- FUNGSI UTILITAS SMOOTHING PARAMETER AUDIO (PERBAIKAN ANTI-KRESEK) --- */
+        /* --- FUNGSI UTILITAS SMOOTHING PARAMETER AUDIO --- */
         function setSmoothParam(param, targetVal, timeConstant = 0.015) {
             if (!param || !audioCtx) return;
             if (audioCtx.state === 'running') {
                 if (isNaN(targetVal)) return;
-                // Batalkan kurva lama sebelum memasukkan nilai baru agar tidak melompat
                 param.cancelScheduledValues(audioCtx.currentTime);
                 param.setTargetAtTime(targetVal, audioCtx.currentTime, timeConstant);
             } else {
@@ -1041,7 +1062,6 @@
         }
 
         function applyCrossoverFilter(node1, node2, type, slope, freq) {
-            // PERBAIKAN: Hanya ganti node.type jika berbeda untuk mencegah kresek-kresek
             if (node1.type !== type) node1.type = type;
             setSmoothParam(node1.frequency, freq);
 
@@ -1109,7 +1129,6 @@
 
                 setSmoothParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
                 
-                // PERBAIKAN: Hanya update delayTime jika nilainya berubah signifikan
                 if (Math.abs(dsp[ch].delay.delayTime.value - (dVal / 1000)) > 0.0001) {
                     setSmoothParam(dsp[ch].delay.delayTime, dVal / 1000);
                 }
@@ -1127,7 +1146,6 @@
                         if (typeStr === 'LOW SHELF') targetType = 'lowshelf';
                         else if (typeStr === 'HIGH SHELF') targetType = 'highshelf';
 
-                        // PERBAIKAN: Hanya ganti filterNode.type jika tipe nilainya berubah
                         if (filterNode.type !== targetType) {
                             filterNode.type = targetType;
                         }
