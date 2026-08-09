@@ -502,7 +502,6 @@
             }
         }
 
-        // Fungsi ini dipanggil dari Android setelah audio & judul berhasil diekstrak
         function onAudioExtracted(audioUrl, title) {
             const extractBtn = document.getElementById('extractYtBtn');
             if (extractBtn) extractBtn.innerText = "EXTRACT";
@@ -510,7 +509,6 @@
             initAudioEngine();
             if (audioCtx.state === 'suspended') audioCtx.resume();
 
-            // 1. Set sumber audio dan putar
             const audioPlayer = document.getElementById('audio-player');
             if (!sourceNode && audioPlayer) {
                 sourceNode = audioCtx.createMediaElementSource(audioPlayer);
@@ -530,7 +528,6 @@
                 btnPlayPause.textContent = '❚❚ PAUSE';
             }
 
-            // 2. Ubah teks pada layar display
             const audioStatus = document.getElementById('audio-status-text');
             if (audioStatus) {
                 const songTitle = title ? title.toUpperCase() : "EXTRACTED YOUTUBE AUDIO";
@@ -579,6 +576,19 @@
         let isDvcEnabled = true;
 
         const PRESET_STORAGE_KEY = 'xta_dp226_user_preset_v1';
+
+        /* --- FUNGSI UTILITAS SMOOTHING PARAMETER AUDIO (PERBAIKAN ANTI-KRESEK) --- */
+        function setSmoothParam(param, targetVal, timeConstant = 0.015) {
+            if (!param || !audioCtx) return;
+            if (audioCtx.state === 'running') {
+                if (isNaN(targetVal)) return;
+                // Batalkan kurva lama sebelum memasukkan nilai baru agar tidak melompat
+                param.cancelScheduledValues(audioCtx.currentTime);
+                param.setTargetAtTime(targetVal, audioCtx.currentTime, timeConstant);
+            } else {
+                param.value = targetVal;
+            }
+        }
 
         /* --- FUNGSI SAVE PRESET --- */
         function saveXtaPreset() {
@@ -1020,41 +1030,54 @@
             syncAllDspNodes();
         }
 
+        function toggleMute(ch) {
+            muteState[ch] = !muteState[ch];
+            const btn = document.getElementById(`btn-mute-${ch}`);
+            if (btn) {
+                if (muteState[ch]) btn.classList.add('btn-mute-active');
+                else btn.classList.remove('btn-mute-active');
+            }
+            syncAllDspNodes();
+        }
+
         function applyCrossoverFilter(node1, node2, type, slope, freq) {
-            node1.type = type;
-            node1.frequency.value = freq;
-            node2.type = type;
-            node2.frequency.value = freq;
+            // PERBAIKAN: Hanya ganti node.type jika berbeda untuk mencegah kresek-kresek
+            if (node1.type !== type) node1.type = type;
+            setSmoothParam(node1.frequency, freq);
+
+            let targetType2 = type;
+            if (slope === 'BW 12' || slope === 'LR 12' || slope === 'Bessel 12') {
+                targetType2 = 'allpass';
+            }
+            if (node2.type !== targetType2) node2.type = targetType2;
+            setSmoothParam(node2.frequency, freq);
 
             switch (slope) {
                 case 'BW 12':
-                    node1.Q.value = 0.7071;
-                    node2.type = 'allpass';
+                    setSmoothParam(node1.Q, 0.7071);
                     break;
                 case 'LR 12':
-                    node1.Q.value = 0.5000;
-                    node2.type = 'allpass';
+                    setSmoothParam(node1.Q, 0.5000);
                     break;
                 case 'Bessel 12':
-                    node1.Q.value = 0.5773;
-                    node2.type = 'allpass';
+                    setSmoothParam(node1.Q, 0.5773);
                     break;
                 case 'BW 24':
-                    node1.Q.value = 0.5412;
-                    node2.Q.value = 1.3065;
+                    setSmoothParam(node1.Q, 0.5412);
+                    setSmoothParam(node2.Q, 1.3065);
                     break;
                 case 'LR 24':
                 case '24dB LR':
-                    node1.Q.value = 0.7071;
-                    node2.Q.value = 0.7071;
+                    setSmoothParam(node1.Q, 0.7071);
+                    setSmoothParam(node2.Q, 0.7071);
                     break;
                 case 'Bessel 24':
-                    node1.Q.value = 0.5219;
-                    node2.Q.value = 0.8055;
+                    setSmoothParam(node1.Q, 0.5219);
+                    setSmoothParam(node2.Q, 0.8055);
                     break;
                 default:
-                    node1.Q.value = 0.7071;
-                    node2.Q.value = 0.7071;
+                    setSmoothParam(node1.Q, 0.7071);
+                    setSmoothParam(node2.Q, 0.7071);
                     break;
             }
         }
@@ -1062,19 +1085,19 @@
         function syncAllDspNodes() {
             if (!audioCtx) return;
 
-            dsp.dvcHeadroomGain.gain.value = isDvcEnabled ? dbToLinear(-5.0) : 1.0;
+            setSmoothParam(dsp.dvcHeadroomGain.gain, isDvcEnabled ? dbToLinear(-5.0) : 1.0);
 
             if (dsp.OUT1.shelfFilter) {
                 const bbe1 = bbeRackData[1];
-                dsp.OUT1.shelfFilter.frequency.value = bbe1.freq;
-                dsp.OUT1.shelfFilter.Q.value = bbe1.q;
-                dsp.OUT1.shelfFilter.gain.value = bbe1.active ? bbe1.gain : 0.0;
+                setSmoothParam(dsp.OUT1.shelfFilter.frequency, bbe1.freq);
+                setSmoothParam(dsp.OUT1.shelfFilter.Q, bbe1.q);
+                setSmoothParam(dsp.OUT1.shelfFilter.gain, bbe1.active ? bbe1.gain : 0.0);
             }
             if (dsp.OUT2.shelfFilter) {
                 const bbe2 = bbeRackData[2];
-                dsp.OUT2.shelfFilter.frequency.value = bbe2.freq;
-                dsp.OUT2.shelfFilter.Q.value = bbe2.q;
-                dsp.OUT2.shelfFilter.gain.value = bbe2.active ? bbe2.gain : 0.0;
+                setSmoothParam(dsp.OUT2.shelfFilter.frequency, bbe2.freq);
+                setSmoothParam(dsp.OUT2.shelfFilter.Q, bbe2.q);
+                setSmoothParam(dsp.OUT2.shelfFilter.gain, bbe2.active ? bbe2.gain : 0.0);
             }
 
             ['IN_A', 'IN_B', 'OUT1', 'OUT2'].forEach(ch => {
@@ -1084,80 +1107,89 @@
                 const polFactor = polVal === 'INVERT (180°)' ? -1 : 1;
                 const dVal = (data.DELAY.find(i => i.key === 'delay') || {}).val || 0;
 
-                dsp[ch].gain.gain.value = dbToLinear(gVal) * polFactor;
-                dsp[ch].delay.delayTime.value = dVal / 1000;
+                setSmoothParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
+                
+                // PERBAIKAN: Hanya update delayTime jika nilainya berubah signifikan
+                if (Math.abs(dsp[ch].delay.delayTime.value - (dVal / 1000)) > 0.0001) {
+                    setSmoothParam(dsp[ch].delay.delayTime, dVal / 1000);
+                }
 
                 if (ch === 'OUT1' || ch === 'OUT2') {
                     const peqList = data.PEQ;
                     for (let b = 1; b <= 5; b++) {
                         const filterNode = dsp[ch].peq[b - 1];
-                        filterNode.frequency.value = peqList.find(i => i.key === `peq_${b}_freq`).val;
-                        filterNode.gain.value = peqList.find(i => i.key === `peq_${b}_gain`).val;
-                        filterNode.Q.value = peqList.find(i => i.key === `peq_${b}_q`).val;
+                        setSmoothParam(filterNode.frequency, peqList.find(i => i.key === `peq_${b}_freq`).val);
+                        setSmoothParam(filterNode.gain, peqList.find(i => i.key === `peq_${b}_gain`).val);
+                        setSmoothParam(filterNode.Q, peqList.find(i => i.key === `peq_${b}_q`).val);
 
                         const typeStr = peqList.find(i => i.key === `peq_${b}_type`).val;
-                        if (typeStr === 'LOW SHELF') filterNode.type = 'lowshelf';
-                        else if (typeStr === 'HIGH SHELF') filterNode.type = 'highshelf';
-                        else filterNode.type = 'peaking';
+                        let targetType = 'peaking';
+                        if (typeStr === 'LOW SHELF') targetType = 'lowshelf';
+                        else if (typeStr === 'HIGH SHELF') targetType = 'highshelf';
+
+                        // PERBAIKAN: Hanya ganti filterNode.type jika tipe nilainya berubah
+                        if (filterNode.type !== targetType) {
+                            filterNode.type = targetType;
+                        }
                     }
                 }
 
                 const compData = data.COMPRESSOR;
-                dsp[ch].comp.threshold.value = compData.find(i => i.key === 'compThresh').val;
-                dsp[ch].comp.ratio.value = parseFloat((compData.find(i => i.key === 'compRatio').val).split(':')[0]) || 1;
-                dsp[ch].comp.attack.value = compData.find(i => i.key === 'compAttack').val / 1000;
-                dsp[ch].comp.release.value = compData.find(i => i.key === 'compRelease').val / 1000;
-                dsp[ch].makeup.gain.value = dbToLinear(compData.find(i => i.key === 'compMakeup').val);
+                setSmoothParam(dsp[ch].comp.threshold, compData.find(i => i.key === 'compThresh').val);
+                setSmoothParam(dsp[ch].comp.ratio, parseFloat((compData.find(i => i.key === 'compRatio').val).split(':')[0]) || 1);
+                setSmoothParam(dsp[ch].comp.attack, compData.find(i => i.key === 'compAttack').val / 1000);
+                setSmoothParam(dsp[ch].comp.release, compData.find(i => i.key === 'compRelease').val / 1000);
+                setSmoothParam(dsp[ch].makeup.gain, dbToLinear(compData.find(i => i.key === 'compMakeup').val));
 
                 if (ch === 'OUT1' || ch === 'OUT2') {
-                    dsp[ch].mute.gain.value = muteState[ch] ? 0 : 1;
+                    setSmoothParam(dsp[ch].mute.gain, muteState[ch] ? 0 : 1);
 
                     const matrixSource = data.MATRIX ? data.MATRIX.find(i => i.key === 'routeSource') : null;
                     const routeVal = matrixSource ? matrixSource.val : (ch === 'OUT1' ? 'INPUT A' : 'INPUT B');
 
                     if (ch === 'OUT1') {
                         if (routeVal === 'INPUT A') {
-                            dsp.OUT1.routeA.gain.value = 1.0;
-                            dsp.OUT1.routeB.gain.value = 0.0;
-                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT1.routeA.gain, 1.0);
+                            setSmoothParam(dsp.OUT1.routeB.gain, 0.0);
+                            setSmoothParam(dsp.OUT1.routeOut2.gain, 0.0);
                         } else if (routeVal === 'INPUT B') {
-                            dsp.OUT1.routeA.gain.value = 0.0;
-                            dsp.OUT1.routeB.gain.value = 1.0;
-                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT1.routeA.gain, 0.0);
+                            setSmoothParam(dsp.OUT1.routeB.gain, 1.0);
+                            setSmoothParam(dsp.OUT1.routeOut2.gain, 0.0);
                         } else if (routeVal === 'SUM (A+B)') {
-                            dsp.OUT1.routeA.gain.value = 0.707;
-                            dsp.OUT1.routeB.gain.value = 0.707;
-                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT1.routeA.gain, 0.707);
+                            setSmoothParam(dsp.OUT1.routeB.gain, 0.707);
+                            setSmoothParam(dsp.OUT1.routeOut2.gain, 0.0);
                         } else if (routeVal === 'LINK OUT 2') {
-                            dsp.OUT1.routeA.gain.value = 0.0;
-                            dsp.OUT1.routeB.gain.value = 0.0;
-                            dsp.OUT1.routeOut2.gain.value = 1.0;
+                            setSmoothParam(dsp.OUT1.routeA.gain, 0.0);
+                            setSmoothParam(dsp.OUT1.routeB.gain, 0.0);
+                            setSmoothParam(dsp.OUT1.routeOut2.gain, 1.0);
                         } else {
-                            dsp.OUT1.routeA.gain.value = 0.0;
-                            dsp.OUT1.routeB.gain.value = 0.0;
-                            dsp.OUT1.routeOut2.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT1.routeA.gain, 0.0);
+                            setSmoothParam(dsp.OUT1.routeB.gain, 0.0);
+                            setSmoothParam(dsp.OUT1.routeOut2.gain, 0.0);
                         }
                     } else if (ch === 'OUT2') {
                         if (routeVal === 'INPUT A') {
-                            dsp.OUT2.routeA.gain.value = 1.0;
-                            dsp.OUT2.routeB.gain.value = 0.0;
-                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT2.routeA.gain, 1.0);
+                            setSmoothParam(dsp.OUT2.routeB.gain, 0.0);
+                            setSmoothParam(dsp.OUT2.routeOut1.gain, 0.0);
                         } else if (routeVal === 'INPUT B') {
-                            dsp.OUT2.routeA.gain.value = 0.0;
-                            dsp.OUT2.routeB.gain.value = 1.0;
-                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT2.routeA.gain, 0.0);
+                            setSmoothParam(dsp.OUT2.routeB.gain, 1.0);
+                            setSmoothParam(dsp.OUT2.routeOut1.gain, 0.0);
                         } else if (routeVal === 'SUM (A+B)') {
-                            dsp.OUT2.routeA.gain.value = 0.707;
-                            dsp.OUT2.routeB.gain.value = 0.707;
-                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT2.routeA.gain, 0.707);
+                            setSmoothParam(dsp.OUT2.routeB.gain, 0.707);
+                            setSmoothParam(dsp.OUT2.routeOut1.gain, 0.0);
                         } else if (routeVal === 'LINK OUT 1') {
-                            dsp.OUT2.routeA.gain.value = 0.0;
-                            dsp.OUT2.routeB.gain.value = 0.0;
-                            dsp.OUT2.routeOut1.gain.value = 1.0;
+                            setSmoothParam(dsp.OUT2.routeA.gain, 0.0);
+                            setSmoothParam(dsp.OUT2.routeB.gain, 0.0);
+                            setSmoothParam(dsp.OUT2.routeOut1.gain, 1.0);
                         } else {
-                            dsp.OUT2.routeA.gain.value = 0.0;
-                            dsp.OUT2.routeB.gain.value = 0.0;
-                            dsp.OUT2.routeOut1.gain.value = 0.0;
+                            setSmoothParam(dsp.OUT2.routeA.gain, 0.0);
+                            setSmoothParam(dsp.OUT2.routeB.gain, 0.0);
+                            setSmoothParam(dsp.OUT2.routeOut1.gain, 0.0);
                         }
                     }
 
@@ -1166,33 +1198,37 @@
 
                     if (dsp[ch].sendL && dsp[ch].sendR) {
                         if (outVal === 'LEFT (CH 1)') {
-                            dsp[ch].sendL.gain.value = 1.0;
-                            dsp[ch].sendR.gain.value = 0.0;
+                            setSmoothParam(dsp[ch].sendL.gain, 1.0);
+                            setSmoothParam(dsp[ch].sendR.gain, 0.0);
                         } else if (outVal === 'RIGHT (CH 2)') {
-                            dsp[ch].sendL.gain.value = 0.0;
-                            dsp[ch].sendR.gain.value = 1.0;
+                            setSmoothParam(dsp[ch].sendL.gain, 0.0);
+                            setSmoothParam(dsp[ch].sendR.gain, 1.0);
                         } else if (outVal === 'BOTH (L+R)') {
-                            dsp[ch].sendL.gain.value = 0.707;
-                            dsp[ch].sendR.gain.value = 0.707;
+                            setSmoothParam(dsp[ch].sendL.gain, 0.707);
+                            setSmoothParam(dsp[ch].sendR.gain, 0.707);
                         } else { 
-                            dsp[ch].sendL.gain.value = 0.0;
-                            dsp[ch].sendR.gain.value = 0.0;
+                            setSmoothParam(dsp[ch].sendL.gain, 0.0);
+                            setSmoothParam(dsp[ch].sendR.gain, 0.0);
                         }
                     }
 
                     const xover = data.XOVER;
-                    const hpfFreq = xover.find(i => i.key === 'hpfFreq').val;
-                    const hpfSlope = xover.find(i => i.key === 'hpfSlope').val;
-                    const lpfFreq = xover.find(i => i.key === 'lpfFreq').val;
-                    const lpfSlope = xover.find(i => i.key === 'lpfSlope').val;
+                    if (xover) {
+                        const hpfFreq = xover.find(i => i.key === 'hpfFreq').val;
+                        const hpfSlope = xover.find(i => i.key === 'hpfSlope').val;
+                        const lpfFreq = xover.find(i => i.key === 'lpfFreq').val;
+                        const lpfSlope = xover.find(i => i.key === 'lpfSlope').val;
 
-                    applyCrossoverFilter(dsp[ch].hpf1, dsp[ch].hpf2, 'highpass', hpfSlope, hpfFreq);
-                    applyCrossoverFilter(dsp[ch].lpf1, dsp[ch].lpf2, 'lowpass', lpfSlope, lpfFreq);
+                        applyCrossoverFilter(dsp[ch].hpf1, dsp[ch].hpf2, 'highpass', hpfSlope, hpfFreq);
+                        applyCrossoverFilter(dsp[ch].lpf1, dsp[ch].lpf2, 'lowpass', lpfSlope, lpfFreq);
+                    }
 
                     const lim = data.LIMITER;
-                    dsp[ch].limiter.threshold.value = lim.find(i => i.key === 'limThresh').val;
-                    dsp[ch].limiter.attack.value = lim.find(i => i.key === 'limAttack').val / 1000;
-                    dsp[ch].limiter.release.value = lim.find(i => i.key === 'limRelease').val / 1000;
+                    if (lim) {
+                        setSmoothParam(dsp[ch].limiter.threshold, lim.find(i => i.key === 'limThresh').val);
+                        setSmoothParam(dsp[ch].limiter.attack, lim.find(i => i.key === 'limAttack').val / 1000);
+                        setSmoothParam(dsp[ch].limiter.release, lim.find(i => i.key === 'limRelease').val / 1000);
+                    }
                 }
             });
         }
@@ -1305,7 +1341,6 @@
             requestAnimationFrame(updateMeters);
         }
 
-        /* METERS BBE: HANYA MENYALA JIKA PROCESS TOMBOL ON */
         function updateBbeLadders(rackNum, rms) {
             const isProcessOn = bbeRackData[rackNum] && bbeRackData[rackNum].active;
 
@@ -1332,14 +1367,13 @@
             document.getElementById(`bbe${rackNum}-val-q`).textContent = data.q.toFixed(2);
             document.getElementById(`bbe${rackNum}-val-gain`).textContent = (data.gain > 0 ? '+' : '') + data.gain.toFixed(1) + ' dB';
 
-            /* UPDATE ROTASI VISUAL KNOP BBE (-135deg SD +135deg) */
-            const freqMin = rackNum === 1 ? 20 : 1000;
-            const freqMax = rackNum === 1 ? 200 : 16000;
+            const freqMin = data.minFreq;
+            const freqMax = data.maxFreq;
             const freqAngle = -135 + ((data.freq - freqMin) / (freqMax - freqMin)) * 270;
             const kFreq = document.getElementById(`bbe${rackNum}-knob-freq`);
             if (kFreq) kFreq.style.transform = `rotate(${freqAngle}deg)`;
 
-            const qMin = 0.1, qMax = 10.0;
+            const qMin = 0.3, qMax = 10.0;
             const qAngle = -135 + ((data.q - qMin) / (qMax - qMin)) * 270;
             const kQ = document.getElementById(`bbe${rackNum}-knob-q`);
             if (kQ) kQ.style.transform = `rotate(${qAngle}deg)`;
@@ -1368,246 +1402,175 @@
             activeDlmsMenu = menuKey;
             currentParamIdx = 0;
             const menuBtns = ['xover', 'peq', 'gain', 'comp', 'lim', 'delay', 'matrix'];
-            menuBtns.forEach(m => {
-                const btn = document.getElementById(`nav-${m}`);
+            menuBtns.forEach(id => {
+                const btn = document.getElementById(`nav-${id}`);
                 if (btn) btn.classList.remove('push-btn-active');
             });
-            const keyMap = {
-                'XOVER': 'xover', 'PEQ': 'peq', 'GAIN_POL': 'gain',
-                'COMPRESSOR': 'comp', 'LIMITER': 'lim', 'DELAY': 'delay', 'MATRIX': 'matrix'
-            };
-            const activeBtnId = keyMap[menuKey];
-            if (activeBtnId && document.getElementById(`nav-${activeBtnId}`)) {
-                document.getElementById(`nav-${activeBtnId}`).classList.add('push-btn-active');
-            }
+
+            let targetId = menuKey.toLowerCase();
+            if (targetId === 'gain_pol') targetId = 'gain';
+            if (targetId === 'compressor') targetId = 'comp';
+            if (targetId === 'limiter') targetId = 'lim';
+
+            const activeBtn = document.getElementById(`nav-${targetId}`);
+            if (activeBtn) activeBtn.classList.add('push-btn-active');
             renderDlmsLcd();
         }
 
-        function toggleMute(ch) {
-            muteState[ch] = !muteState[ch];
-            const btn = document.getElementById(`btn-mute-${ch}`);
-            if (btn) {
-                if (muteState[ch]) btn.classList.add('btn-mute-active');
-                else btn.classList.remove('btn-mute-active');
-            }
-            syncAllDspNodes();
+        function getCurrentParamsList() {
+            const chObj = dlmsData[activeChannel];
+            if (!chObj) return [];
+            return chObj[activeDlmsMenu] || [];
         }
 
         function renderDlmsLcd() {
-            const chData = dlmsData[activeChannel];
-            if (!chData) return;
+            const chObj = dlmsData[activeChannel];
+            const params = getCurrentParamsList();
 
-            lcdTitle.textContent = chData.label;
-            let paramList = chData[activeDlmsMenu];
-
-            if (!paramList || paramList.length === 0) {
-                lcdPage.textContent = "N/A";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "N/A FOR THIS CH";
+            if (!params || params.length === 0) {
+                lcdTitle.textContent = chObj ? chObj.label : activeChannel;
+                lcdPage.textContent = "0/0";
+                lcdParam.textContent = "MENU N/A";
+                lcdVal.textContent = "---";
                 return;
             }
 
-            if (currentParamIdx >= paramList.length) currentParamIdx = 0;
-            if (currentParamIdx < 0) currentParamIdx = paramList.length - 1;
+            if (currentParamIdx >= params.length) currentParamIdx = 0;
+            if (currentParamIdx < 0) currentParamIdx = params.length - 1;
 
-            const item = paramList[currentParamIdx];
-            lcdPage.textContent = `${currentParamIdx + 1}/${paramList.length}`;
-            lcdParam.textContent = item.name + ":";
+            const p = params[currentParamIdx];
+            lcdTitle.textContent = chObj.label;
+            lcdPage.textContent = `${currentParamIdx + 1}/${params.length}`;
+            lcdParam.textContent = `${p.name}:`;
 
-            let valDisplay = item.val;
-            if (item.unit) valDisplay += " " + item.unit;
-            lcdVal.textContent = valDisplay;
-        }
-
-        function adjustDlmsParam(delta) {
-            const chData = dlmsData[activeChannel];
-            if (!chData) return;
-            const paramList = chData[activeDlmsMenu];
-            if (!paramList || paramList.length === 0) return;
-
-            currentParamIdx += (delta > 0 ? 1 : -1);
-            if (currentParamIdx >= paramList.length) currentParamIdx = 0;
-            if (currentParamIdx < 0) currentParamIdx = paramList.length - 1;
-
-            renderDlmsLcd();
-        }
-
-        function adjustDlmsValue(delta) {
-            const chData = dlmsData[activeChannel];
-            if (!chData) return;
-            const paramList = chData[activeDlmsMenu];
-            if (!paramList || paramList.length === 0) return;
-
-            const item = paramList[currentParamIdx];
-            if (!item || item.readonly) return;
-
-            if (item.type === 'select') {
-                const idx = item.options.indexOf(item.val);
-                let newIdx = idx + (delta > 0 ? 1 : -1);
-                if (newIdx < 0) newIdx = 0;
-                if (newIdx >= item.options.length) newIdx = item.options.length - 1;
-                item.val = item.options[newIdx];
+            if (p.unit === 'Hz' && p.val >= 1000) {
+                lcdVal.textContent = `${(p.val / 1000).toFixed(2)} kHz`;
+            } else if (p.key === 'delay' && p.val !== undefined) {
+                lcdVal.textContent = `${p.val.toFixed(1)} ms`;
+                const distItem = params.find(i => i.key === 'dist');
+                if (distItem) distItem.val = (p.val * 0.343).toFixed(2);
+            } else if (p.unit === 'dB') {
+                lcdVal.textContent = `${p.val > 0 ? '+' : ''}${parseFloat(p.val).toFixed(1)} dB`;
             } else {
-                let step = item.step || 1;
-                let newVal = item.val + (delta > 0 ? step : -step);
-                if (item.min !== undefined && newVal < item.min) newVal = item.min;
-                if (item.max !== undefined && newVal > item.max) newVal = item.max;
-
-                if (step < 1) {
-                    const decimals = (step.toString().split('.')[1] || '').length;
-                    newVal = parseFloat(newVal.toFixed(decimals));
-                } else {
-                    newVal = Math.round(newVal);
-                }
-                item.val = newVal;
+                lcdVal.textContent = `${p.val} ${p.unit || ''}`.trim();
             }
-
-            if (item.key === 'delay') {
-                const distItem = paramList.find(i => i.key === 'dist');
-                if (distItem) {
-                    distItem.val = parseFloat((item.val * 0.343).toFixed(2));
-                }
-            }
-
-            syncAllDspNodes();
-            renderDlmsLcd();
         }
 
-        /* --- SISTEM INTERAKSI DRAG KNOB (SMOOTH & PRESISI) --- */
-        function setupKnobDrag(element, onDrag) {
+        /* --- LOGIK DRAG KNOP DENGAN MOUSE / TOUCH --- */
+        let knobRotations = {
+            'knob-param': 0,
+            'knob-value': 0
+        };
+
+        function setupKnobDrag(elId, onDrag) {
+            const el = document.getElementById(elId);
+            if (!el) return;
             let startY = 0;
             let isDragging = false;
 
-            function handleStart(y) {
+            function start(e) {
                 isDragging = true;
-                startY = y;
+                startY = e.touches ? e.touches[0].clientY : e.clientY;
+                document.addEventListener('mousemove', move);
+                document.addEventListener('touchmove', move, { passive: false });
+                document.addEventListener('mouseup', stop);
+                document.addEventListener('touchend', stop);
             }
 
-            function handleMove(y, e) {
+            function move(e) {
                 if (!isDragging) return;
-                if (e && e.cancelable) e.preventDefault();
-                const deltaY = startY - y; // Tarik ke atas (+) positif, bawah (-) negatif
-                startY = y;
+                if (e.cancelable) e.preventDefault();
+                const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+                const deltaY = startY - currentY;
+                startY = currentY;
                 onDrag(deltaY);
             }
 
-            function handleEnd() {
+            function stop() {
                 isDragging = false;
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('mouseup', stop);
+                document.removeEventListener('touchend', stop);
             }
 
-            element.addEventListener('mousedown', (e) => {
-                handleStart(e.clientY);
-                const onMouseMove = (me) => handleMove(me.clientY, me);
-                const onMouseUp = () => {
-                    handleEnd();
-                    window.removeEventListener('mousemove', onMouseMove);
-                    window.removeEventListener('mouseup', onMouseUp);
-                };
-                window.addEventListener('mousemove', onMouseMove);
-                window.addEventListener('mouseup', onMouseUp);
-            });
-
-            element.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 1) {
-                    handleStart(e.touches[0].clientY);
-                }
-            }, { passive: true });
-
-            element.addEventListener('touchmove', (e) => {
-                if (isDragging && e.touches.length === 1) {
-                    handleMove(e.touches[0].clientY, e);
-                }
-            }, { passive: false });
-
-            element.addEventListener('touchend', handleEnd);
-            element.addEventListener('touchcancel', handleEnd);
+            el.addEventListener('mousedown', start);
+            el.addEventListener('touchstart', start, { passive: false });
         }
 
-        /* --- LOGIKA ROTASI & KONTROL KNOB XTA --- */
-        let xtaParamAngle = 0;
-        let xtaParamAccumulator = 0;
-
-        const knobParamEl = document.getElementById('knob-param');
-        if (knobParamEl) {
-            setupKnobDrag(knobParamEl, (deltaY) => {
-                const degDelta = deltaY * 1.2;
-                xtaParamAngle += degDelta;
-                knobParamEl.style.transform = `rotate(${xtaParamAngle}deg)`;
-
-                xtaParamAccumulator += degDelta;
-                const tickThreshold = 18;
-                if (Math.abs(xtaParamAccumulator) >= tickThreshold) {
-                    const steps = Math.floor(Math.abs(xtaParamAccumulator) / tickThreshold) * Math.sign(xtaParamAccumulator);
-                    adjustDlmsParam(steps);
-                    xtaParamAccumulator %= tickThreshold;
+        // Setup XTA Encoder Knobs
+        setupKnobDrag('knob-param', (deltaY) => {
+            if (Math.abs(deltaY) > 1) {
+                const params = getCurrentParamsList();
+                if (params.length > 0) {
+                    if (deltaY > 0) currentParamIdx = (currentParamIdx + 1) % params.length;
+                    else currentParamIdx = (currentParamIdx - 1 + params.length) % params.length;
+                    
+                    knobRotations['knob-param'] += (deltaY > 0 ? 30 : -30);
+                    document.getElementById('knob-param').style.transform = `rotate(${knobRotations['knob-param']}deg)`;
+                    renderDlmsLcd();
                 }
-            });
-        }
-
-        let xtaValueAngle = 0;
-        let xtaValueAccumulator = 0;
-
-        const knobValueEl = document.getElementById('knob-value');
-        if (knobValueEl) {
-            setupKnobDrag(knobValueEl, (deltaY) => {
-                const degDelta = deltaY * 1.2;
-                xtaValueAngle += degDelta;
-                knobValueEl.style.transform = `rotate(${xtaValueAngle}deg)`;
-
-                xtaValueAccumulator += degDelta;
-                const tickThreshold = 12;
-                if (Math.abs(xtaValueAccumulator) >= tickThreshold) {
-                    const steps = Math.floor(Math.abs(xtaValueAccumulator) / tickThreshold) * Math.sign(xtaValueAccumulator);
-                    adjustDlmsValue(steps);
-                    xtaValueAccumulator %= tickThreshold;
-                }
-            });
-        }
-
-        /* --- LOGIKA ROTASI & KONTROL KNOB BBE (SENSITIVITAS DIANULIR) --- */
-        [1, 2].forEach(rack => {
-            const data = bbeRackData[rack];
-
-            const kFreq = document.getElementById(`bbe${rack}-knob-freq`);
-            if (kFreq) {
-                setupKnobDrag(kFreq, (deltaY) => {
-                    const stepPerPx = (rack === 1) ? 0.5 : 40;
-                    let newFreq = data.freq + (deltaY * stepPerPx);
-                    const minF = (rack === 1) ? 20 : 1000;
-                    const maxF = (rack === 1) ? 200 : 16000;
-                    data.freq = Math.min(maxF, Math.max(minF, rack === 1 ? Math.round(newFreq) : newFreq));
-                    updateBbeUi(rack);
-                    syncAllDspNodes();
-                });
-            }
-
-            const kQ = document.getElementById(`bbe${rack}-knob-q`);
-            if (kQ) {
-                setupKnobDrag(kQ, (deltaY) => {
-                    const stepPerPx = 0.02;
-                    let newQ = data.q + (deltaY * stepPerPx);
-                    data.q = Math.min(10.0, Math.max(0.1, newQ));
-                    updateBbeUi(rack);
-                    syncAllDspNodes();
-                });
-            }
-
-            const kGain = document.getElementById(`bbe${rack}-knob-gain`);
-            if (kGain) {
-                setupKnobDrag(kGain, (deltaY) => {
-                    const stepPerPx = 0.1;
-                    let newGain = data.gain + (deltaY * stepPerPx);
-                    data.gain = Math.min(15.0, Math.max(-15.0, newGain));
-                    updateBbeUi(rack);
-                    syncAllDspNodes();
-                });
             }
         });
 
-        // INISIALISASI AWAL UI
-        renderDlmsLcd();
-        updateBbeUi(1);
-        updateBbeUi(2);
+        setupKnobDrag('knob-value', (deltaY) => {
+            const params = getCurrentParamsList();
+            if (params.length > 0 && params[currentParamIdx] && !params[currentParamIdx].readonly) {
+                const p = params[currentParamIdx];
+                if (p.type === 'select') {
+                    if (Math.abs(deltaY) > 2) {
+                        const idx = p.options.indexOf(p.val);
+                        if (deltaY > 0 && idx < p.options.length - 1) p.val = p.options[idx + 1];
+                        else if (deltaY < 0 && idx > 0) p.val = p.options[idx - 1];
+                    }
+                } else {
+                    const step = p.step || 1;
+                    let mult = 1;
+                    if (p.unit === 'Hz' && p.val >= 1000) mult = 10;
+                    p.val += (deltaY > 0 ? step * mult : -step * mult);
+                    p.val = Math.max(p.min, Math.min(p.max, p.val));
+                }
+
+                knobRotations['knob-value'] += deltaY * 4;
+                document.getElementById('knob-value').style.transform = `rotate(${knobRotations['knob-value']}deg)`;
+                
+                syncAllDspNodes();
+                renderDlmsLcd();
+            }
+        });
+
+        // Setup BBE Knobs
+        [1, 2].forEach(r => {
+            setupKnobDrag(`bbe${r}-knob-freq`, (deltaY) => {
+                const data = bbeRackData[r];
+                const range = data.maxFreq - data.minFreq;
+                data.freq += (deltaY / 100) * range;
+                data.freq = Math.max(data.minFreq, Math.min(data.maxFreq, data.freq));
+                updateBbeUi(r);
+                syncAllDspNodes();
+            });
+
+            setupKnobDrag(`bbe${r}-knob-q`, (deltaY) => {
+                const data = bbeRackData[r];
+                data.q += deltaY * 0.05;
+                data.q = Math.max(0.3, Math.min(10.0, data.q));
+                updateBbeUi(r);
+                syncAllDspNodes();
+            });
+
+            setupKnobDrag(`bbe${r}-knob-gain`, (deltaY) => {
+                const data = bbeRackData[r];
+                data.gain += deltaY * 0.2;
+                data.gain = Math.max(-15.0, Math.min(15.0, data.gain));
+                updateBbeUi(r);
+                syncAllDspNodes();
+            });
+        });
+
+        // Inisialisasi Tampilan Awal
+        [1, 2].forEach(r => updateBbeUi(r));
+        selectChannel('OUT1');
+        setDlmsMenu('XOVER');
     </script>
 </body>
 </html>
