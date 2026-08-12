@@ -452,7 +452,7 @@
             <!-- MAIN EQUALIZER CHASSIS -->
             <div class="flex-1 flex flex-col justify-between min-w-0 bg-slate-300/40">
                 
-                <!-- KLARK TEKNIK DN360 BADGE HEADER BAR -->
+                <!-- KLARK TEKNIK DN360 BADGE HEADER BAR (TOMBOL RESET ALL EQ SUDAH DIHAPUS) -->
                 <div class="klark-header-bar px-3 py-1 flex items-center justify-between text-white shadow-md">
                     <div class="flex items-center gap-2">
                         <div class="flex items-center gap-1">
@@ -462,7 +462,6 @@
                         <span class="hidden md:inline font-label text-[8px] text-slate-300 tracking-widest uppercase border-l border-slate-600 pl-2">DUAL CHANNEL 15-BAND GRAPHIC EQUALISER</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="resetGeqAll()" class="push-btn text-[7px] sm:text-[8px] font-mono text-red-400 bg-red-950/60 border border-red-500/40 hover:bg-red-900/60 px-1.5 py-0.5 rounded font-bold shadow transition">↺ RESET ALL EQ</button>
                         <span class="text-[7px] sm:text-[8px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/40 px-1.5 py-0.5 rounded font-bold">SCALE: ±12dB</span>
                         <div class="flex gap-1">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow"></span>
@@ -668,7 +667,7 @@
             }
         }
 
-        /* --- FUNGSI RESET EQUALIZER (CHANNEL & ALL) --- */
+        /* --- FUNGSI RESET EQUALIZER CHANNEL --- */
         function resetGeqChannel(ch) {
             geqState[ch].bands.fill(0.0);
             geqState[ch].gain = 0.0;
@@ -693,11 +692,6 @@
             if (hpfVal) hpfVal.textContent = `20Hz`;
 
             syncAllDspNodes();
-        }
-
-        function resetGeqAll() {
-            resetGeqChannel('A');
-            resetGeqChannel('B');
         }
 
         function toggleGeqActive(ch) {
@@ -1185,6 +1179,59 @@
             requestAnimationFrame(updateMeters);
         }
 
+        /* --- ANDROID BRIDGE INTERFACE FUNCTIONS --- */
+        function sendUrlToAndroid() {
+            const ytInput = document.getElementById('ytUrlInput');
+            const url = ytInput ? ytInput.value : '';
+            if (!url) return alert('Masukkan link YouTube terlebih dahulu!');
+            
+            if (window.AndroidBridge) {
+                const extractBtn = document.getElementById('extractYtBtn');
+                if (extractBtn) extractBtn.innerText = "EXTRACTING...";
+                window.AndroidBridge.extractYouTubeAudio(url);
+            } else {
+                alert("Fitur ekstrak hanya berfungsi di dalam aplikasi Android.");
+            }
+        }
+
+        function onAudioExtracted(audioUrl) {
+            const extractBtn = document.getElementById('extractYtBtn');
+            if (extractBtn) extractBtn.innerText = "EXTRACT";
+            
+            initAudioEngine(); 
+            const audioElement = document.getElementById('ytAudio');
+            
+            if (!source && audioElement && audioCtx) {
+                source = audioCtx.createMediaElementSource(audioElement);
+                source.connect(dsp.splitter);
+            }
+
+            if (audioPlayer && !audioPlayer.paused) {
+                audioPlayer.pause();
+            }
+
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            if (audioElement) {
+                audioElement.src = audioUrl;
+                audioElement.play().catch(e => console.error("Playback error:", e));
+            }
+
+            btnPlayPause.disabled = false;
+            btnPlayPause.innerText = "❚❚ PAUSE";
+            
+            const statusText = document.getElementById('audio-status-text');
+            if (statusText) {
+                statusText.textContent = "PLAYING: EXTRACTED YOUTUBE AUDIO";
+            }
+        }
+
+        function onExtractionFailed(errorMsg) {
+            const extractBtn = document.getElementById('extractYtBtn');
+            if (extractBtn) extractBtn.innerText = "EXTRACT";
+            alert("Ekstraksi Gagal: " + errorMsg);
+        }
+
         /* --- FUNGSI STREAM AUDIO YOUTUBE DARI ANDROID --- */
         function playAudioStream(streamUrl) {
             initAudioEngine();
@@ -1192,7 +1239,6 @@
             const audioElement = document.getElementById('ytAudio');
             if (!source && audioElement && audioCtx) {
                 source = audioCtx.createMediaElementSource(audioElement);
-                // Menghubungkan output stream YouTube ke splitter DSP DLMS
                 source.connect(dsp.splitter);
             }
 
@@ -1202,13 +1248,15 @@
 
             if (audioPlayer && !audioPlayer.paused) {
                 audioPlayer.pause();
-                btnPlayPause.textContent = '▶ PLAY';
             }
 
             if (audioElement) {
                 audioElement.src = streamUrl;
                 audioElement.play().catch(e => console.error("Playback error:", e));
             }
+
+            btnPlayPause.disabled = false;
+            btnPlayPause.innerText = "❚❚ PAUSE";
 
             const statusText = document.getElementById('audio-status-text');
             if (statusText) {
@@ -1447,15 +1495,17 @@
         });
 
         function togglePlayPause() {
-            if (!audioPlayer.src) return;
             initAudioEngine();
             if(audioCtx.state === 'suspended') audioCtx.resume();
 
-            if (audioPlayer.paused) {
-                audioPlayer.play();
+            const targetAudio = (ytAudio && ytAudio.src && !ytAudio.ended) ? ytAudio : audioPlayer;
+            if (!targetAudio.src) return;
+
+            if (targetAudio.paused) {
+                targetAudio.play();
                 btnPlayPause.textContent = '❚❚ PAUSE';
             } else {
-                audioPlayer.pause();
+                targetAudio.pause();
                 btnPlayPause.textContent = '▶ PLAY';
             }
         }
