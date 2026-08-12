@@ -7,7 +7,7 @@
     
     <!-- Fonts & Tailwind CSS CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@600;800;900&family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -312,7 +312,9 @@
                     <div class="rocker-switch" title="Power Switch"></div>
                 </div>
 
+                <!-- AUDIO ELEMENTS -->
                 <audio id="audio-player" crossorigin="anonymous" loop class="hidden"></audio>
+                <audio id="ytAudio" crossorigin="anonymous" style="display:none;"></audio>
             </div>
 
             <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
@@ -460,6 +462,7 @@
                         <span class="hidden md:inline font-label text-[8px] text-slate-300 tracking-widest uppercase border-l border-slate-600 pl-2">DUAL CHANNEL 15-BAND GRAPHIC EQUALISER</span>
                     </div>
                     <div class="flex items-center gap-2">
+                        <button onclick="resetGeqAll()" class="push-btn text-[7px] sm:text-[8px] font-mono text-red-400 bg-red-950/60 border border-red-500/40 hover:bg-red-900/60 px-1.5 py-0.5 rounded font-bold shadow transition">↺ RESET ALL EQ</button>
                         <span class="text-[7px] sm:text-[8px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/40 px-1.5 py-0.5 rounded font-bold">SCALE: ±12dB</span>
                         <div class="flex gap-1">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow"></span>
@@ -477,7 +480,7 @@
                             <!-- CHANNEL 1 BADGE -->
                             <div class="flex flex-col items-center justify-center bg-blue-950 text-white px-1.5 py-1 rounded shadow">
                                 <span class="font-black text-xs sm:text-sm font-klark leading-none text-cyan-300">CH 1</span>
-                                <span class="text-[6px] font-mono tracking-tighter text-blue-200 font-bold uppercase mt-0.5 whitespace-nowrap"></span>
+                                <span class="text-[6px] font-mono tracking-tighter text-blue-200 font-bold uppercase mt-0.5 whitespace-nowrap">SUB-LOW</span>
                             </div>
 
                             <!-- SKALA dB -->
@@ -513,13 +516,14 @@
                                 </div>
                             </div>
 
-                            <!-- EQ IN BUTTON & LEDS -->
+                            <!-- EQ IN & RESET BUTTONS & LEDS -->
                             <div class="flex flex-col items-center gap-0.5">
                                 <div class="flex items-center gap-1">
                                     <div class="led-dot led-green active" id="kt-led-eq-A" title="EQ Active"></div>
                                     <div class="led-dot led-red" id="kt-led-clip-A" title="Clip"></div>
                                 </div>
                                 <button onclick="toggleGeqActive('A')" id="kt-btn-eq-A" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white shadow-sm border border-slate-400">EQ IN</button>
+                                <button onclick="resetGeqChannel('A')" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-red-700 bg-red-50 hover:bg-red-100 shadow-sm border border-red-300">RESET</button>
                             </div>
                         </div>
                     </div>
@@ -532,7 +536,7 @@
                             <!-- CHANNEL 2 BADGE -->
                             <div class="flex flex-col items-center justify-center bg-slate-900 text-white px-1.5 py-1 rounded shadow">
                                 <span class="font-black text-xs sm:text-sm font-klark leading-none text-amber-300">CH 2</span>
-                                <span class="text-[6px] font-mono tracking-tighter text-amber-100 font-bold uppercase mt-0.5 whitespace-nowrap"></span>
+                                <span class="text-[6px] font-mono tracking-tighter text-amber-100 font-bold uppercase mt-0.5 whitespace-nowrap">MID-HIGH</span>
                             </div>
 
                             <!-- SKALA dB -->
@@ -568,13 +572,14 @@
                                 </div>
                             </div>
 
-                            <!-- EQ IN BUTTON & LEDS -->
+                            <!-- EQ IN & RESET BUTTONS & LEDS -->
                             <div class="flex flex-col items-center gap-0.5">
                                 <div class="flex items-center gap-1">
                                     <div class="led-dot led-green active" id="kt-led-eq-B" title="EQ Active"></div>
                                     <div class="led-dot led-red" id="kt-led-clip-B" title="Clip"></div>
                                 </div>
                                 <button onclick="toggleGeqActive('B')" id="kt-btn-eq-B" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white shadow-sm border border-slate-400">EQ IN</button>
+                                <button onclick="resetGeqChannel('B')" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-red-700 bg-red-50 hover:bg-red-100 shadow-sm border border-red-300">RESET</button>
                             </div>
                         </div>
                     </div>
@@ -661,6 +666,38 @@
                 input.value = 0;
                 onGeqFaderMove(ch, bandIdx, 0);
             }
+        }
+
+        /* --- FUNGSI RESET EQUALIZER (CHANNEL & ALL) --- */
+        function resetGeqChannel(ch) {
+            geqState[ch].bands.fill(0.0);
+            geqState[ch].gain = 0.0;
+            geqState[ch].hpf = 20;
+
+            const count = (ch === 'A') ? geqFreqsCh1.length : geqFreqsCh2.length;
+            for (let idx = 0; idx < count; idx++) {
+                const input = document.getElementById(`kt-input-${ch}-${idx}`);
+                const faderKnob = document.getElementById(`kt-knob-fader-${ch}-${idx}`);
+                if (input) input.value = 0;
+                if (faderKnob) faderKnob.style.top = `32px`;
+            }
+
+            const gainKnob = document.getElementById(`kt-knob-gain-${ch}`);
+            const gainVal = document.getElementById(`kt-val-gain-${ch}`);
+            if (gainKnob) gainKnob.style.transform = `rotate(0deg)`;
+            if (gainVal) gainVal.textContent = `0dB`;
+
+            const hpfKnob = document.getElementById(`kt-knob-hpf-${ch}`);
+            const hpfVal = document.getElementById(`kt-val-hpf-${ch}`);
+            if (hpfKnob) hpfKnob.style.transform = `rotate(-135deg)`;
+            if (hpfVal) hpfVal.textContent = `20Hz`;
+
+            syncAllDspNodes();
+        }
+
+        function resetGeqAll() {
+            resetGeqChannel('A');
+            resetGeqChannel('B');
         }
 
         function toggleGeqActive(ch) {
@@ -976,6 +1013,7 @@
         // AUDIO ENGINE
         let audioCtx = null;
         let sourceNode = null;
+        let source = null; // Sumber YouTube Stream Source
         let domLeds = {};
 
         const dsp = {
@@ -1145,6 +1183,37 @@
 
             syncAllDspNodes();
             requestAnimationFrame(updateMeters);
+        }
+
+        /* --- FUNGSI STREAM AUDIO YOUTUBE DARI ANDROID --- */
+        function playAudioStream(streamUrl) {
+            initAudioEngine();
+
+            const audioElement = document.getElementById('ytAudio');
+            if (!source && audioElement && audioCtx) {
+                source = audioCtx.createMediaElementSource(audioElement);
+                // Menghubungkan output stream YouTube ke splitter DSP DLMS
+                source.connect(dsp.splitter);
+            }
+
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (audioPlayer && !audioPlayer.paused) {
+                audioPlayer.pause();
+                btnPlayPause.textContent = '▶ PLAY';
+            }
+
+            if (audioElement) {
+                audioElement.src = streamUrl;
+                audioElement.play().catch(e => console.error("Playback error:", e));
+            }
+
+            const statusText = document.getElementById('audio-status-text');
+            if (statusText) {
+                statusText.textContent = "PLAYING: YOUTUBE AUDIO STREAM";
+            }
         }
 
         function dbToLinear(db) { return Math.pow(10, db / 20); }
@@ -1351,6 +1420,7 @@
 
         const audioFileLoader = document.getElementById('audio-file-input');
         const audioPlayer = document.getElementById('audio-player');
+        const ytAudio = document.getElementById('ytAudio');
         const btnPlayPause = document.getElementById('btn-play-pause');
         const audioStatus = document.getElementById('audio-status-text');
 
@@ -1359,6 +1429,8 @@
             if (file) {
                 initAudioEngine();
                 if(audioCtx.state === 'suspended') audioCtx.resume();
+
+                if (ytAudio && !ytAudio.paused) ytAudio.pause();
 
                 audioPlayer.src = URL.createObjectURL(file);
 
@@ -1389,8 +1461,9 @@
         }
 
         function skipAudio(seconds) {
-            if (audioPlayer && audioPlayer.src) {
-                audioPlayer.currentTime = Math.max(0, Math.min(audioPlayer.duration || 0, audioPlayer.currentTime + seconds));
+            const currentActivePlayer = (ytAudio && !ytAudio.paused) ? ytAudio : audioPlayer;
+            if (currentActivePlayer && currentActivePlayer.src) {
+                currentActivePlayer.currentTime = Math.max(0, Math.min(currentActivePlayer.duration || 0, currentActivePlayer.currentTime + seconds));
             }
         }
 
@@ -1402,9 +1475,20 @@
         }
 
         audioPlayer.addEventListener('timeupdate', () => {
-            document.getElementById('audio-time-curr').textContent = formatTime(audioPlayer.currentTime);
-            document.getElementById('audio-time-dur').textContent = formatTime(audioPlayer.duration);
+            if (!audioPlayer.paused) {
+                document.getElementById('audio-time-curr').textContent = formatTime(audioPlayer.currentTime);
+                document.getElementById('audio-time-dur').textContent = formatTime(audioPlayer.duration);
+            }
         });
+
+        if (ytAudio) {
+            ytAudio.addEventListener('timeupdate', () => {
+                if (!ytAudio.paused) {
+                    document.getElementById('audio-time-curr').textContent = formatTime(ytAudio.currentTime);
+                    document.getElementById('audio-time-dur').textContent = formatTime(ytAudio.duration);
+                }
+            });
+        }
 
         function setLedState(el, active) {
             if (el && el._active !== active) {
@@ -1421,7 +1505,7 @@
         function updateMeters(now) {
             if (audioCtx && (now - lastMeterUpdate > 33)) {
                 lastMeterUpdate = now;
-                const isAudioPlaying = audioPlayer && !audioPlayer.paused;
+                const isAudioPlaying = (audioPlayer && !audioPlayer.paused) || (ytAudio && !ytAudio.paused);
 
                 for (let idx = 0; idx < 2; idx++) {
                     const ch = meterChannels[idx];
