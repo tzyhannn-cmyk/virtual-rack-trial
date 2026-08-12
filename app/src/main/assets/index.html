@@ -27,7 +27,7 @@
         .marquee-text {
             display: inline-block;
             padding-left: 100%;
-            animation: marquee-scroll 15s linear infinite;
+            animation: marquee-scroll 14s linear infinite;
         }
 
         @keyframes marquee-scroll {
@@ -443,16 +443,12 @@
 
         <!-- 3. KLARK TEKNIK DN360 DUAL 15-BAND GRAPHIC EQUALISER RACK -->
         <div class="w-full klark-panel rounded overflow-hidden shadow-2xl border border-slate-500 flex relative">
-            <!-- RACK EARS LEFT -->
             <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-4 shrink-0 z-20 shadow-inner">
                 <div class="rack-screw-silver"></div>
                 <div class="rack-screw-silver"></div>
             </div>
 
-            <!-- MAIN EQUALIZER CHASSIS -->
             <div class="flex-1 flex flex-col justify-between min-w-0 bg-slate-300/40">
-                
-                <!-- KLARK TEKNIK DN360 BADGE HEADER BAR (TOMBOL RESET ALL EQ SUDAH DIHAPUS) -->
                 <div class="klark-header-bar px-3 py-1 flex items-center justify-between text-white shadow-md">
                     <div class="flex items-center gap-2">
                         <div class="flex items-center gap-1">
@@ -471,18 +467,14 @@
                 </div>
 
                 <div class="p-2 flex flex-col gap-2">
-                    <!-- CHANNEL 1 (SUB-LOW / OUT 1: MENTOK 250Hz) -->
+                    <!-- CHANNEL 1 (SUB-LOW) -->
                     <div class="flex items-center justify-between gap-1 bg-slate-200/70 p-1.5 rounded border border-slate-400/80 shadow-sm">
-                        
-                        <!-- LEFT CHANNEL BADGE & +12/+6/0/-6/-12 SCALE -->
                         <div class="flex items-center gap-1.5 shrink-0 pr-1 border-r border-slate-400">
-                            <!-- CHANNEL 1 BADGE -->
                             <div class="flex flex-col items-center justify-center bg-blue-950 text-white px-1.5 py-1 rounded shadow">
                                 <span class="font-black text-xs sm:text-sm font-klark leading-none text-cyan-300">CH 1</span>
                                 <span class="text-[6px] font-mono tracking-tighter text-blue-200 font-bold uppercase mt-0.5 whitespace-nowrap">SUB-LOW</span>
                             </div>
 
-                            <!-- SKALA dB -->
                             <div class="flex flex-col justify-between h-[60px] text-[7px] font-mono font-bold text-slate-700 leading-none py-0.5 select-none text-right pr-0.5">
                                 <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+12</span><span class="w-1 h-[1px] bg-slate-500"></span></div>
                                 <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+6</span><span class="w-1 h-[1px] bg-slate-400"></span></div>
@@ -492,21 +484,15 @@
                             </div>
                         </div>
 
-                        <!-- 15 BAND SUB-LOW FADERS (20Hz - 250Hz) -->
-                        <div class="flex-1 flex justify-between items-center overflow-x-auto gap-0.5 px-1 min-w-0" id="faders-ch-A">
-                            <!-- Dynamic Sub-Low GEQ Faders -->
-                        </div>
+                        <div class="flex-1 flex justify-between items-center overflow-x-auto gap-0.5 px-1 min-w-0" id="faders-ch-A"></div>
 
-                        <!-- CHANNEL 1 CONTROLS -->
                         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 border-l border-slate-400 pl-1.5">
-                            <!-- GAIN -->
                             <div class="flex flex-col items-center">
                                 <span class="text-[6px] font-bold text-slate-800 font-label">GAIN</span>
                                 <div class="kt-red-knob" id="kt-knob-gain-A"><div class="kt-red-knob-pointer"></div></div>
                                 <span id="kt-val-gain-A" class="text-[6px] font-mono font-bold text-slate-900">0dB</span>
                             </div>
 
-                            <!-- SWEEP HPF FILTER -->
                             <div class="flex gap-1 items-center">
                                 <div class="flex flex-col items-center">
                                     <span class="text-[6px] font-bold text-slate-800 font-label">HPF</span>
@@ -515,7 +501,6 @@
                                 </div>
                             </div>
 
-                            <!-- EQ IN & RESET BUTTONS & LEDS -->
                             <div class="flex flex-col items-center gap-0.5">
                                 <div class="flex items-center gap-1">
                                     <div class="led-dot led-green active" id="kt-led-eq-A" title="EQ Active"></div>
@@ -527,18 +512,14 @@
                         </div>
                     </div>
 
-                    <!-- CHANNEL 2 (MID-HIGH / OUT 2: MULAI 100Hz) -->
+                    <!-- CHANNEL 2 (MID-HIGH) -->
                     <div class="flex items-center justify-between gap-1 bg-slate-200/70 p-1.5 rounded border border-slate-400/80 shadow-sm">
-                        
-                        <!-- LEFT CHANNEL BADGE & +12/+6/0/-6/-12 SCALE -->
                         <div class="flex items-center gap-1.5 shrink-0 pr-1 border-r border-slate-400">
-                            <!-- CHANNEL 2 BADGE -->
                             <div class="flex flex-col items-center justify-center bg-slate-900 text-white px-1.5 py-1 rounded shadow">
                                 <span class="font-black text-xs sm:text-sm font-klark leading-none text-amber-300">CH 2</span>
                                 <span class="text-[6px] font-mono tracking-tighter text-amber-100 font-bold uppercase mt-0.5 whitespace-nowrap">MID-HIGH</span>
                             </div>
 
-                            <!-- SKALA dB -->
                             <div class="flex flex-col justify-between h-[60px] text-[7px] font-mono font-bold text-slate-700 leading-none py-0.5 select-none text-right pr-0.5">
                                 <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+12</span><span class="w-1 h-[1px] bg-slate-500"></span></div>
                                 <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+6</span><span class="w-1 h-[1px] bg-slate-400"></span></div>
@@ -548,21 +529,15 @@
                             </div>
                         </div>
 
-                        <!-- 15 BAND MID-HIGH FADERS (100Hz - 16kHz) -->
-                        <div class="flex-1 flex justify-between items-center overflow-x-auto gap-0.5 px-1 min-w-0" id="faders-ch-B">
-                            <!-- Dynamic Mid-High GEQ Faders -->
-                        </div>
+                        <div class="flex-1 flex justify-between items-center overflow-x-auto gap-0.5 px-1 min-w-0" id="faders-ch-B"></div>
 
-                        <!-- CHANNEL 2 CONTROLS -->
                         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 border-l border-slate-400 pl-1.5">
-                            <!-- GAIN -->
                             <div class="flex flex-col items-center">
                                 <span class="text-[6px] font-bold text-slate-800 font-label">GAIN</span>
                                 <div class="kt-red-knob" id="kt-knob-gain-B"><div class="kt-red-knob-pointer"></div></div>
                                 <span id="kt-val-gain-B" class="text-[6px] font-mono font-bold text-slate-900">0dB</span>
                             </div>
 
-                            <!-- SWEEP HPF FILTER -->
                             <div class="flex gap-1 items-center">
                                 <div class="flex flex-col items-center">
                                     <span class="text-[6px] font-bold text-slate-800 font-label">HPF</span>
@@ -571,7 +546,6 @@
                                 </div>
                             </div>
 
-                            <!-- EQ IN & RESET BUTTONS & LEDS -->
                             <div class="flex flex-col items-center gap-0.5">
                                 <div class="flex items-center gap-1">
                                     <div class="led-dot led-green active" id="kt-led-eq-B" title="EQ Active"></div>
@@ -586,7 +560,6 @@
 
             </div>
 
-            <!-- RACK EARS RIGHT -->
             <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-4 shrink-0 z-20 shadow-inner">
                 <div class="rack-screw-silver"></div>
                 <div class="rack-screw-silver"></div>
@@ -597,7 +570,6 @@
 
     <!-- SCRIPT AUDIO ENGINE & CONTROLS -->
     <script>
-        /* --- 15 FREKUENSI GEQ: CH 1 (SUB-LOW: MAX 250Hz) & CH 2 (MID-HIGH: START 100Hz) --- */
         const geqFreqsCh1 = [20, 25, 31.5, 40, 50, 63, 70, 80, 90, 100, 125, 140, 160, 200, 250];
         const geqLabelsCh1 = ['20', '25', '31.5', '40', '50', '63', '70', '80', '90', '100', '125', '140', '160', '200', '250'];
 
@@ -609,7 +581,6 @@
             B: { active: true, gain: 0.0, hpf: 20, bands: new Array(15).fill(0.0) }
         };
 
-        /* --- GENERASI UI FADER DENGAN LABEL FREKUENSI RAPI --- */
         function renderGeqFaders(ch) {
             const container = document.getElementById(`faders-ch-${ch}`);
             if (!container) return;
@@ -667,7 +638,6 @@
             }
         }
 
-        /* --- FUNGSI RESET EQUALIZER CHANNEL --- */
         function resetGeqChannel(ch) {
             geqState[ch].bands.fill(0.0);
             geqState[ch].gain = 0.0;
@@ -737,142 +707,14 @@
             }
         }
 
-        /* --- SAVE & LOAD PRESET --- */
-        function saveXtaPreset() {
-            try {
-                const presetObj = {
-                    version: 'DN360-2.1',
-                    timestamp: new Date().toISOString(),
-                    dlmsData: dlmsData,
-                    geqState: geqState,
-                    muteState: muteState,
-                    isDvcEnabled: isDvcEnabled
-                };
-
-                localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetObj));
-                
-                lcdTitle.textContent = "SYSTEM MEMORY";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "PRESET SAVED!";
-                
-                setTimeout(() => { renderDlmsLcd(); }, 1500);
-
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetObj, null, 2));
-                const downloadAnchor = document.createElement('a');
-                downloadAnchor.setAttribute("href", dataStr);
-                downloadAnchor.setAttribute("download", `dsp_preset_dn360_${Date.now()}.json`);
-                document.body.appendChild(downloadAnchor);
-                downloadAnchor.click();
-                downloadAnchor.remove();
-
-            } catch (e) {
-                console.error("Gagal menyimpan preset:", e);
-                alert("Gagal menyimpan preset.");
-            }
-        }
-
-        function loadXtaPreset() {
-            const savedJson = localStorage.getItem(PRESET_STORAGE_KEY);
-            if (savedJson) {
-                const choice = confirm("Preset Klark Teknik DN360 ditemukan di browser!\n\n• Klik [OK] untuk memuat dari Local Storage.\n• Klik [Batal] untuk memilih file .json dari disk.");
-                if (choice) {
-                    applyPresetObj(JSON.parse(savedJson));
-                    return;
-                }
-            }
-            document.getElementById('preset-file-input').click();
-        }
-
-        document.getElementById('preset-file-input').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    try {
-                        const parsedObj = JSON.parse(evt.target.result);
-                        applyPresetObj(parsedObj);
-                    } catch(err) {
-                        alert("File JSON preset tidak valid.");
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
-
-        function applyPresetObj(parsedObj) {
-            try {
-                const sourceDlms = parsedObj.dlmsData || parsedObj;
-                Object.keys(sourceDlms).forEach(ch => {
-                    if (dlmsData[ch]) {
-                        Object.keys(sourceDlms[ch]).forEach(menuKey => {
-                            if (dlmsData[ch][menuKey] && Array.isArray(dlmsData[ch][menuKey])) {
-                                sourceDlms[ch][menuKey].forEach((savedItem, idx) => {
-                                    if (dlmsData[ch][menuKey][idx]) {
-                                        dlmsData[ch][menuKey][idx].val = savedItem.val;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-
-                if (parsedObj.geqState) {
-                    ['A', 'B'].forEach(ch => {
-                        if (parsedObj.geqState[ch]) {
-                            geqState[ch].active = parsedObj.geqState[ch].active;
-                            geqState[ch].gain = parsedObj.geqState[ch].gain || 0;
-                            geqState[ch].hpf = parsedObj.geqState[ch].hpf || 20;
-                            
-                            if (Array.isArray(parsedObj.geqState[ch].bands)) {
-                                parsedObj.geqState[ch].bands.forEach((bVal, idx) => {
-                                    const input = document.getElementById(`kt-input-${ch}-${idx}`);
-                                    if (input) input.value = bVal;
-                                    onGeqFaderMove(ch, idx, bVal);
-                                });
-                            }
-                            toggleGeqActive(ch);
-                        }
-                    });
-                }
-
-                if (parsedObj.muteState) {
-                    muteState.OUT1 = !!parsedObj.muteState.OUT1;
-                    muteState.OUT2 = !!parsedObj.muteState.OUT2;
-                    ['OUT1', 'OUT2'].forEach(ch => {
-                        const btn = document.getElementById(`btn-mute-${ch}`);
-                        if (btn) {
-                            if (muteState[ch]) btn.classList.add('btn-mute-active');
-                            else btn.classList.remove('btn-mute-active');
-                        }
-                    });
-                }
-
-                if (typeof parsedObj.isDvcEnabled === 'boolean') {
-                    isDvcEnabled = parsedObj.isDvcEnabled;
-                    const btn = document.getElementById('btn-dvc-toggle');
-                    if (btn) {
-                        if (isDvcEnabled) {
-                            btn.classList.add('dvc-btn-active');
-                            btn.textContent = '🛡️ DVC: ON';
-                        } else {
-                            btn.classList.remove('dvc-btn-active');
-                            btn.textContent = '⚠️ DVC: OFF';
-                        }
-                    }
-                }
-
-                syncAllDspNodes();
-                renderDlmsLcd();
-
-                lcdTitle.textContent = "SYSTEM MEMORY";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "PRESET LOADED!";
-
-                setTimeout(() => { renderDlmsLcd(); }, 1500);
-
-            } catch (e) {
-                console.error("Gagal menerapkan preset:", e);
-                alert("Format file preset tidak sesuai.");
+        /* --- UPDATE MARQUEE DISPLAY JUDUL LAGU --- */
+        function setTrackTitle(title) {
+            const statusText = document.getElementById('audio-status-text');
+            if (statusText) {
+                statusText.textContent = (title || 'MEMUTAR AUDIO').toUpperCase();
+                statusText.style.animation = 'none';
+                statusText.offsetHeight; /* Trigger reflow */
+                statusText.style.animation = '';
             }
         }
 
@@ -1004,10 +846,9 @@
             }
         };
 
-        // AUDIO ENGINE
         let audioCtx = null;
         let sourceNode = null;
-        let source = null; // Sumber YouTube Stream Source
+        let source = null;
         let domLeds = {};
 
         const dsp = {
@@ -1077,7 +918,6 @@
                 dsp[ch].makeup.connect(dsp[ch].analyser);
             });
 
-            /* MATRIX ROUTING & KLARK TEKNIK 15-BAND DSP ENGINE */
             ['OUT1', 'OUT2'].forEach((ch) => {
                 dsp[ch].routeA = audioCtx.createGain();
                 dsp[ch].routeB = audioCtx.createGain();
@@ -1095,12 +935,10 @@
                 dsp[ch].gain = audioCtx.createGain();
                 dsp[ch].delay = audioCtx.createDelay(1.0);
 
-                // Filter Klark HPF
                 dsp[ch].ktHpf = audioCtx.createBiquadFilter();
                 dsp[ch].ktHpf.type = 'highpass';
                 dsp[ch].ktHpf.frequency.value = 20;
 
-                // 15 Filter Peaking sesuai channel (OUT1: Sub-Low, OUT2: Mid-High)
                 const freqs = (ch === 'OUT1') ? geqFreqsCh1 : geqFreqsCh2;
                 dsp[ch].geqFilters = freqs.map(freq => {
                     const f = audioCtx.createBiquadFilter();
@@ -1139,10 +977,8 @@
                 dsp[ch].lpf2.connect(dsp[ch].gain);
                 dsp[ch].gain.connect(dsp[ch].delay);
 
-                // Sambungkan Klark HPF
                 dsp[ch].delay.connect(dsp[ch].ktHpf);
 
-                // Sambungkan langsung ke rantai 15 Band GEQ Klark Teknik
                 let geqPrev = dsp[ch].ktHpf;
                 dsp[ch].geqFilters.forEach(filterNode => {
                     geqPrev.connect(filterNode);
@@ -1180,24 +1016,7 @@
         }
 
         /* --- ANDROID BRIDGE INTERFACE FUNCTIONS --- */
-        function sendUrlToAndroid() {
-            const ytInput = document.getElementById('ytUrlInput');
-            const url = ytInput ? ytInput.value : '';
-            if (!url) return alert('Masukkan link YouTube terlebih dahulu!');
-            
-            if (window.AndroidBridge) {
-                const extractBtn = document.getElementById('extractYtBtn');
-                if (extractBtn) extractBtn.innerText = "EXTRACTING...";
-                window.AndroidBridge.extractYouTubeAudio(url);
-            } else {
-                alert("Fitur ekstrak hanya berfungsi di dalam aplikasi Android.");
-            }
-        }
-
-        function onAudioExtracted(audioUrl) {
-            const extractBtn = document.getElementById('extractYtBtn');
-            if (extractBtn) extractBtn.innerText = "EXTRACT";
-            
+        function onAudioExtracted(audioUrl, songTitle) {
             initAudioEngine(); 
             const audioElement = document.getElementById('ytAudio');
             
@@ -1220,20 +1039,15 @@
             btnPlayPause.disabled = false;
             btnPlayPause.innerText = "❚❚ PAUSE";
             
-            const statusText = document.getElementById('audio-status-text');
-            if (statusText) {
-                statusText.textContent = "PLAYING: EXTRACTED YOUTUBE AUDIO";
-            }
+            setTrackTitle(songTitle || "PLAYING: EXTRACTED YOUTUBE AUDIO");
         }
 
         function onExtractionFailed(errorMsg) {
-            const extractBtn = document.getElementById('extractYtBtn');
-            if (extractBtn) extractBtn.innerText = "EXTRACT";
             alert("Ekstraksi Gagal: " + errorMsg);
+            setTrackTitle("EKSTRAKSI GAGAL: " + errorMsg);
         }
 
-        /* --- FUNGSI STREAM AUDIO YOUTUBE DARI ANDROID --- */
-        function playAudioStream(streamUrl) {
+        function playAudioStream(streamUrl, songTitle) {
             initAudioEngine();
 
             const audioElement = document.getElementById('ytAudio');
@@ -1258,10 +1072,7 @@
             btnPlayPause.disabled = false;
             btnPlayPause.innerText = "❚❚ PAUSE";
 
-            const statusText = document.getElementById('audio-status-text');
-            if (statusText) {
-                statusText.textContent = "PLAYING: YOUTUBE AUDIO STREAM";
-            }
+            setTrackTitle(songTitle || "PLAYING: YOUTUBE AUDIO STREAM");
         }
 
         function dbToLinear(db) { return Math.pow(10, db / 20); }
@@ -1301,14 +1112,32 @@
             setSmoothParam(node2.frequency, freq);
 
             switch (slope) {
-                case 'BW 12': setSmoothParam(node1.Q, 0.7071); break;
-                case 'LR 12': setSmoothParam(node1.Q, 0.5000); break;
-                case 'Bessel 12': setSmoothParam(node1.Q, 0.5773); break;
-                case 'BW 24': setSmoothParam(node1.Q, 0.5412); setSmoothParam(node2.Q, 1.3065); break;
+                case 'BW 12': 
+                    setSmoothParam(node1.Q, 0.7071); 
+                    break;
+                case 'LR 12': 
+                    setSmoothParam(node1.Q, 0.5000); 
+                    break;
+                case 'Bessel 12': 
+                    setSmoothParam(node1.Q, 0.5773); 
+                    break;
+                case 'BW 24': 
+                    setSmoothParam(node1.Q, 0.5412); 
+                    setSmoothParam(node2.Q, 1.3065); 
+                    break;
                 case 'LR 24':
-                case '24dB LR': setSmoothParam(node1.Q, 0.7071); setSmoothParam(node2.Q, 0.7071); break;
-                case 'Bessel 24': setSmoothParam(node1.Q, 0.5219); setSmoothParam(node2.Q, 0.8055); break;
-                default: setSmoothParam(node1.Q, 0.7071); setSmoothParam(node2.Q, 0.7071); break;
+                case '24dB LR': 
+                    setSmoothParam(node1.Q, 0.7071); 
+                    setSmoothParam(node2.Q, 0.7071); 
+                    break;
+                case 'Bessel 24': 
+                    setSmoothParam(node1.Q, 0.5219); 
+                    setSmoothParam(node2.Q, 0.8055); 
+                    break;
+                default: 
+                    setSmoothParam(node1.Q, 0.7071); 
+                    setSmoothParam(node2.Q, 0.7071); 
+                    break;
             }
         }
 
@@ -1317,7 +1146,6 @@
 
             setSmoothParam(dsp.dvcHeadroomGain.gain, isDvcEnabled ? dbToLinear(-5.0) : 1.0);
 
-            // Sync GEQ Klark Teknik Gain, HPF & Bands
             ['A', 'B'].forEach(chKey => {
                 const targetDsp = (chKey === 'A') ? dsp.OUT1 : dsp.OUT2;
                 if (targetDsp) {
@@ -1470,7 +1298,6 @@
         const audioPlayer = document.getElementById('audio-player');
         const ytAudio = document.getElementById('ytAudio');
         const btnPlayPause = document.getElementById('btn-play-pause');
-        const audioStatus = document.getElementById('audio-status-text');
 
         audioFileLoader.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -1490,7 +1317,7 @@
                 audioPlayer.play();
                 btnPlayPause.disabled = false;
                 btnPlayPause.textContent = '❚❚ PAUSE';
-                audioStatus.textContent = `PLAYING: ${file.name.toUpperCase()}`;
+                setTrackTitle(`PLAYING: ${file.name.replace(/\.[^/.]+$/, "")}`);
             }
         });
 
@@ -1753,9 +1580,8 @@
             }
         });
 
-        // Setup Klark Rotary Knobs (GAIN & HPF)
+        // Rotary Knobs Klark Teknik
         ['A', 'B'].forEach(ch => {
-            // GAIN KNOB
             setupKnobDrag(`kt-knob-gain-${ch}`, (deltaY) => {
                 geqState[ch].gain += deltaY * 0.1;
                 geqState[ch].gain = Math.max(-12, Math.min(6, Math.round(geqState[ch].gain * 10) / 10));
@@ -1766,7 +1592,6 @@
                 syncAllDspNodes();
             });
 
-            // HPF KNOB
             setupKnobDrag(`kt-knob-hpf-${ch}`, (deltaY) => {
                 geqState[ch].hpf += (deltaY > 0 ? 5 : -5);
                 geqState[ch].hpf = Math.max(20, Math.min(400, geqState[ch].hpf));
@@ -1777,6 +1602,119 @@
                 syncAllDspNodes();
             });
         });
+
+        // Preset Save/Load
+        function saveXtaPreset() {
+            try {
+                const presetObj = {
+                    version: 'DN360-2.1',
+                    timestamp: new Date().toISOString(),
+                    dlmsData: dlmsData,
+                    geqState: geqState,
+                    muteState: muteState,
+                    isDvcEnabled: isDvcEnabled
+                };
+
+                localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetObj));
+                
+                lcdTitle.textContent = "SYSTEM MEMORY";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "PRESET SAVED!";
+                
+                setTimeout(() => { renderDlmsLcd(); }, 1500);
+
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetObj, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `dsp_preset_dn360_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+
+            } catch (e) {
+                console.error("Gagal menyimpan preset:", e);
+                alert("Gagal menyimpan preset.");
+            }
+        }
+
+        function loadXtaPreset() {
+            const savedJson = localStorage.getItem(PRESET_STORAGE_KEY);
+            if (savedJson) {
+                const choice = confirm("Preset Klark Teknik DN360 ditemukan di browser!\n\n• Klik [OK] untuk memuat dari Local Storage.\n• Klik [Batal] untuk memilih file .json dari disk.");
+                if (choice) {
+                    applyPresetObj(JSON.parse(savedJson));
+                    return;
+                }
+            }
+            document.getElementById('preset-file-input').click();
+        }
+
+        document.getElementById('preset-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const parsedObj = JSON.parse(evt.target.result);
+                        applyPresetObj(parsedObj);
+                    } catch(err) {
+                        alert("File JSON preset tidak valid.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function applyPresetObj(parsedObj) {
+            try {
+                const sourceDlms = parsedObj.dlmsData || parsedObj;
+                Object.keys(sourceDlms).forEach(ch => {
+                    if (dlmsData[ch]) {
+                        Object.keys(sourceDlms[ch]).forEach(menuKey => {
+                            if (dlmsData[ch][menuKey] && Array.isArray(dlmsData[ch][menuKey])) {
+                                sourceDlms[ch][menuKey].forEach((savedItem, idx) => {
+                                    if (dlmsData[ch][menuKey][idx]) {
+                                        dlmsData[ch][menuKey][idx].val = savedItem.val;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                if (parsedObj.geqState) {
+                    ['A', 'B'].forEach(ch => {
+                        if (parsedObj.geqState[ch]) {
+                            geqState[ch].active = parsedObj.geqState[ch].active;
+                            geqState[ch].gain = parsedObj.geqState[ch].gain || 0;
+                            geqState[ch].hpf = parsedObj.geqState[ch].hpf || 20;
+                            
+                            if (Array.isArray(parsedObj.geqState[ch].bands)) {
+                                parsedObj.geqState[ch].bands.forEach((bVal, idx) => {
+                                    const input = document.getElementById(`kt-input-${ch}-${idx}`);
+                                    if (input) input.value = bVal;
+                                    onGeqFaderMove(ch, idx, bVal);
+                                });
+                            }
+                            toggleGeqActive(ch);
+                        }
+                    });
+                }
+
+                syncAllDspNodes();
+                renderDlmsLcd();
+
+                lcdTitle.textContent = "SYSTEM MEMORY";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "PRESET LOADED!";
+
+                setTimeout(() => { renderDlmsLcd(); }, 1500);
+
+            } catch (e) {
+                console.error("Gagal menerapkan preset:", e);
+                alert("Format file preset tidak sesuai.");
+            }
+        }
 
         // Inisialisasi Tampilan Awal
         selectChannel('OUT1');
