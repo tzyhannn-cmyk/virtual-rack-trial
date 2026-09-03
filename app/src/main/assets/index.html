@@ -568,7 +568,7 @@
 
     </div>
 
-    <!-- SCRIPT AUDIO ENGINE & CONTROLS -->
+    <!-- SCRIPT AUDIO ENGINE & CONTROLS (OPTIMIZED) -->
     <script>
         const geqFreqsCh1 = [20, 25, 31.5, 40, 50, 63, 70, 80, 90, 100, 125, 140, 160, 200, 250];
         const geqLabelsCh1 = ['20', '25', '31.5', '40', '50', '63', '70', '80', '90', '100', '125', '140', '160', '200', '250'];
@@ -612,6 +612,7 @@
         renderGeqFaders('A');
         renderGeqFaders('B');
 
+        let geqUpdateScheduled = false;
         function onGeqFaderMove(ch, bandIdx, val) {
             const numVal = parseFloat(val);
             geqState[ch].bands[bandIdx] = numVal;
@@ -622,11 +623,15 @@
                 faderKnob.style.top = `${topPos}px`;
             }
 
-            if (audioCtx) {
-                const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
-                if (targetDsp && targetDsp.geqFilters && targetDsp.geqFilters[bandIdx]) {
-                    setSmoothParam(targetDsp.geqFilters[bandIdx].gain, geqState[ch].active ? numVal : 0.0);
-                }
+            if (audioCtx && !geqUpdateScheduled) {
+                geqUpdateScheduled = true;
+                requestAnimationFrame(() => {
+                    const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
+                    if (targetDsp && targetDsp.geqFilters && targetDsp.geqFilters[bandIdx]) {
+                        setSmoothParam(targetDsp.geqFilters[bandIdx].gain, geqState[ch].active ? numVal : 0.0);
+                    }
+                    geqUpdateScheduled = false;
+                });
             }
         }
 
@@ -661,7 +666,7 @@
             if (hpfKnob) hpfKnob.style.transform = `rotate(-135deg)`;
             if (hpfVal) hpfVal.textContent = `20Hz`;
 
-            syncAllDspNodes();
+            updateGeqBypass(ch);
         }
 
         function toggleGeqActive(ch) {
@@ -677,13 +682,30 @@
                 if (btn) btn.classList.add('opacity-50');
             }
 
-            if (audioCtx) {
-                const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
-                if (targetDsp && targetDsp.geqFilters) {
-                    targetDsp.geqFilters.forEach((filterNode, idx) => {
-                        setSmoothParam(filterNode.gain, geqState[ch].active ? geqState[ch].bands[idx] : 0.0);
-                    });
-                }
+            updateGeqBypass(ch);
+        }
+
+        /* BYPASS NODE LOGIC UNTUK GRAPHIC EQ */
+        function updateGeqBypass(ch) {
+            if (!audioCtx) return;
+            const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
+            if (!targetDsp) return;
+
+            // Putus koneksi dari HPF
+            targetDsp.ktHpf.disconnect();
+            
+            if (geqState[ch].active) {
+                // Sambungkan kembali melalui seluruh rantai filter GEQ
+                let prev = targetDsp.ktHpf;
+                targetDsp.geqFilters.forEach((filterNode, idx) => {
+                    setSmoothParam(filterNode.gain, geqState[ch].bands[idx]);
+                    prev.connect(filterNode);
+                    prev = filterNode;
+                });
+                prev.connect(targetDsp.geqGain);
+            } else {
+                // BYPASS: Hubungkan langsung HPF ke GEQ Gain (Melompati 15 BiquadFilter)
+                targetDsp.ktHpf.connect(targetDsp.geqGain);
             }
         }
 
@@ -696,24 +718,24 @@
 
         const PRESET_STORAGE_KEY = 'xta_dp226_klark_dn360_preset_v2';
 
-        function setSmoothParam(param, targetVal, timeConstant = 0.015) {
+        function setSmoothParam(param, targetVal, timeConstant = 0.02) {
             if (!param || !audioCtx) return;
+            if (isNaN(targetVal)) return;
+            if (Math.abs(param.value - targetVal) < 0.0001) return;
+            
             if (audioCtx.state === 'running') {
-                if (isNaN(targetVal)) return;
-                param.cancelScheduledValues(audioCtx.currentTime);
                 param.setTargetAtTime(targetVal, audioCtx.currentTime, timeConstant);
             } else {
                 param.value = targetVal;
             }
         }
 
-        /* --- UPDATE MARQUEE DISPLAY JUDUL LAGU --- */
         function setTrackTitle(title) {
             const statusText = document.getElementById('audio-status-text');
             if (statusText) {
                 statusText.textContent = (title || 'MEMUTAR AUDIO').toUpperCase();
                 statusText.style.animation = 'none';
-                statusText.offsetHeight; /* Trigger reflow */
+                statusText.offsetHeight;
                 statusText.style.animation = '';
             }
         }
@@ -979,14 +1001,20 @@
 
                 dsp[ch].delay.connect(dsp[ch].ktHpf);
 
-                let geqPrev = dsp[ch].ktHpf;
-                dsp[ch].geqFilters.forEach(filterNode => {
-                    geqPrev.connect(filterNode);
-                    geqPrev = filterNode;
-                });
-                geqPrev.connect(dsp[ch].geqGain);
-                dsp[ch].geqGain.connect(dsp[ch].limiter);
+                // Inisialisasi awal bypass
+                const geqKey = (ch === 'OUT1') ? 'A' : 'B';
+                if (geqState[geqKey].active) {
+                    let geqPrev = dsp[ch].ktHpf;
+                    dsp[ch].geqFilters.forEach(filterNode => {
+                        geqPrev.connect(filterNode);
+                        geqPrev = filterNode;
+                    });
+                    geqPrev.connect(dsp[ch].geqGain);
+                } else {
+                    dsp[ch].ktHpf.connect(dsp[ch].geqGain);
+                }
 
+                dsp[ch].geqGain.connect(dsp[ch].limiter);
                 dsp[ch].limiter.connect(dsp[ch].mute);
                 dsp[ch].mute.connect(dsp[ch].analyser);
 
@@ -1015,66 +1043,6 @@
             requestAnimationFrame(updateMeters);
         }
 
-        /* --- ANDROID BRIDGE INTERFACE FUNCTIONS --- */
-        function onAudioExtracted(audioUrl, songTitle) {
-            initAudioEngine(); 
-            const audioElement = document.getElementById('ytAudio');
-            
-            if (!source && audioElement && audioCtx) {
-                source = audioCtx.createMediaElementSource(audioElement);
-                source.connect(dsp.splitter);
-            }
-
-            if (audioPlayer && !audioPlayer.paused) {
-                audioPlayer.pause();
-            }
-
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            if (audioElement) {
-                audioElement.src = audioUrl;
-                audioElement.play().catch(e => console.error("Playback error:", e));
-            }
-
-            btnPlayPause.disabled = false;
-            btnPlayPause.innerText = "❚❚ PAUSE";
-            
-            setTrackTitle(songTitle || "PLAYING: EXTRACTED YOUTUBE AUDIO");
-        }
-
-        function onExtractionFailed(errorMsg) {
-            alert("Ekstraksi Gagal: " + errorMsg);
-            setTrackTitle("EKSTRAKSI GAGAL: " + errorMsg);
-        }
-
-        function playAudioStream(streamUrl, songTitle) {
-            initAudioEngine();
-
-            const audioElement = document.getElementById('ytAudio');
-            if (!source && audioElement && audioCtx) {
-                source = audioCtx.createMediaElementSource(audioElement);
-                source.connect(dsp.splitter);
-            }
-
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            if (audioPlayer && !audioPlayer.paused) {
-                audioPlayer.pause();
-            }
-
-            if (audioElement) {
-                audioElement.src = streamUrl;
-                audioElement.play().catch(e => console.error("Playback error:", e));
-            }
-
-            btnPlayPause.disabled = false;
-            btnPlayPause.innerText = "❚❚ PAUSE";
-
-            setTrackTitle(songTitle || "PLAYING: YOUTUBE AUDIO STREAM");
-        }
-
         function dbToLinear(db) { return Math.pow(10, db / 20); }
 
         function toggleDvcEngine() {
@@ -1087,7 +1055,7 @@
                 btn.classList.remove('dvc-btn-active');
                 btn.textContent = '⚠️ DVC: OFF';
             }
-            syncAllDspNodes();
+            if (audioCtx) setSmoothParam(dsp.dvcHeadroomGain.gain, isDvcEnabled ? dbToLinear(-5.0) : 1.0);
         }
 
         function toggleMute(ch) {
@@ -1097,7 +1065,7 @@
                 if (muteState[ch]) btn.classList.add('btn-mute-active');
                 else btn.classList.remove('btn-mute-active');
             }
-            syncAllDspNodes();
+            if (audioCtx && dsp[ch]) setSmoothParam(dsp[ch].mute.gain, muteState[ch] ? 0 : 1);
         }
 
         function applyCrossoverFilter(node1, node2, type, slope, freq) {
@@ -1112,15 +1080,9 @@
             setSmoothParam(node2.frequency, freq);
 
             switch (slope) {
-                case 'BW 12': 
-                    setSmoothParam(node1.Q, 0.7071); 
-                    break;
-                case 'LR 12': 
-                    setSmoothParam(node1.Q, 0.5000); 
-                    break;
-                case 'Bessel 12': 
-                    setSmoothParam(node1.Q, 0.5773); 
-                    break;
+                case 'BW 12': setSmoothParam(node1.Q, 0.7071); break;
+                case 'LR 12': setSmoothParam(node1.Q, 0.5000); break;
+                case 'Bessel 12': setSmoothParam(node1.Q, 0.5773); break;
                 case 'BW 24': 
                     setSmoothParam(node1.Q, 0.5412); 
                     setSmoothParam(node2.Q, 1.3065); 
@@ -1141,6 +1103,50 @@
             }
         }
 
+        // PEMBARUAN TARGETED NODE PARAMETER (DIPANGGIL SAAT KNOB DIPUTAR)
+        function updateActiveParam(p) {
+            if (!audioCtx) return;
+            const ch = activeChannel;
+
+            if (p.key === 'gain') {
+                const polVal = (dlmsData[ch].GAIN_POL.find(i => i.key === 'polarity') || {}).val;
+                const polFactor = polVal === 'INVERT (180°)' ? -1 : 1;
+                setSmoothParam(dsp[ch].gain.gain, dbToLinear(p.val) * polFactor);
+            } else if (p.key === 'polarity') {
+                const gVal = (dlmsData[ch].GAIN_POL.find(i => i.key === 'gain') || {}).val || 0;
+                const polFactor = p.val === 'INVERT (180°)' ? -1 : 1;
+                setSmoothParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
+            } else if (p.key === 'delay') {
+                setSmoothParam(dsp[ch].delay.delayTime, p.val / 1000);
+            } else if (p.key && p.key.startsWith('peq_')) {
+                const b = p.band;
+                const filterNode = dsp[ch].peq[b - 1];
+                if (p.key.endsWith('_freq')) setSmoothParam(filterNode.frequency, p.val);
+                else if (p.key.endsWith('_gain')) setSmoothParam(filterNode.gain, p.val);
+                else if (p.key.endsWith('_q')) setSmoothParam(filterNode.Q, p.val);
+                else if (p.key.endsWith('_type')) {
+                    let targetType = 'peaking';
+                    if (p.val === 'LOW SHELF') targetType = 'lowshelf';
+                    else if (p.val === 'HIGH SHELF') targetType = 'highshelf';
+                    if (filterNode.type !== targetType) filterNode.type = targetType;
+                }
+            } else if (p.key && p.key.startsWith('comp')) {
+                if (p.key === 'compThresh') setSmoothParam(dsp[ch].comp.threshold, p.val);
+                else if (p.key === 'compRatio') setSmoothParam(dsp[ch].comp.ratio, parseFloat(p.val.split(':')[0]) || 1);
+                else if (p.key === 'compAttack') setSmoothParam(dsp[ch].comp.attack, p.val / 1000);
+                else if (p.key === 'compRelease') setSmoothParam(dsp[ch].comp.release, p.val / 1000);
+                else if (p.key === 'compMakeup') setSmoothParam(dsp[ch].makeup.gain, dbToLinear(p.val));
+            } else if (p.key && p.key.startsWith('lim')) {
+                if (p.key === 'limThresh') setSmoothParam(dsp[ch].limiter.threshold, p.val);
+                else if (p.key === 'limAttack') setSmoothParam(dsp[ch].limiter.attack, p.val / 1000);
+                else if (p.key === 'limRelease') setSmoothParam(dsp[ch].limiter.release, p.val / 1000);
+            } else if (activeDlmsMenu === 'XOVER' && (ch === 'OUT1' || ch === 'OUT2')) {
+                const xover = dlmsData[ch].XOVER;
+                applyCrossoverFilter(dsp[ch].hpf1, dsp[ch].hpf2, 'highpass', xover.find(i => i.key === 'hpfSlope').val, xover.find(i => i.key === 'hpfFreq').val);
+                applyCrossoverFilter(dsp[ch].lpf1, dsp[ch].lpf2, 'lowpass', xover.find(i => i.key === 'lpfSlope').val, xover.find(i => i.key === 'lpfFreq').val);
+            }
+        }
+
         function syncAllDspNodes() {
             if (!audioCtx) return;
 
@@ -1149,17 +1155,9 @@
             ['A', 'B'].forEach(chKey => {
                 const targetDsp = (chKey === 'A') ? dsp.OUT1 : dsp.OUT2;
                 if (targetDsp) {
-                    if (targetDsp.geqGain) {
-                        setSmoothParam(targetDsp.geqGain.gain, dbToLinear(geqState[chKey].gain));
-                    }
-                    if (targetDsp.ktHpf) {
-                        setSmoothParam(targetDsp.ktHpf.frequency, geqState[chKey].hpf);
-                    }
-                    if (targetDsp.geqFilters) {
-                        targetDsp.geqFilters.forEach((filterNode, idx) => {
-                            setSmoothParam(filterNode.gain, geqState[chKey].active ? geqState[chKey].bands[idx] : 0.0);
-                        });
-                    }
+                    if (targetDsp.geqGain) setSmoothParam(targetDsp.geqGain.gain, dbToLinear(geqState[chKey].gain));
+                    if (targetDsp.ktHpf) setSmoothParam(targetDsp.ktHpf.frequency, geqState[chKey].hpf);
+                    updateGeqBypass(chKey);
                 }
             });
 
@@ -1171,10 +1169,7 @@
                 const dVal = (data.DELAY.find(i => i.key === 'delay') || {}).val || 0;
 
                 setSmoothParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
-                
-                if (Math.abs(dsp[ch].delay.delayTime.value - (dVal / 1000)) > 0.0001) {
-                    setSmoothParam(dsp[ch].delay.delayTime, dVal / 1000);
-                }
+                setSmoothParam(dsp[ch].delay.delayTime, dVal / 1000);
 
                 if (ch === 'OUT1' || ch === 'OUT2') {
                     const peqList = data.PEQ;
@@ -1189,9 +1184,7 @@
                         if (typeStr === 'LOW SHELF') targetType = 'lowshelf';
                         else if (typeStr === 'HIGH SHELF') targetType = 'highshelf';
 
-                        if (filterNode.type !== targetType) {
-                            filterNode.type = targetType;
-                        }
+                        if (filterNode.type !== targetType) filterNode.type = targetType;
                     }
                 }
 
@@ -1496,7 +1489,7 @@
             }
         }
 
-        /* --- DRAG KNOB HANDLER --- */
+        /* --- DRAG KNOB HANDLER (THROTTLED VIA RAF) --- */
         let knobRotations = {
             'knob-param': 0,
             'knob-value': 0
@@ -1552,6 +1545,7 @@
             }
         });
 
+        let knobValScheduled = false;
         setupKnobDrag('knob-value', (deltaY) => {
             const params = getCurrentParamsList();
             if (params.length > 0 && params[currentParamIdx] && !params[currentParamIdx].readonly) {
@@ -1575,13 +1569,20 @@
                 knobRotations['knob-value'] += deltaY * 4;
                 document.getElementById('knob-value').style.transform = `rotate(${knobRotations['knob-value']}deg)`;
                 
-                syncAllDspNodes();
-                renderDlmsLcd();
+                if (!knobValScheduled) {
+                    knobValScheduled = true;
+                    requestAnimationFrame(() => {
+                        updateActiveParam(p);
+                        renderDlmsLcd();
+                        knobValScheduled = false;
+                    });
+                }
             }
         });
 
         // Rotary Knobs Klark Teknik
         ['A', 'B'].forEach(ch => {
+            let gainScheduled = false;
             setupKnobDrag(`kt-knob-gain-${ch}`, (deltaY) => {
                 geqState[ch].gain += deltaY * 0.1;
                 geqState[ch].gain = Math.max(-12, Math.min(6, Math.round(geqState[ch].gain * 10) / 10));
@@ -1589,9 +1590,18 @@
                 const angle = (geqState[ch].gain / 12) * 135;
                 document.getElementById(`kt-knob-gain-${ch}`).style.transform = `rotate(${angle}deg)`;
                 document.getElementById(`kt-val-gain-${ch}`).textContent = `${geqState[ch].gain > 0 ? '+' : ''}${geqState[ch].gain.toFixed(1)}dB`;
-                syncAllDspNodes();
+                
+                if (audioCtx && !gainScheduled) {
+                    gainScheduled = true;
+                    requestAnimationFrame(() => {
+                        const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
+                        if (targetDsp && targetDsp.geqGain) setSmoothParam(targetDsp.geqGain.gain, dbToLinear(geqState[ch].gain));
+                        gainScheduled = false;
+                    });
+                }
             });
 
+            let hpfScheduled = false;
             setupKnobDrag(`kt-knob-hpf-${ch}`, (deltaY) => {
                 geqState[ch].hpf += (deltaY > 0 ? 5 : -5);
                 geqState[ch].hpf = Math.max(20, Math.min(400, geqState[ch].hpf));
@@ -1599,7 +1609,15 @@
                 const angle = -135 + ((geqState[ch].hpf - 20) / 380) * 270;
                 document.getElementById(`kt-knob-hpf-${ch}`).style.transform = `rotate(${angle}deg)`;
                 document.getElementById(`kt-val-hpf-${ch}`).textContent = `${geqState[ch].hpf}Hz`;
-                syncAllDspNodes();
+                
+                if (audioCtx && !hpfScheduled) {
+                    hpfScheduled = true;
+                    requestAnimationFrame(() => {
+                        const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
+                        if (targetDsp && targetDsp.ktHpf) setSmoothParam(targetDsp.ktHpf.frequency, geqState[ch].hpf);
+                        hpfScheduled = false;
+                    });
+                }
             });
         });
 
