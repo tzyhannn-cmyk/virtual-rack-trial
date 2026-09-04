@@ -219,6 +219,10 @@
                     <input type="file" id="audio-file-input" accept="audio/*" class="hidden">
                     <button onclick="document.getElementById('audio-file-input').click()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white hover:bg-slate-100 flex items-center gap-1">📂 <span>File</span></button>
                     
+                    <!-- INPUT LINK & TOMBOL EKSTRAK YOUTUBE -->
+                    <div class="flex items-center gap-1 bg-black/40 p-0.5 rounded border border-cyan-400/30">         
+                    </div>
+
                     <button onclick="skipAudio(-5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Mundur 5 detik">⏪ -5s</button>
                     <button id="btn-play-pause" onclick="togglePlayPause()" class="push-btn text-[8px] sm:text-[10px] font-bold px-2 py-0.5 rounded text-slate-800 disabled:opacity-50" disabled>▶ PLAY</button>
                     <button onclick="skipAudio(5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Maju 5 detik">⏩ +5s</button>
@@ -511,7 +515,7 @@
 
     <!-- SCRIPT AUDIO ENGINE & CONTROLS -->
     <script>
-        /* --- INTEGRASI ANDROID BRIDGE & AUDIO STREAMING --- */
+        /* --- INTEGRASI ANDROID BRIDGE & AUDIO STREAMING (FUNGSI EKSTRAKSI YOUTUBE) --- */
         function sendUrlToAndroid() {
             const url = document.getElementById('ytUrlInput').value.trim();
             if (!url) return alert('Masukkan link YouTube terlebih dahulu!');
