@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Complete Pro Audio DSP System - XTA & Klark Teknik DN360 Dual GEQ</title>
+    <title>Complete Pro Audio DSP System & Visualizer - XTA DLMS Matrix</title>
     
     <!-- Fonts & Tailwind CSS CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@600;800;900&family=Roboto+Condensed:wght@700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@600;800;900&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         .font-lcd { font-family: 'VT323', monospace; }
         .font-brand { font-family: 'Orbitron', sans-serif; }
         .font-label { font-family: 'Roboto Condensed', sans-serif; }
-        .font-klark { font-family: 'Inter', sans-serif; }
 
-        /* --- MARQUEE TEKS BERJALAN --- */
+        /* --- CSS TEKS BERJALAN (MARQUEE) --- */
         .marquee-container {
             width: 100%;
             overflow: hidden;
@@ -27,12 +26,16 @@
         .marquee-text {
             display: inline-block;
             padding-left: 100%;
-            animation: marquee-scroll 14s linear infinite;
+            animation: marquee-scroll 15s linear infinite;
         }
 
         @keyframes marquee-scroll {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-100%, 0);
+            }
         }
 
         /* --- HARDWARE SCREWS --- */
@@ -71,7 +74,7 @@
         }
         .lcd-text-green { color: #8aff2e; text-shadow: 0 0 4px rgba(138, 255, 46, 0.7); }
 
-        /* --- XTA RECTANGULAR LEDS --- */
+        /* --- REALISTIC XTA RECTANGULAR LEDS --- */
         .xta-led-housing {
             background: #090d16;
             border: 1px solid #1e293b;
@@ -81,23 +84,29 @@
         }
 
         .xta-led {
-            width: 8px; height: 3px; border-radius: 1px;
+            width: 8px;
+            height: 3px;
+            border-radius: 1px;
             background-color: #0d131f;
             border: 1px solid rgba(255, 255, 255, 0.03);
             transition: background-color 0.05s ease, box-shadow 0.05s ease;
+            position: relative;
         }
+
         .xta-led-red { background: radial-gradient(circle, #380a0a 0%, #170404 100%); border-color: #451212; }
         .xta-led-red.active {
             background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ff4d4d 40%, #dc2626 100%);
             box-shadow: 0 0 8px #ef4444, 0 0 2px #ffffff;
             border-color: #fca5a5;
         }
+
         .xta-led-yellow { background: radial-gradient(circle, #382d0a 0%, #171204 100%); border-color: #453712; }
         .xta-led-yellow.active {
             background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ffe04d 40%, #ca8a04 100%);
             box-shadow: 0 0 8px #eab308, 0 0 2px #ffffff;
             border-color: #fef08a;
         }
+
         .xta-led-green { background: radial-gradient(circle, #0a3814 0%, #041708 100%); border-color: #12451d; }
         .xta-led-green.active {
             background: radial-gradient(circle at 40% 40%, #ffffff 0%, #4dff88 40%, #16a34a 100%);
@@ -119,113 +128,33 @@
             background-color: #0f172a; transform: translateX(-50%); border-radius: 50%;
         }
 
-        /* --- KLARK TEKNIK DN360 EQUALIZER STYLING --- */
-        .klark-panel {
-            background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 30%, #94a3b8 70%, #64748b 100%);
-            border-top: 1px solid #ffffff;
-            border-bottom: 2px solid #334155;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.8), 0 8px 24px rgba(0,0,0,0.9);
+        /* --- BBE RACK HARDWARE STYLING --- */
+        .bbe-chassis {
+            background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 20%, #94a3b8 50%, #64748b 80%, #475569 100%);
+            border: 1px solid #334155;
         }
-
-        .klark-header-bar {
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            border-bottom: 1px solid #475569;
+        .bbe-red-panel {
+            background: linear-gradient(180deg, #dc2626 0%, #b91c1c 40%, #991b1b 75%, #7f1d1d 100%);
+            border: 2px solid #450a0a;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(255,255,255,0.2);
         }
-
-        /* FADER SLOT & SLIDER */
-        .kt-fader-column {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 22px;
-            height: 82px;
-            flex-shrink: 0;
+        .bbe-knob {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 45%, #64748b 85%, #334155 100%);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.8);
+            border: 1px solid #1e293b; position: relative; cursor: ns-resize; user-select: none; touch-action: none;
+            will-change: transform;
         }
-        .kt-fader-slot {
-            position: absolute;
-            top: 2px;
-            width: 3px;
-            height: 60px;
-            background: #090d16;
-            border-radius: 1px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.95), 0 0 1px rgba(255,255,255,0.2);
-        }
-        .kt-fader-center-line {
-            position: absolute;
-            top: 32px;
-            width: 14px;
-            height: 1px;
-            background: rgba(30, 41, 59, 0.6);
-            pointer-events: none;
-        }
-
-        .kt-fader-input {
-            position: absolute;
-            top: 32px;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-90deg);
-            width: 60px;
-            height: 22px;
-            margin: 0;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 10;
-            touch-action: none;
-        }
-
-        .kt-fader-knob {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 16px;
-            height: 9px;
-            border-radius: 2px;
-            background: radial-gradient(ellipse at 50% 30%, #334155 0%, #1e293b 65%, #090d16 100%);
-            border: 1px solid #475569;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.4);
-            pointer-events: none;
-            z-index: 5;
-        }
-        .kt-fader-knob::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 2px;
-            right: 2px;
-            height: 1px;
-            background: #f8fafc;
-            transform: translateY(-50%);
-            box-shadow: 0 0 2px #fff;
-        }
-
-        /* KLARK ROTARY KNOBS */
-        .kt-red-knob {
-            width: 22px; height: 22px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ef4444 0%, #b91c1c 65%, #7f1d1d 100%);
-            border: 1px solid #450a0a; box-shadow: 0 2px 4px rgba(0,0,0,0.7);
-            position: relative; cursor: ns-resize; touch-action: none; user-select: none;
-        }
-        .kt-red-knob-pointer {
-            position: absolute; top: 2px; left: 50%; width: 2px; height: 6px;
-            background-color: #ffffff; transform: translateX(-50%); border-radius: 1px;
-        }
-
-        .kt-sweep-knob {
-            width: 18px; height: 18px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #334155 0%, #1e293b 70%, #0f172a 100%);
-            border: 2px solid #eab308; box-shadow: 0 2px 3px rgba(0,0,0,0.6);
-            position: relative; cursor: ns-resize; touch-action: none; user-select: none;
-        }
-        .kt-sweep-knob-pointer {
-            position: absolute; top: 1px; left: 50%; width: 2px; height: 5px;
-            background-color: #fef08a; transform: translateX(-50%); border-radius: 1px;
+        @media (min-width: 640px) { .bbe-knob { width: 40px; height: 40px; } }
+        .bbe-knob-pointer {
+            position: absolute; top: 4px; left: 50%; width: 2px; height: 10px;
+            background-color: #0f172a; transform: translateX(-50%); border-radius: 2px;
         }
 
         /* BUTTONS & LEDS */
         .push-btn {
-            background: linear-gradient(180deg, #f8fafc 0%, #cbd5e1 100%);
-            border: 1px solid #475569; box-shadow: 0 1px 2px rgba(0,0,0,0.6); cursor: pointer;
+            background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
+            border: 1px solid #334155; box-shadow: 0 2px 3px rgba(0,0,0,0.6); cursor: pointer;
             transition: all 0.1s ease;
         }
         .push-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
@@ -245,11 +174,10 @@
             box-shadow: 0 0 8px rgba(74, 222, 128, 0.9) !important;
         }
 
-        .led-dot { width: 5px; height: 5px; border-radius: 50%; background-color: #334155; transition: background-color 0.1s, box-shadow 0.1s; }
+        .led-dot { width: 5px; height: 5px; border-radius: 50%; background-color: #1e293b; transition: background-color 0.1s, box-shadow 0.1s; }
         .led-red.active { background-color: #ef4444; box-shadow: 0 0 6px #ef4444; }
         .led-yellow.active { background-color: #eab308; box-shadow: 0 0 6px #eab308; }
         .led-green.active { background-color: #22c55e; box-shadow: 0 0 6px #22c55e; }
-        .led-blue.active { background-color: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
 
         .btn-mute-active {
             background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%) !important;
@@ -286,7 +214,7 @@
                     <span class="font-label text-[6px] sm:text-[8px] text-cyan-100 tracking-widest font-bold">MEDIA PLAYER & DVC</span>
                 </div>
 
-                <!-- PLAYBACK CONTROLS -->
+                <!-- TOMBOL FILE, YOUTUBE EXTRACTOR, & PLAYBACK -->
                 <div class="flex items-center gap-1 shrink-0">
                     <input type="file" id="audio-file-input" accept="audio/*" class="hidden">
                     <button onclick="document.getElementById('audio-file-input').click()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white hover:bg-slate-100 flex items-center gap-1">📂 <span>File</span></button>
@@ -299,7 +227,7 @@
                 <!-- KOTAK DISPLAY JUDUL BERJALAN -->
                 <div class="bg-black/80 border border-cyan-400/50 rounded px-2 py-0.5 flex-1 max-w-xs overflow-hidden">
                     <div class="marquee-container">
-                        <div class="font-lcd text-amber-300 text-xs marquee-text" id="audio-status-text">SIAP: SILAHKAN PILIH LAGU / AUDIO FILE</div>
+                        <div class="font-lcd text-amber-300 text-xs marquee-text" id="audio-status-text">SIAP: SILAHKAN PILIH LAGU / YOUTUBE</div>
                     </div>
                     <div class="flex justify-between font-mono text-[8px] text-cyan-200 mt-0.5">
                         <span id="audio-time-curr">00:00</span>
@@ -312,9 +240,7 @@
                     <div class="rocker-switch" title="Power Switch"></div>
                 </div>
 
-                <!-- AUDIO ELEMENTS -->
                 <audio id="audio-player" crossorigin="anonymous" loop class="hidden"></audio>
-                <audio id="ytAudio" crossorigin="anonymous" style="display:none;"></audio>
             </div>
 
             <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
@@ -332,7 +258,7 @@
                 <div class="flex flex-col items-start shrink-0 pr-1 border-r border-blue-900/60">
                     <span class="font-brand text-amber-400 font-extrabold text-xs sm:text-sm tracking-tighter leading-none">xta</span>
                     <span class="font-label text-[5px] sm:text-[7px] text-blue-200 tracking-widest uppercase">ELECTRONICS</span>
-                    <span class="font-mono text-[6px] sm:text-[8px] text-emerald-400 font-bold mt-0.5">DP226</span>
+                    <span class="font-mono text-[6px] sm:text-[8px] text-emerald-400 font-bold mt-0.5">DP220</span>
                 </div>
 
                 <!-- TOMBOL INPUT A & B -->
@@ -441,271 +367,226 @@
             </div>
         </div>
 
-        <!-- 3. KLARK TEKNIK DN360 DUAL 15-BAND GRAPHIC EQUALISER RACK -->
-        <div class="w-full klark-panel rounded overflow-hidden shadow-2xl border border-slate-500 flex relative">
-            <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-4 shrink-0 z-20 shadow-inner">
-                <div class="rack-screw-silver"></div>
-                <div class="rack-screw-silver"></div>
+        <!-- 3. BBE CHANNEL 1 RACK -->
+        <div class="w-full bbe-chassis rounded overflow-hidden shadow-2xl flex relative">
+            <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
 
-            <div class="flex-1 flex flex-col justify-between min-w-0 bg-slate-300/40">
-                <div class="klark-header-bar px-3 py-1 flex items-center justify-between text-white shadow-md">
-                    <div class="flex items-center gap-2">
-                        <div class="flex items-center gap-1">
-                            <span class="font-brand font-black text-xs sm:text-sm tracking-wider text-white">KLARK TEKNIK</span>
-                            <span class="bg-blue-600 text-slate-900 font-extrabold text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded font-mono shadow-sm">DN360</span>
-                        </div>
-                        <span class="hidden md:inline font-label text-[8px] text-slate-300 tracking-widest uppercase border-l border-slate-600 pl-2">DUAL CHANNEL 15-BAND GRAPHIC EQUALISER</span>
+            <div class="flex-1 bbe-red-panel flex flex-nowrap items-center justify-between px-2 sm:px-4 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
+                <div class="flex flex-col shrink-0">
+                    <span class="font-brand text-white font-extrabold text-xs sm:text-base italic tracking-tighter drop-shadow-md">D82</span>
+                    <span class="font-label text-[6px] sm:text-[8px] text-red-100 font-bold tracking-wider uppercase">LOW-SUB SHELF</span>
+                    <span class="font-mono text-[5px] sm:text-[7px] text-red-200">CHANNEL 1 ENHANCER</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-0.5 shrink-0">
+                    <div class="flex items-center gap-1">
+                        <div class="led-dot led-green" id="bbe1-led-in"></div>
+                        <div class="led-dot led-red" id="bbe1-led-out"></div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[7px] sm:text-[8px] font-mono text-amber-400 bg-amber-950/60 border border-amber-500/40 px-1.5 py-0.5 rounded font-bold">SCALE: ±12dB</span>
-                        <div class="flex gap-1">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow"></span>
-                            <span class="w-2 h-2 rounded-full bg-amber-400 inline-block shadow"></span>
-                        </div>
+                    <button id="bbe1-btn-process" onclick="toggleBbeShelf(1)" class="w-5 h-5 rounded-full bg-stone-900 border border-slate-600 shadow-md flex items-center justify-center active:scale-95 transition">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-inner"></div>
+                    </button>
+                    <span class="text-[6px] sm:text-[7px] text-white font-bold tracking-wider font-label">PROCESS</span>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-6 my-auto">
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe1-knob-freq"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">FREQUENCY</span>
+                        <span id="bbe1-val-freq" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">50 Hz</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe1-knob-q"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">Q FACTOR</span>
+                        <span id="bbe1-val-q" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.71</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe1-knob-gain"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">GAIN</span>
+                        <span id="bbe1-val-gain" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.0 dB</span>
                     </div>
                 </div>
 
-                <div class="p-2 flex flex-col gap-2">
-                    <!-- CHANNEL 1 (SUB-LOW) -->
-                    <div class="flex items-center justify-between gap-1 bg-slate-200/70 p-1.5 rounded border border-slate-400/80 shadow-sm">
-                        <div class="flex items-center gap-1.5 shrink-0 pr-1 border-r border-slate-400">
-                            <div class="flex flex-col items-center justify-center bg-blue-950 text-white px-1.5 py-1 rounded shadow">
-                                <span class="font-black text-xs sm:text-sm font-klark leading-none text-cyan-300">CH 1</span>
-                                <span class="text-[6px] font-mono tracking-tighter text-blue-200 font-bold uppercase mt-0.5 whitespace-nowrap">SUB-LOW</span>
-                            </div>
-
-                            <div class="flex flex-col justify-between h-[60px] text-[7px] font-mono font-bold text-slate-700 leading-none py-0.5 select-none text-right pr-0.5">
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+12</span><span class="w-1 h-[1px] bg-slate-500"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+6</span><span class="w-1 h-[1px] bg-slate-400"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[7.5px] font-black text-blue-950">0</span><span class="w-1.5 h-[1.5px] bg-blue-900"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">-6</span><span class="w-1 h-[1px] bg-slate-400"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">-12</span><span class="w-1 h-[1px] bg-slate-500"></span></div>
-                            </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex gap-1.5 bg-black/50 p-1 rounded border border-red-950/80">
+                        <div class="flex flex-col items-center gap-0.5 text-[5px] font-mono text-red-200 leading-none">
+                            <span>CLIP</span><span>0</span><span>-6</span><span>-12</span><span>-20</span>
                         </div>
-
-                        <div class="flex-1 flex justify-between items-center overflow-x-auto gap-0.5 px-1 min-w-0" id="faders-ch-A"></div>
-
-                        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 border-l border-slate-400 pl-1.5">
-                            <div class="flex flex-col items-center">
-                                <span class="text-[6px] font-bold text-slate-800 font-label">GAIN</span>
-                                <div class="kt-red-knob" id="kt-knob-gain-A"><div class="kt-red-knob-pointer"></div></div>
-                                <span id="kt-val-gain-A" class="text-[6px] font-mono font-bold text-slate-900">0dB</span>
-                            </div>
-
-                            <div class="flex gap-1 items-center">
-                                <div class="flex flex-col items-center">
-                                    <span class="text-[6px] font-bold text-slate-800 font-label">HPF</span>
-                                    <div class="kt-sweep-knob" id="kt-knob-hpf-A"><div class="kt-sweep-knob-pointer"></div></div>
-                                    <span id="kt-val-hpf-A" class="text-[6px] font-mono font-bold text-slate-900">20Hz</span>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col items-center gap-0.5">
-                                <div class="flex items-center gap-1">
-                                    <div class="led-dot led-green active" id="kt-led-eq-A" title="EQ Active"></div>
-                                    <div class="led-dot led-red" id="kt-led-clip-A" title="Clip"></div>
-                                </div>
-                                <button onclick="toggleGeqActive('A')" id="kt-btn-eq-A" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white shadow-sm border border-slate-400">EQ IN</button>
-                                <button onclick="resetGeqChannel('A')" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-red-700 bg-red-50 hover:bg-red-100 shadow-sm border border-red-300">RESET</button>
-                            </div>
+                        <div class="flex flex-col gap-0.5 justify-center">
+                            <div class="led-dot led-red" id="bbe1-led-clip"></div>
+                            <div class="led-dot led-green" id="bbe1-led-0"></div>
+                            <div class="led-dot led-green" id="bbe1-led-6"></div>
+                            <div class="led-dot led-yellow" id="bbe1-led-12"></div>
+                            <div class="led-dot led-green" id="bbe1-led-20"></div>
                         </div>
                     </div>
 
-                    <!-- CHANNEL 2 (MID-HIGH) -->
-                    <div class="flex items-center justify-between gap-1 bg-slate-200/70 p-1.5 rounded border border-slate-400/80 shadow-sm">
-                        <div class="flex items-center gap-1.5 shrink-0 pr-1 border-r border-slate-400">
-                            <div class="flex flex-col items-center justify-center bg-slate-900 text-white px-1.5 py-1 rounded shadow">
-                                <span class="font-black text-xs sm:text-sm font-klark leading-none text-amber-300">CH 2</span>
-                                <span class="text-[6px] font-mono tracking-tighter text-amber-100 font-bold uppercase mt-0.5 whitespace-nowrap">MID-HIGH</span>
-                            </div>
+                    <div class="flex flex-col items-end">
+                        <span class="font-brand text-red-500 font-black text-base sm:text-2xl italic tracking-tighter drop-shadow stroke-white">BBE</span>
+                        <span class="text-[5px] sm:text-[6px] text-red-200 font-mono -mt-1">LO-SUB PROCESSOR</span>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="flex flex-col justify-between h-[60px] text-[7px] font-mono font-bold text-slate-700 leading-none py-0.5 select-none text-right pr-0.5">
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+12</span><span class="w-1 h-[1px] bg-slate-500"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">+6</span><span class="w-1 h-[1px] bg-slate-400"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[7.5px] font-black text-slate-950">0</span><span class="w-1.5 h-[1.5px] bg-slate-900"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">-6</span><span class="w-1 h-[1px] bg-slate-400"></span></div>
-                                <div class="flex items-center justify-end gap-0.5"><span class="text-[6.5px]">-12</span><span class="w-1 h-[1px] bg-slate-500"></span></div>
-                            </div>
-                        </div>
+            <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
+        </div>
 
-                        <div class="flex-1 flex justify-between items-center overflow-x-auto gap-0.5 px-1 min-w-0" id="faders-ch-B"></div>
+        <!-- 4. BBE CHANNEL 2 RACK -->
+        <div class="w-full bbe-chassis rounded overflow-hidden shadow-2xl flex relative">
+            <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
+            </div>
 
-                        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 border-l border-slate-400 pl-1.5">
-                            <div class="flex flex-col items-center">
-                                <span class="text-[6px] font-bold text-slate-800 font-label">GAIN</span>
-                                <div class="kt-red-knob" id="kt-knob-gain-B"><div class="kt-red-knob-pointer"></div></div>
-                                <span id="kt-val-gain-B" class="text-[6px] font-mono font-bold text-slate-900">0dB</span>
-                            </div>
+            <div class="flex-1 bbe-red-panel flex flex-nowrap items-center justify-between px-2 sm:px-4 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
+                <div class="flex flex-col shrink-0">
+                    <span class="font-brand text-white font-extrabold text-xs sm:text-base italic tracking-tighter drop-shadow-md">D82</span>
+                    <span class="font-label text-[6px] sm:text-[8px] text-red-100 font-bold tracking-wider uppercase">MID-HIGH SHELF</span>
+                    <span class="font-mono text-[5px] sm:text-[7px] text-red-200">CHANNEL 2 ENHANCER</span>
+                </div>
 
-                            <div class="flex gap-1 items-center">
-                                <div class="flex flex-col items-center">
-                                    <span class="text-[6px] font-bold text-slate-800 font-label">HPF</span>
-                                    <div class="kt-sweep-knob" id="kt-knob-hpf-B"><div class="kt-sweep-knob-pointer"></div></div>
-                                    <span id="kt-val-hpf-B" class="text-[6px] font-mono font-bold text-slate-900">20Hz</span>
-                                </div>
-                            </div>
+                <div class="flex flex-col items-center gap-0.5 shrink-0">
+                    <div class="flex items-center gap-1">
+                        <div class="led-dot led-green" id="bbe2-led-in"></div>
+                        <div class="led-dot led-red" id="bbe2-led-out"></div>
+                    </div>
+                    <button id="bbe2-btn-process" onclick="toggleBbeShelf(2)" class="w-5 h-5 rounded-full bg-stone-900 border border-slate-600 shadow-md flex items-center justify-center active:scale-95 transition">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 shadow-inner"></div>
+                    </button>
+                    <span class="text-[6px] sm:text-[7px] text-white font-bold tracking-wider font-label">PROCESS</span>
+                </div>
 
-                            <div class="flex flex-col items-center gap-0.5">
-                                <div class="flex items-center gap-1">
-                                    <div class="led-dot led-green active" id="kt-led-eq-B" title="EQ Active"></div>
-                                    <div class="led-dot led-red" id="kt-led-clip-B" title="Clip"></div>
-                                </div>
-                                <button onclick="toggleGeqActive('B')" id="kt-btn-eq-B" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white shadow-sm border border-slate-400">EQ IN</button>
-                                <button onclick="resetGeqChannel('B')" class="push-btn text-[6px] font-bold px-1.5 py-0.5 rounded text-red-700 bg-red-50 hover:bg-red-100 shadow-sm border border-red-300">RESET</button>
-                            </div>
-                        </div>
+                <div class="flex items-center gap-2 sm:gap-6 my-auto">
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe2-knob-freq"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">FREQUENCY</span>
+                        <span id="bbe2-val-freq" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">4.00 kHz</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe2-knob-q"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">Q FACTOR</span>
+                        <span id="bbe2-val-q" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.71</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bbe-knob" id="bbe2-knob-gain"><div class="bbe-knob-pointer"></div></div>
+                        <span class="text-[7px] sm:text-[9px] text-white font-bold font-label mt-0.5">GAIN</span>
+                        <span id="bbe2-val-gain" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.0 dB</span>
                     </div>
                 </div>
 
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex gap-1.5 bg-black/50 p-1 rounded border border-red-950/80">
+                        <div class="flex flex-col items-center gap-0.5 text-[5px] font-mono text-red-200 leading-none">
+                            <span>CLIP</span><span>0</span><span>-6</span><span>-12</span><span>-20</span>
+                        </div>
+                        <div class="flex flex-col gap-0.5 justify-center">
+                            <div class="led-dot led-red" id="bbe2-led-clip"></div>
+                            <div class="led-dot led-green" id="bbe2-led-0"></div>
+                            <div class="led-dot led-green" id="bbe2-led-6"></div>
+                            <div class="led-dot led-yellow" id="bbe2-led-12"></div>
+                            <div class="led-dot led-green" id="bbe2-led-20"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-end">
+                        <span class="font-brand text-red-500 font-black text-base sm:text-2xl italic tracking-tighter drop-shadow stroke-white">BBE</span>
+                        <span class="text-[5px] sm:text-[6px] text-red-200 font-mono -mt-1">MID-HI PROCESSOR</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-4 shrink-0 z-20 shadow-inner">
-                <div class="rack-screw-silver"></div>
-                <div class="rack-screw-silver"></div>
+            <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
         </div>
 
     </div>
 
-    <!-- SCRIPT AUDIO ENGINE & CONTROLS (OPTIMIZED) -->
+    <!-- SCRIPT AUDIO ENGINE & CONTROLS -->
     <script>
-        const geqFreqsCh1 = [20, 25, 31.5, 40, 50, 63, 70, 80, 90, 100, 125, 140, 160, 200, 250];
-        const geqLabelsCh1 = ['20', '25', '31.5', '40', '50', '63', '70', '80', '90', '100', '125', '140', '160', '200', '250'];
-
-        const geqFreqsCh2 = [100, 160, 250, 400, 630, 800, 1000, 1600, 2500, 4000, 6300, 8000, 10000, 12500, 16000];
-        const geqLabelsCh2 = ['100', '160', '250', '400', '630', '800', '1k', '1.6k', '2.5k', '4k', '6.3k', '8k', '10k', '12.5k', '16k'];
-
-        const geqState = {
-            A: { active: true, gain: 0.0, hpf: 20, bands: new Array(15).fill(0.0) },
-            B: { active: true, gain: 0.0, hpf: 20, bands: new Array(15).fill(0.0) }
-        };
-
-        function renderGeqFaders(ch) {
-            const container = document.getElementById(`faders-ch-${ch}`);
-            if (!container) return;
-            container.innerHTML = '';
-
-            const freqs = (ch === 'A') ? geqFreqsCh1 : geqFreqsCh2;
-            const labels = (ch === 'A') ? geqLabelsCh1 : geqLabelsCh2;
-
-            freqs.forEach((freq, idx) => {
-                const label = labels[idx];
-                const col = document.createElement('div');
-                col.className = 'kt-fader-column';
-                col.innerHTML = `
-                    <div class="kt-fader-slot"></div>
-                    <div class="kt-fader-center-line"></div>
-                    <div class="kt-fader-knob" id="kt-knob-fader-${ch}-${idx}" style="top: 32px;"></div>
-                    <input type="range" class="kt-fader-input" min="-12" max="12" step="0.5" value="0" 
-                           id="kt-input-${ch}-${idx}" 
-                           oninput="onGeqFaderMove('${ch}', ${idx}, this.value)"
-                           ondblclick="resetGeqFader('${ch}', ${idx})">
-                    <div class="mt-auto w-full text-center flex items-center justify-center">
-                        <span class="text-[5.5px] sm:text-[6.5px] font-mono font-black text-slate-900 tracking-tight select-none leading-none">${label}</span>
-                    </div>
-                `;
-                container.appendChild(col);
-            });
+        /* --- INTEGRASI ANDROID BRIDGE & AUDIO STREAMING --- */
+        function sendUrlToAndroid() {
+            const url = document.getElementById('ytUrlInput').value.trim();
+            if (!url) return alert('Masukkan link YouTube terlebih dahulu!');
+            
+            if (window.AndroidBridge) {
+                document.getElementById('extractYtBtn').innerText = "EXTRACTING...";
+                window.AndroidBridge.extractYouTubeAudio(url);
+            } else {
+                alert("Fitur ekstrak hanya berfungsi di dalam aplikasi Android.");
+            }
         }
 
-        renderGeqFaders('A');
-        renderGeqFaders('B');
+        function onAudioExtracted(audioUrl, title) {
+            const extractBtn = document.getElementById('extractYtBtn');
+            if (extractBtn) extractBtn.innerText = "EXTRACT";
+            
+            initAudioEngine();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
 
-        let geqUpdateScheduled = false;
-        function onGeqFaderMove(ch, bandIdx, val) {
-            const numVal = parseFloat(val);
-            geqState[ch].bands[bandIdx] = numVal;
-
-            const faderKnob = document.getElementById(`kt-knob-fader-${ch}-${bandIdx}`);
-            if (faderKnob) {
-                const topPos = 32 - (numVal / 12) * 30;
-                faderKnob.style.top = `${topPos}px`;
+            const audioPlayer = document.getElementById('audio-player');
+            if (!sourceNode && audioPlayer) {
+                sourceNode = audioCtx.createMediaElementSource(audioPlayer);
+                sourceNode.connect(dsp.splitter);
             }
 
-            if (audioCtx && !geqUpdateScheduled) {
-                geqUpdateScheduled = true;
-                requestAnimationFrame(() => {
-                    const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
-                    if (targetDsp && targetDsp.geqFilters && targetDsp.geqFilters[bandIdx]) {
-                        setSmoothParam(targetDsp.geqFilters[bandIdx].gain, geqState[ch].active ? numVal : 0.0);
-                    }
-                    geqUpdateScheduled = false;
+            if (audioPlayer) {
+                audioPlayer.src = audioUrl;
+                audioPlayer.play().catch(function(error) {
+                    console.log("Autoplay diblokir oleh browser/webview:", error);
                 });
             }
-        }
 
-        function resetGeqFader(ch, bandIdx) {
-            const input = document.getElementById(`kt-input-${ch}-${bandIdx}`);
-            if (input) {
-                input.value = 0;
-                onGeqFaderMove(ch, bandIdx, 0);
+            const btnPlayPause = document.getElementById('btn-play-pause');
+            if (btnPlayPause) {
+                btnPlayPause.disabled = false;
+                btnPlayPause.textContent = '❚❚ PAUSE';
+            }
+
+            const audioStatus = document.getElementById('audio-status-text');
+            if (audioStatus) {
+                const songTitle = title ? title.toUpperCase() : "EXTRACTED YOUTUBE AUDIO";
+                audioStatus.textContent = "PLAYING: " + songTitle;
             }
         }
 
-        function resetGeqChannel(ch) {
-            geqState[ch].bands.fill(0.0);
-            geqState[ch].gain = 0.0;
-            geqState[ch].hpf = 20;
-
-            const count = (ch === 'A') ? geqFreqsCh1.length : geqFreqsCh2.length;
-            for (let idx = 0; idx < count; idx++) {
-                const input = document.getElementById(`kt-input-${ch}-${idx}`);
-                const faderKnob = document.getElementById(`kt-knob-fader-${ch}-${idx}`);
-                if (input) input.value = 0;
-                if (faderKnob) faderKnob.style.top = `32px`;
-            }
-
-            const gainKnob = document.getElementById(`kt-knob-gain-${ch}`);
-            const gainVal = document.getElementById(`kt-val-gain-${ch}`);
-            if (gainKnob) gainKnob.style.transform = `rotate(0deg)`;
-            if (gainVal) gainVal.textContent = `0dB`;
-
-            const hpfKnob = document.getElementById(`kt-knob-hpf-${ch}`);
-            const hpfVal = document.getElementById(`kt-val-hpf-${ch}`);
-            if (hpfKnob) hpfKnob.style.transform = `rotate(-135deg)`;
-            if (hpfVal) hpfVal.textContent = `20Hz`;
-
-            updateGeqBypass(ch);
+        function onExtractionFailed(errorMsg) {
+            const extractBtn = document.getElementById('extractYtBtn');
+            if (extractBtn) extractBtn.innerText = "EXTRACT";
+            alert("Ekstraksi Gagal: " + errorMsg);
         }
 
-        function toggleGeqActive(ch) {
-            geqState[ch].active = !geqState[ch].active;
-            const led = document.getElementById(`kt-led-eq-${ch}`);
-            const btn = document.getElementById(`kt-btn-eq-${ch}`);
-            
-            if (geqState[ch].active) {
-                if (led) led.classList.add('active');
-                if (btn) btn.classList.remove('opacity-50');
-            } else {
-                if (led) led.classList.remove('active');
-                if (btn) btn.classList.add('opacity-50');
+        function playAudioStream(streamUrl) {
+            initAudioEngine();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const audioPlayer = document.getElementById('audio-player');
+            if (!sourceNode && audioPlayer) {
+                sourceNode = audioCtx.createMediaElementSource(audioPlayer);
+                sourceNode.connect(dsp.splitter);
             }
 
-            updateGeqBypass(ch);
-        }
+            if (audioPlayer) {
+                audioPlayer.src = streamUrl;
+                audioPlayer.play();
+            }
 
-        /* BYPASS NODE LOGIC UNTUK GRAPHIC EQ */
-        function updateGeqBypass(ch) {
-            if (!audioCtx) return;
-            const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
-            if (!targetDsp) return;
+            const btnPlayPause = document.getElementById('btn-play-pause');
+            if (btnPlayPause) {
+                btnPlayPause.disabled = false;
+                btnPlayPause.textContent = '❚❚ PAUSE';
+            }
 
-            // Putus koneksi dari HPF
-            targetDsp.ktHpf.disconnect();
-            
-            if (geqState[ch].active) {
-                // Sambungkan kembali melalui seluruh rantai filter GEQ
-                let prev = targetDsp.ktHpf;
-                targetDsp.geqFilters.forEach((filterNode, idx) => {
-                    setSmoothParam(filterNode.gain, geqState[ch].bands[idx]);
-                    prev.connect(filterNode);
-                    prev = filterNode;
-                });
-                prev.connect(targetDsp.geqGain);
-            } else {
-                // BYPASS: Hubungkan langsung HPF ke GEQ Gain (Melompati 15 BiquadFilter)
-                targetDsp.ktHpf.connect(targetDsp.geqGain);
+            const audioStatus = document.getElementById('audio-status-text');
+            if (audioStatus) {
+                audioStatus.textContent = 'PLAYING: YOUTUBE AUDIO STREAM';
             }
         }
 
@@ -716,29 +597,157 @@
         let muteState = { OUT1: false, OUT2: false };
         let isDvcEnabled = true;
 
-        const PRESET_STORAGE_KEY = 'xta_dp226_klark_dn360_preset_v2';
+        const PRESET_STORAGE_KEY = 'xta_dp226_user_preset_v1';
 
-        function setSmoothParam(param, targetVal, timeConstant = 0.02) {
+        /* --- FUNGSI UTILITAS SMOOTHING PARAMETER AUDIO --- */
+        function setSmoothParam(param, targetVal, timeConstant = 0.015) {
             if (!param || !audioCtx) return;
-            if (isNaN(targetVal)) return;
-            if (Math.abs(param.value - targetVal) < 0.0001) return;
-            
             if (audioCtx.state === 'running') {
+                if (isNaN(targetVal)) return;
+                param.cancelScheduledValues(audioCtx.currentTime);
                 param.setTargetAtTime(targetVal, audioCtx.currentTime, timeConstant);
             } else {
                 param.value = targetVal;
             }
         }
 
-        function setTrackTitle(title) {
-            const statusText = document.getElementById('audio-status-text');
-            if (statusText) {
-                statusText.textContent = (title || 'MEMUTAR AUDIO').toUpperCase();
-                statusText.style.animation = 'none';
-                statusText.offsetHeight;
-                statusText.style.animation = '';
+        /* --- FUNGSI SAVE PRESET --- */
+        function saveXtaPreset() {
+            try {
+                const presetObj = {
+                    version: '1.2',
+                    timestamp: new Date().toISOString(),
+                    dlmsData: dlmsData,
+                    bbeRackData: bbeRackData,
+                    muteState: muteState,
+                    isDvcEnabled: isDvcEnabled
+                };
+
+                localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetObj));
+                
+                lcdTitle.textContent = "SYSTEM MEMORY";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "PRESET SAVED!";
+                
+                setTimeout(() => { renderDlmsLcd(); }, 1500);
+
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetObj, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `xta_dsp_preset_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+
+            } catch (e) {
+                console.error("Gagal menyimpan preset:", e);
+                alert("Gagal menyimpan preset.");
             }
         }
+
+        /* --- FUNGSI LOAD PRESET --- */
+        function loadXtaPreset() {
+            const savedJson = localStorage.getItem(PRESET_STORAGE_KEY);
+            if (savedJson) {
+                const choice = confirm("Preset ditemukan di memori browser!\n\n• Klik [OK] untuk memuat dari Browser Local Storage.\n• Klik [Batal] untuk memilih file preset .json dari HP/Komputer Anda.");
+                if (choice) {
+                    applyPresetObj(JSON.parse(savedJson));
+                    return;
+                }
+            }
+            document.getElementById('preset-file-input').click();
+        }
+
+        document.getElementById('preset-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const parsedObj = JSON.parse(evt.target.result);
+                        applyPresetObj(parsedObj);
+                    } catch(err) {
+                        alert("File JSON preset tidak valid atau rusak.");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function applyPresetObj(parsedObj) {
+            try {
+                const sourceDlms = parsedObj.dlmsData || parsedObj;
+                Object.keys(sourceDlms).forEach(ch => {
+                    if (dlmsData[ch]) {
+                        Object.keys(sourceDlms[ch]).forEach(menuKey => {
+                            if (dlmsData[ch][menuKey] && Array.isArray(dlmsData[ch][menuKey])) {
+                                sourceDlms[ch][menuKey].forEach((savedItem, idx) => {
+                                    if (dlmsData[ch][menuKey][idx]) {
+                                        dlmsData[ch][menuKey][idx].val = savedItem.val;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+                if (parsedObj.bbeRackData) {
+                    [1, 2].forEach(r => {
+                        if (parsedObj.bbeRackData[r]) {
+                            bbeRackData[r].active = parsedObj.bbeRackData[r].active;
+                            bbeRackData[r].freq = parsedObj.bbeRackData[r].freq;
+                            bbeRackData[r].q = parsedObj.bbeRackData[r].q;
+                            bbeRackData[r].gain = parsedObj.bbeRackData[r].gain;
+                            updateBbeUi(r);
+                        }
+                    });
+                }
+
+                if (parsedObj.muteState) {
+                    muteState.OUT1 = !!parsedObj.muteState.OUT1;
+                    muteState.OUT2 = !!parsedObj.muteState.OUT2;
+                    ['OUT1', 'OUT2'].forEach(ch => {
+                        const btn = document.getElementById(`btn-mute-${ch}`);
+                        if (btn) {
+                            if (muteState[ch]) btn.classList.add('btn-mute-active');
+                            else btn.classList.remove('btn-mute-active');
+                        }
+                    });
+                }
+
+                if (typeof parsedObj.isDvcEnabled === 'boolean') {
+                    isDvcEnabled = parsedObj.isDvcEnabled;
+                    const btn = document.getElementById('btn-dvc-toggle');
+                    if (btn) {
+                        if (isDvcEnabled) {
+                            btn.classList.add('dvc-btn-active');
+                            btn.textContent = '🛡️ DVC: ON';
+                        } else {
+                            btn.classList.remove('dvc-btn-active');
+                            btn.textContent = '⚠️ DVC: OFF';
+                        }
+                    }
+                }
+
+                syncAllDspNodes();
+                renderDlmsLcd();
+
+                lcdTitle.textContent = "SYSTEM MEMORY";
+                lcdParam.textContent = "STATUS:";
+                lcdVal.textContent = "PRESET LOADED!";
+
+                setTimeout(() => { renderDlmsLcd(); }, 1500);
+
+            } catch (e) {
+                console.error("Gagal menerapkan preset:", e);
+                alert("Format file preset tidak sesuai.");
+            }
+        }
+
+        const bbeRackData = {
+            1: { active: true, freq: 50, q: 0.71, gain: 0.0, minFreq: 20, maxFreq: 200 },
+            2: { active: true, freq: 4000, q: 0.71, gain: 0.0, minFreq: 1000, maxFreq: 16000 }
+        };
 
         function createPeqParams(defaultFreqs) {
             const list = [];
@@ -803,7 +812,7 @@
                 XOVER: [
                     { key: 'hpfFreq', name: 'HPF FREQ', val: 20.0, min: 20, max: 100, step: 1, unit: 'Hz' },
                     { key: 'hpfSlope', name: 'HPF SLOPE', val: 'LR 24', type: 'select', options: ['BW 12', 'BW 24', 'LR 12', 'LR 24', 'Bessel 12', 'Bessel 24'] },
-                    { key: 'lpfFreq', name: 'LPF FREQ', val: 100.0, min: 60, max: 250, step: 5, unit: 'Hz' },
+                    { key: 'lpfFreq', name: 'LPF FREQ', val: 100.0, min: 100, max: 500, step: 5, unit: 'Hz' },
                     { key: 'lpfSlope', name: 'LPF SLOPE', val: 'LR 24', type: 'select', options: ['BW 12', 'BW 24', 'LR 12', 'LR 24', 'Bessel 12', 'Bessel 24'] }
                 ],
                 PEQ: createPeqParams([30, 45, 60, 80, 100]),
@@ -868,17 +877,17 @@
             }
         };
 
+        // AUDIO ENGINE & CACHE
         let audioCtx = null;
         let sourceNode = null;
-        let source = null;
         let domLeds = {};
 
         const dsp = {
             splitter: null, merger: null, dvcHeadroomGain: null, dvcSoftClipper: null, dvcBrickwallLimiter: null,
             IN_A: { gain: null, delay: null, peq: [], comp: null, makeup: null, analyser: null },
             IN_B: { gain: null, delay: null, peq: [], comp: null, makeup: null, analyser: null },
-            OUT1: { routeA: null, routeB: null, routeOut2: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, ktHpf: null, geqFilters: [], geqGain: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null },
-            OUT2: { routeA: null, routeB: null, routeOut1: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, ktHpf: null, geqFilters: [], geqGain: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null }
+            OUT1: { routeA: null, routeB: null, routeOut2: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, shelfFilter: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null },
+            OUT2: { routeA: null, routeB: null, routeOut1: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, shelfFilter: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null }
         };
 
         function generateSoftClipCurve() {
@@ -900,8 +909,12 @@
                 domLeds[`lim_${ch}`] = document.getElementById(`led-lim-${ch}`);
                 domLeds[`clip_${ch}`] = document.getElementById(`led-clip-${ch}`);
             });
-            ['A', 'B'].forEach(ch => {
-                domLeds[`kt_clip_${ch}`] = document.getElementById(`kt-led-clip-${ch}`);
+            [1, 2].forEach(r => {
+                domLeds[`bbe${r}_clip`] = document.getElementById(`bbe${r}-led-clip`);
+                domLeds[`bbe${r}_0`] = document.getElementById(`bbe${r}-led-0`);
+                domLeds[`bbe${r}_6`] = document.getElementById(`bbe${r}-led-6`);
+                domLeds[`bbe${r}_12`] = document.getElementById(`bbe${r}-led-12`);
+                domLeds[`bbe${r}_20`] = document.getElementById(`bbe${r}-led-20`);
             });
         }
 
@@ -940,6 +953,7 @@
                 dsp[ch].makeup.connect(dsp[ch].analyser);
             });
 
+            /* MATRIX ROUTING NODES UNTUK OUTPUT 1 & OUTPUT 2 */
             ['OUT1', 'OUT2'].forEach((ch) => {
                 dsp[ch].routeA = audioCtx.createGain();
                 dsp[ch].routeB = audioCtx.createGain();
@@ -956,21 +970,8 @@
                 dsp[ch].lpf2 = audioCtx.createBiquadFilter();
                 dsp[ch].gain = audioCtx.createGain();
                 dsp[ch].delay = audioCtx.createDelay(1.0);
-
-                dsp[ch].ktHpf = audioCtx.createBiquadFilter();
-                dsp[ch].ktHpf.type = 'highpass';
-                dsp[ch].ktHpf.frequency.value = 20;
-
-                const freqs = (ch === 'OUT1') ? geqFreqsCh1 : geqFreqsCh2;
-                dsp[ch].geqFilters = freqs.map(freq => {
-                    const f = audioCtx.createBiquadFilter();
-                    f.type = 'peaking';
-                    f.frequency.value = freq;
-                    f.Q.value = 3.2;
-                    f.gain.value = 0.0;
-                    return f;
-                });
-                dsp[ch].geqGain = audioCtx.createGain();
+                dsp[ch].shelfFilter = audioCtx.createBiquadFilter();
+                dsp[ch].shelfFilter.type = (ch === 'OUT1') ? 'lowshelf' : 'highshelf';
 
                 dsp[ch].limiter = audioCtx.createDynamicsCompressor();
                 dsp[ch].limiter.ratio.value = 20;
@@ -998,23 +999,9 @@
                 dsp[ch].lpf1.connect(dsp[ch].lpf2);
                 dsp[ch].lpf2.connect(dsp[ch].gain);
                 dsp[ch].gain.connect(dsp[ch].delay);
+                dsp[ch].delay.connect(dsp[ch].shelfFilter);
+                dsp[ch].shelfFilter.connect(dsp[ch].limiter);
 
-                dsp[ch].delay.connect(dsp[ch].ktHpf);
-
-                // Inisialisasi awal bypass
-                const geqKey = (ch === 'OUT1') ? 'A' : 'B';
-                if (geqState[geqKey].active) {
-                    let geqPrev = dsp[ch].ktHpf;
-                    dsp[ch].geqFilters.forEach(filterNode => {
-                        geqPrev.connect(filterNode);
-                        geqPrev = filterNode;
-                    });
-                    geqPrev.connect(dsp[ch].geqGain);
-                } else {
-                    dsp[ch].ktHpf.connect(dsp[ch].geqGain);
-                }
-
-                dsp[ch].geqGain.connect(dsp[ch].limiter);
                 dsp[ch].limiter.connect(dsp[ch].mute);
                 dsp[ch].mute.connect(dsp[ch].analyser);
 
@@ -1055,7 +1042,13 @@
                 btn.classList.remove('dvc-btn-active');
                 btn.textContent = '⚠️ DVC: OFF';
             }
-            if (audioCtx) setSmoothParam(dsp.dvcHeadroomGain.gain, isDvcEnabled ? dbToLinear(-5.0) : 1.0);
+            syncAllDspNodes();
+        }
+
+        function toggleBbeShelf(rackNum) {
+            bbeRackData[rackNum].active = !bbeRackData[rackNum].active;
+            updateBbeUi(rackNum);
+            syncAllDspNodes();
         }
 
         function toggleMute(ch) {
@@ -1065,7 +1058,7 @@
                 if (muteState[ch]) btn.classList.add('btn-mute-active');
                 else btn.classList.remove('btn-mute-active');
             }
-            if (audioCtx && dsp[ch]) setSmoothParam(dsp[ch].mute.gain, muteState[ch] ? 0 : 1);
+            syncAllDspNodes();
         }
 
         function applyCrossoverFilter(node1, node2, type, slope, freq) {
@@ -1080,70 +1073,32 @@
             setSmoothParam(node2.frequency, freq);
 
             switch (slope) {
-                case 'BW 12': setSmoothParam(node1.Q, 0.7071); break;
-                case 'LR 12': setSmoothParam(node1.Q, 0.5000); break;
-                case 'Bessel 12': setSmoothParam(node1.Q, 0.5773); break;
-                case 'BW 24': 
-                    setSmoothParam(node1.Q, 0.5412); 
-                    setSmoothParam(node2.Q, 1.3065); 
+                case 'BW 12':
+                    setSmoothParam(node1.Q, 0.7071);
+                    break;
+                case 'LR 12':
+                    setSmoothParam(node1.Q, 0.5000);
+                    break;
+                case 'Bessel 12':
+                    setSmoothParam(node1.Q, 0.5773);
+                    break;
+                case 'BW 24':
+                    setSmoothParam(node1.Q, 0.5412);
+                    setSmoothParam(node2.Q, 1.3065);
                     break;
                 case 'LR 24':
-                case '24dB LR': 
-                    setSmoothParam(node1.Q, 0.7071); 
-                    setSmoothParam(node2.Q, 0.7071); 
+                case '24dB LR':
+                    setSmoothParam(node1.Q, 0.7071);
+                    setSmoothParam(node2.Q, 0.7071);
                     break;
-                case 'Bessel 24': 
-                    setSmoothParam(node1.Q, 0.5219); 
-                    setSmoothParam(node2.Q, 0.8055); 
+                case 'Bessel 24':
+                    setSmoothParam(node1.Q, 0.5219);
+                    setSmoothParam(node2.Q, 0.8055);
                     break;
-                default: 
-                    setSmoothParam(node1.Q, 0.7071); 
-                    setSmoothParam(node2.Q, 0.7071); 
+                default:
+                    setSmoothParam(node1.Q, 0.7071);
+                    setSmoothParam(node2.Q, 0.7071);
                     break;
-            }
-        }
-
-        // PEMBARUAN TARGETED NODE PARAMETER (DIPANGGIL SAAT KNOB DIPUTAR)
-        function updateActiveParam(p) {
-            if (!audioCtx) return;
-            const ch = activeChannel;
-
-            if (p.key === 'gain') {
-                const polVal = (dlmsData[ch].GAIN_POL.find(i => i.key === 'polarity') || {}).val;
-                const polFactor = polVal === 'INVERT (180°)' ? -1 : 1;
-                setSmoothParam(dsp[ch].gain.gain, dbToLinear(p.val) * polFactor);
-            } else if (p.key === 'polarity') {
-                const gVal = (dlmsData[ch].GAIN_POL.find(i => i.key === 'gain') || {}).val || 0;
-                const polFactor = p.val === 'INVERT (180°)' ? -1 : 1;
-                setSmoothParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
-            } else if (p.key === 'delay') {
-                setSmoothParam(dsp[ch].delay.delayTime, p.val / 1000);
-            } else if (p.key && p.key.startsWith('peq_')) {
-                const b = p.band;
-                const filterNode = dsp[ch].peq[b - 1];
-                if (p.key.endsWith('_freq')) setSmoothParam(filterNode.frequency, p.val);
-                else if (p.key.endsWith('_gain')) setSmoothParam(filterNode.gain, p.val);
-                else if (p.key.endsWith('_q')) setSmoothParam(filterNode.Q, p.val);
-                else if (p.key.endsWith('_type')) {
-                    let targetType = 'peaking';
-                    if (p.val === 'LOW SHELF') targetType = 'lowshelf';
-                    else if (p.val === 'HIGH SHELF') targetType = 'highshelf';
-                    if (filterNode.type !== targetType) filterNode.type = targetType;
-                }
-            } else if (p.key && p.key.startsWith('comp')) {
-                if (p.key === 'compThresh') setSmoothParam(dsp[ch].comp.threshold, p.val);
-                else if (p.key === 'compRatio') setSmoothParam(dsp[ch].comp.ratio, parseFloat(p.val.split(':')[0]) || 1);
-                else if (p.key === 'compAttack') setSmoothParam(dsp[ch].comp.attack, p.val / 1000);
-                else if (p.key === 'compRelease') setSmoothParam(dsp[ch].comp.release, p.val / 1000);
-                else if (p.key === 'compMakeup') setSmoothParam(dsp[ch].makeup.gain, dbToLinear(p.val));
-            } else if (p.key && p.key.startsWith('lim')) {
-                if (p.key === 'limThresh') setSmoothParam(dsp[ch].limiter.threshold, p.val);
-                else if (p.key === 'limAttack') setSmoothParam(dsp[ch].limiter.attack, p.val / 1000);
-                else if (p.key === 'limRelease') setSmoothParam(dsp[ch].limiter.release, p.val / 1000);
-            } else if (activeDlmsMenu === 'XOVER' && (ch === 'OUT1' || ch === 'OUT2')) {
-                const xover = dlmsData[ch].XOVER;
-                applyCrossoverFilter(dsp[ch].hpf1, dsp[ch].hpf2, 'highpass', xover.find(i => i.key === 'hpfSlope').val, xover.find(i => i.key === 'hpfFreq').val);
-                applyCrossoverFilter(dsp[ch].lpf1, dsp[ch].lpf2, 'lowpass', xover.find(i => i.key === 'lpfSlope').val, xover.find(i => i.key === 'lpfFreq').val);
             }
         }
 
@@ -1152,14 +1107,18 @@
 
             setSmoothParam(dsp.dvcHeadroomGain.gain, isDvcEnabled ? dbToLinear(-5.0) : 1.0);
 
-            ['A', 'B'].forEach(chKey => {
-                const targetDsp = (chKey === 'A') ? dsp.OUT1 : dsp.OUT2;
-                if (targetDsp) {
-                    if (targetDsp.geqGain) setSmoothParam(targetDsp.geqGain.gain, dbToLinear(geqState[chKey].gain));
-                    if (targetDsp.ktHpf) setSmoothParam(targetDsp.ktHpf.frequency, geqState[chKey].hpf);
-                    updateGeqBypass(chKey);
-                }
-            });
+            if (dsp.OUT1.shelfFilter) {
+                const bbe1 = bbeRackData[1];
+                setSmoothParam(dsp.OUT1.shelfFilter.frequency, bbe1.freq);
+                setSmoothParam(dsp.OUT1.shelfFilter.Q, bbe1.q);
+                setSmoothParam(dsp.OUT1.shelfFilter.gain, bbe1.active ? bbe1.gain : 0.0);
+            }
+            if (dsp.OUT2.shelfFilter) {
+                const bbe2 = bbeRackData[2];
+                setSmoothParam(dsp.OUT2.shelfFilter.frequency, bbe2.freq);
+                setSmoothParam(dsp.OUT2.shelfFilter.Q, bbe2.q);
+                setSmoothParam(dsp.OUT2.shelfFilter.gain, bbe2.active ? bbe2.gain : 0.0);
+            }
 
             ['IN_A', 'IN_B', 'OUT1', 'OUT2'].forEach(ch => {
                 const data = dlmsData[ch];
@@ -1169,7 +1128,10 @@
                 const dVal = (data.DELAY.find(i => i.key === 'delay') || {}).val || 0;
 
                 setSmoothParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
-                setSmoothParam(dsp[ch].delay.delayTime, dVal / 1000);
+                
+                if (Math.abs(dsp[ch].delay.delayTime.value - (dVal / 1000)) > 0.0001) {
+                    setSmoothParam(dsp[ch].delay.delayTime, dVal / 1000);
+                }
 
                 if (ch === 'OUT1' || ch === 'OUT2') {
                     const peqList = data.PEQ;
@@ -1184,7 +1146,9 @@
                         if (typeStr === 'LOW SHELF') targetType = 'lowshelf';
                         else if (typeStr === 'HIGH SHELF') targetType = 'highshelf';
 
-                        if (filterNode.type !== targetType) filterNode.type = targetType;
+                        if (filterNode.type !== targetType) {
+                            filterNode.type = targetType;
+                        }
                     }
                 }
 
@@ -1289,16 +1253,14 @@
 
         const audioFileLoader = document.getElementById('audio-file-input');
         const audioPlayer = document.getElementById('audio-player');
-        const ytAudio = document.getElementById('ytAudio');
         const btnPlayPause = document.getElementById('btn-play-pause');
+        const audioStatus = document.getElementById('audio-status-text');
 
         audioFileLoader.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 initAudioEngine();
                 if(audioCtx.state === 'suspended') audioCtx.resume();
-
-                if (ytAudio && !ytAudio.paused) ytAudio.pause();
 
                 audioPlayer.src = URL.createObjectURL(file);
 
@@ -1310,30 +1272,27 @@
                 audioPlayer.play();
                 btnPlayPause.disabled = false;
                 btnPlayPause.textContent = '❚❚ PAUSE';
-                setTrackTitle(`PLAYING: ${file.name.replace(/\.[^/.]+$/, "")}`);
+                audioStatus.textContent = `PLAYING: ${file.name.toUpperCase()}`;
             }
         });
 
         function togglePlayPause() {
+            if (!audioPlayer.src) return;
             initAudioEngine();
             if(audioCtx.state === 'suspended') audioCtx.resume();
 
-            const targetAudio = (ytAudio && ytAudio.src && !ytAudio.ended) ? ytAudio : audioPlayer;
-            if (!targetAudio.src) return;
-
-            if (targetAudio.paused) {
-                targetAudio.play();
+            if (audioPlayer.paused) {
+                audioPlayer.play();
                 btnPlayPause.textContent = '❚❚ PAUSE';
             } else {
-                targetAudio.pause();
+                audioPlayer.pause();
                 btnPlayPause.textContent = '▶ PLAY';
             }
         }
 
         function skipAudio(seconds) {
-            const currentActivePlayer = (ytAudio && !ytAudio.paused) ? ytAudio : audioPlayer;
-            if (currentActivePlayer && currentActivePlayer.src) {
-                currentActivePlayer.currentTime = Math.max(0, Math.min(currentActivePlayer.duration || 0, currentActivePlayer.currentTime + seconds));
+            if (audioPlayer && audioPlayer.src) {
+                audioPlayer.currentTime = Math.max(0, Math.min(audioPlayer.duration || 0, audioPlayer.currentTime + seconds));
             }
         }
 
@@ -1345,20 +1304,9 @@
         }
 
         audioPlayer.addEventListener('timeupdate', () => {
-            if (!audioPlayer.paused) {
-                document.getElementById('audio-time-curr').textContent = formatTime(audioPlayer.currentTime);
-                document.getElementById('audio-time-dur').textContent = formatTime(audioPlayer.duration);
-            }
+            document.getElementById('audio-time-curr').textContent = formatTime(audioPlayer.currentTime);
+            document.getElementById('audio-time-dur').textContent = formatTime(audioPlayer.duration);
         });
-
-        if (ytAudio) {
-            ytAudio.addEventListener('timeupdate', () => {
-                if (!ytAudio.paused) {
-                    document.getElementById('audio-time-curr').textContent = formatTime(ytAudio.currentTime);
-                    document.getElementById('audio-time-dur').textContent = formatTime(ytAudio.duration);
-                }
-            });
-        }
 
         function setLedState(el, active) {
             if (el && el._active !== active) {
@@ -1375,7 +1323,7 @@
         function updateMeters(now) {
             if (audioCtx && (now - lastMeterUpdate > 33)) {
                 lastMeterUpdate = now;
-                const isAudioPlaying = (audioPlayer && !audioPlayer.paused) || (ytAudio && !ytAudio.paused);
+                const isAudioPlaying = audioPlayer && !audioPlayer.paused;
 
                 for (let idx = 0; idx < 2; idx++) {
                     const ch = meterChannels[idx];
@@ -1404,11 +1352,54 @@
                     setLedState(domLeds[`lim_${ch}`], isLimiterActive);
                     setLedState(domLeds[`clip_${ch}`], rms > 0.72);
 
-                    const geqCh = (ch === 'OUT1') ? 'A' : 'B';
-                    setLedState(domLeds[`kt_clip_${geqCh}`], rms > 0.70);
+                    if (ch === 'OUT1') updateBbeLadders(1, rms);
+                    if (ch === 'OUT2') updateBbeLadders(2, rms);
                 }
             }
             requestAnimationFrame(updateMeters);
+        }
+
+        function updateBbeLadders(rackNum, rms) {
+            const isProcessOn = bbeRackData[rackNum] && bbeRackData[rackNum].active;
+
+            setLedState(domLeds[`bbe${rackNum}_20`], isProcessOn && rms > 0.01);
+            setLedState(domLeds[`bbe${rackNum}_12`], isProcessOn && rms > 0.08);
+            setLedState(domLeds[`bbe${rackNum}_6`], isProcessOn && rms > 0.20);
+            setLedState(domLeds[`bbe${rackNum}_0`], isProcessOn && rms > 0.40);
+            setLedState(domLeds[`bbe${rackNum}_clip`], isProcessOn && rms > 0.65);
+        }
+
+        function updateBbeUi(rackNum) {
+            const data = bbeRackData[rackNum];
+            const ledIn = document.getElementById(`bbe${rackNum}-led-in`);
+            const ledOut = document.getElementById(`bbe${rackNum}-led-out`);
+
+            setLedState(ledIn, data.active);
+            setLedState(ledOut, !data.active);
+
+            let freqStr = data.freq >= 1000 
+                ? (data.freq / 1000).toFixed(2) + ' kHz' 
+                : Math.round(data.freq) + ' Hz';
+            
+            document.getElementById(`bbe${rackNum}-val-freq`).textContent = freqStr;
+            document.getElementById(`bbe${rackNum}-val-q`).textContent = data.q.toFixed(2);
+            document.getElementById(`bbe${rackNum}-val-gain`).textContent = (data.gain > 0 ? '+' : '') + data.gain.toFixed(1) + ' dB';
+
+            const freqMin = data.minFreq;
+            const freqMax = data.maxFreq;
+            const freqAngle = -135 + ((data.freq - freqMin) / (freqMax - freqMin)) * 270;
+            const kFreq = document.getElementById(`bbe${rackNum}-knob-freq`);
+            if (kFreq) kFreq.style.transform = `rotate(${freqAngle}deg)`;
+
+            const qMin = 0.3, qMax = 10.0;
+            const qAngle = -135 + ((data.q - qMin) / (qMax - qMin)) * 270;
+            const kQ = document.getElementById(`bbe${rackNum}-knob-q`);
+            if (kQ) kQ.style.transform = `rotate(${qAngle}deg)`;
+
+            const gMin = -15.0, gMax = 15.0;
+            const gAngle = -135 + ((data.gain - gMin) / (gMax - gMin)) * 270;
+            const kGain = document.getElementById(`bbe${rackNum}-knob-gain`);
+            if (kGain) kGain.style.transform = `rotate(${gAngle}deg)`;
         }
 
         const lcdTitle = document.getElementById('dlms-lcd-title');
@@ -1472,24 +1463,18 @@
 
             if (p.unit === 'Hz' && p.val >= 1000) {
                 lcdVal.textContent = `${(p.val / 1000).toFixed(2)} kHz`;
-            } else if (p.unit === 'Hz') {
-                lcdVal.textContent = `${Math.round(p.val)} Hz`;
-            } else if (p.key && p.key.includes('_q')) {
-                lcdVal.textContent = parseFloat(p.val).toFixed(2);
             } else if (p.key === 'delay' && p.val !== undefined) {
                 lcdVal.textContent = `${p.val.toFixed(1)} ms`;
                 const distItem = params.find(i => i.key === 'dist');
                 if (distItem) distItem.val = (p.val * 0.343).toFixed(2);
             } else if (p.unit === 'dB') {
                 lcdVal.textContent = `${p.val > 0 ? '+' : ''}${parseFloat(p.val).toFixed(1)} dB`;
-            } else if (typeof p.val === 'number') {
-                lcdVal.textContent = `${Number(p.val.toFixed(2))} ${p.unit || ''}`.trim();
             } else {
                 lcdVal.textContent = `${p.val} ${p.unit || ''}`.trim();
             }
         }
 
-        /* --- DRAG KNOB HANDLER (THROTTLED VIA RAF) --- */
+        /* --- LOGIK DRAG KNOP DENGAN MOUSE / TOUCH --- */
         let knobRotations = {
             'knob-param': 0,
             'knob-value': 0
@@ -1531,6 +1516,7 @@
             el.addEventListener('touchstart', start, { passive: false });
         }
 
+        // Setup XTA Encoder Knobs
         setupKnobDrag('knob-param', (deltaY) => {
             if (Math.abs(deltaY) > 1) {
                 const params = getCurrentParamsList();
@@ -1545,7 +1531,6 @@
             }
         });
 
-        let knobValScheduled = false;
         setupKnobDrag('knob-value', (deltaY) => {
             const params = getCurrentParamsList();
             if (params.length > 0 && params[currentParamIdx] && !params[currentParamIdx].readonly) {
@@ -1560,181 +1545,48 @@
                     const step = p.step || 1;
                     let mult = 1;
                     if (p.unit === 'Hz' && p.val >= 1000) mult = 10;
-                    
                     p.val += (deltaY > 0 ? step * mult : -step * mult);
-                    p.val = Math.round(p.val * 100) / 100;
                     p.val = Math.max(p.min, Math.min(p.max, p.val));
                 }
 
                 knobRotations['knob-value'] += deltaY * 4;
                 document.getElementById('knob-value').style.transform = `rotate(${knobRotations['knob-value']}deg)`;
                 
-                if (!knobValScheduled) {
-                    knobValScheduled = true;
-                    requestAnimationFrame(() => {
-                        updateActiveParam(p);
-                        renderDlmsLcd();
-                        knobValScheduled = false;
-                    });
-                }
-            }
-        });
-
-        // Rotary Knobs Klark Teknik
-        ['A', 'B'].forEach(ch => {
-            let gainScheduled = false;
-            setupKnobDrag(`kt-knob-gain-${ch}`, (deltaY) => {
-                geqState[ch].gain += deltaY * 0.1;
-                geqState[ch].gain = Math.max(-12, Math.min(6, Math.round(geqState[ch].gain * 10) / 10));
-                
-                const angle = (geqState[ch].gain / 12) * 135;
-                document.getElementById(`kt-knob-gain-${ch}`).style.transform = `rotate(${angle}deg)`;
-                document.getElementById(`kt-val-gain-${ch}`).textContent = `${geqState[ch].gain > 0 ? '+' : ''}${geqState[ch].gain.toFixed(1)}dB`;
-                
-                if (audioCtx && !gainScheduled) {
-                    gainScheduled = true;
-                    requestAnimationFrame(() => {
-                        const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
-                        if (targetDsp && targetDsp.geqGain) setSmoothParam(targetDsp.geqGain.gain, dbToLinear(geqState[ch].gain));
-                        gainScheduled = false;
-                    });
-                }
-            });
-
-            let hpfScheduled = false;
-            setupKnobDrag(`kt-knob-hpf-${ch}`, (deltaY) => {
-                geqState[ch].hpf += (deltaY > 0 ? 5 : -5);
-                geqState[ch].hpf = Math.max(20, Math.min(400, geqState[ch].hpf));
-                
-                const angle = -135 + ((geqState[ch].hpf - 20) / 380) * 270;
-                document.getElementById(`kt-knob-hpf-${ch}`).style.transform = `rotate(${angle}deg)`;
-                document.getElementById(`kt-val-hpf-${ch}`).textContent = `${geqState[ch].hpf}Hz`;
-                
-                if (audioCtx && !hpfScheduled) {
-                    hpfScheduled = true;
-                    requestAnimationFrame(() => {
-                        const targetDsp = (ch === 'A') ? dsp.OUT1 : dsp.OUT2;
-                        if (targetDsp && targetDsp.ktHpf) setSmoothParam(targetDsp.ktHpf.frequency, geqState[ch].hpf);
-                        hpfScheduled = false;
-                    });
-                }
-            });
-        });
-
-        // Preset Save/Load
-        function saveXtaPreset() {
-            try {
-                const presetObj = {
-                    version: 'DN360-2.1',
-                    timestamp: new Date().toISOString(),
-                    dlmsData: dlmsData,
-                    geqState: geqState,
-                    muteState: muteState,
-                    isDvcEnabled: isDvcEnabled
-                };
-
-                localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetObj));
-                
-                lcdTitle.textContent = "SYSTEM MEMORY";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "PRESET SAVED!";
-                
-                setTimeout(() => { renderDlmsLcd(); }, 1500);
-
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetObj, null, 2));
-                const downloadAnchor = document.createElement('a');
-                downloadAnchor.setAttribute("href", dataStr);
-                downloadAnchor.setAttribute("download", `dsp_preset_dn360_${Date.now()}.json`);
-                document.body.appendChild(downloadAnchor);
-                downloadAnchor.click();
-                downloadAnchor.remove();
-
-            } catch (e) {
-                console.error("Gagal menyimpan preset:", e);
-                alert("Gagal menyimpan preset.");
-            }
-        }
-
-        function loadXtaPreset() {
-            const savedJson = localStorage.getItem(PRESET_STORAGE_KEY);
-            if (savedJson) {
-                const choice = confirm("Preset Klark Teknik DN360 ditemukan di browser!\n\n• Klik [OK] untuk memuat dari Local Storage.\n• Klik [Batal] untuk memilih file .json dari disk.");
-                if (choice) {
-                    applyPresetObj(JSON.parse(savedJson));
-                    return;
-                }
-            }
-            document.getElementById('preset-file-input').click();
-        }
-
-        document.getElementById('preset-file-input').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    try {
-                        const parsedObj = JSON.parse(evt.target.result);
-                        applyPresetObj(parsedObj);
-                    } catch(err) {
-                        alert("File JSON preset tidak valid.");
-                    }
-                };
-                reader.readAsText(file);
-            }
-        });
-
-        function applyPresetObj(parsedObj) {
-            try {
-                const sourceDlms = parsedObj.dlmsData || parsedObj;
-                Object.keys(sourceDlms).forEach(ch => {
-                    if (dlmsData[ch]) {
-                        Object.keys(sourceDlms[ch]).forEach(menuKey => {
-                            if (dlmsData[ch][menuKey] && Array.isArray(dlmsData[ch][menuKey])) {
-                                sourceDlms[ch][menuKey].forEach((savedItem, idx) => {
-                                    if (dlmsData[ch][menuKey][idx]) {
-                                        dlmsData[ch][menuKey][idx].val = savedItem.val;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-
-                if (parsedObj.geqState) {
-                    ['A', 'B'].forEach(ch => {
-                        if (parsedObj.geqState[ch]) {
-                            geqState[ch].active = parsedObj.geqState[ch].active;
-                            geqState[ch].gain = parsedObj.geqState[ch].gain || 0;
-                            geqState[ch].hpf = parsedObj.geqState[ch].hpf || 20;
-                            
-                            if (Array.isArray(parsedObj.geqState[ch].bands)) {
-                                parsedObj.geqState[ch].bands.forEach((bVal, idx) => {
-                                    const input = document.getElementById(`kt-input-${ch}-${idx}`);
-                                    if (input) input.value = bVal;
-                                    onGeqFaderMove(ch, idx, bVal);
-                                });
-                            }
-                            toggleGeqActive(ch);
-                        }
-                    });
-                }
-
                 syncAllDspNodes();
                 renderDlmsLcd();
-
-                lcdTitle.textContent = "SYSTEM MEMORY";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "PRESET LOADED!";
-
-                setTimeout(() => { renderDlmsLcd(); }, 1500);
-
-            } catch (e) {
-                console.error("Gagal menerapkan preset:", e);
-                alert("Format file preset tidak sesuai.");
             }
-        }
+        });
+
+        // Setup BBE Knobs
+        [1, 2].forEach(r => {
+            setupKnobDrag(`bbe${r}-knob-freq`, (deltaY) => {
+                const data = bbeRackData[r];
+                const range = data.maxFreq - data.minFreq;
+                data.freq += (deltaY / 100) * range;
+                data.freq = Math.max(data.minFreq, Math.min(data.maxFreq, data.freq));
+                updateBbeUi(r);
+                syncAllDspNodes();
+            });
+
+            setupKnobDrag(`bbe${r}-knob-q`, (deltaY) => {
+                const data = bbeRackData[r];
+                data.q += deltaY * 0.05;
+                data.q = Math.max(0.3, Math.min(10.0, data.q));
+                updateBbeUi(r);
+                syncAllDspNodes();
+            });
+
+            setupKnobDrag(`bbe${r}-knob-gain`, (deltaY) => {
+                const data = bbeRackData[r];
+                data.gain += deltaY * 0.2;
+                data.gain = Math.max(-15.0, Math.min(15.0, data.gain));
+                updateBbeUi(r);
+                syncAllDspNodes();
+            });
+        });
 
         // Inisialisasi Tampilan Awal
+        [1, 2].forEach(r => updateBbeUi(r));
         selectChannel('OUT1');
         setDlmsMenu('XOVER');
     </script>
