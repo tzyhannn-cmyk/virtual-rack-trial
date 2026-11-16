@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Complete Pro Audio DSP System & Visualizer - XTA DLMS Matrix</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Orbitron:wght@600;800;900&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
@@ -15,146 +14,53 @@
         .font-brand { font-family: 'Orbitron', sans-serif; }
         .font-label { font-family: 'Roboto Condensed', sans-serif; }
 
-        .rack-screw-black {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #444 0%, #111 70%, #000 100%);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.9); position: relative;
-        }
-        .rack-screw-silver {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 50%, #475569 100%);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.8);
-            border: 1px solid #334155; position: relative;
-        }
-        .rack-screw-silver::after {
-            content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 2px;
-            background-color: #1e293b; transform: translateY(-50%) rotate(45deg);
-        }
+        .rack-screw-black { width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #444 0%, #111 70%, #000 100%); box-shadow: 0 1px 3px rgba(0,0,0,0.9); position: relative; }
+        .rack-screw-silver { width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 50%, #475569 100%); box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.8); border: 1px solid #334155; position: relative; }
+        .rack-screw-silver::after { content: ''; position: absolute; top: 50%; left: 15%; right: 15%; height: 2px; background-color: #1e293b; transform: translateY(-50%) rotate(45deg); }
 
-        .rcf-cyan-panel {
-            background: linear-gradient(180deg, #155e75 0%, #0e7490 40%, #0891b2 75%, #06b6d4 100%);
-            border-top: 1px solid #22d3ee; border-bottom: 1px solid #083344;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 6px 16px rgba(0,0,0,0.8);
-        }
-
-        .xta-blue-panel {
-            background: linear-gradient(180deg, #1b2850 0%, #101a38 50%, #0a1024 100%);
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.9);
-            border-top: 1px solid #32477a; border-bottom: 1px solid #050812;
-        }
-        .xta-lcd {
-            background: #2a4010; border: 2px solid #0f1a05;
-            box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 6px rgba(110, 220, 40, 0.2);
-        }
+        .rcf-cyan-panel { background: linear-gradient(180deg, #155e75 0%, #0e7490 40%, #0891b2 75%, #06b6d4 100%); border-top: 1px solid #22d3ee; border-bottom: 1px solid #083344; box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 6px 16px rgba(0,0,0,0.8); }
+        .xta-blue-panel { background: linear-gradient(180deg, #1b2850 0%, #101a38 50%, #0a1024 100%); box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.9); border-top: 1px solid #32477a; border-bottom: 1px solid #050812; }
+        .xta-lcd { background: #2a4010; border: 2px solid #0f1a05; box-shadow: inset 0 0 12px rgba(0,0,0,0.8), 0 0 6px rgba(110, 220, 40, 0.2); }
         .lcd-text-green { color: #8aff2e; text-shadow: 0 0 4px rgba(138, 255, 46, 0.7); }
 
-        .xta-led-housing {
-            background: #090d16;
-            border: 1px solid #1e293b;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
-            padding: 2px 3px;
-            border-radius: 2px;
-        }
-
-        .xta-led {
-            width: 8px; height: 3px; border-radius: 1px;
-            background-color: #0d131f;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: background-color 0.05s ease, box-shadow 0.05s ease;
-            position: relative;
-        }
+        .xta-led-housing { background: #090d16; border: 1px solid #1e293b; box-shadow: inset 0 1px 3px rgba(0,0,0,0.9); padding: 2px 3px; border-radius: 2px; }
+        .xta-led { width: 8px; height: 3px; border-radius: 1px; background-color: #0d131f; border: 1px solid rgba(255, 255, 255, 0.03); transition: background-color 0.05s ease, box-shadow 0.05s ease; position: relative; }
         .xta-led-red { background: radial-gradient(circle, #380a0a 0%, #170404 100%); border-color: #451212; }
-        .xta-led-red.active {
-            background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ff4d4d 40%, #dc2626 100%);
-            box-shadow: 0 0 8px #ef4444, 0 0 2px #ffffff; border-color: #fca5a5;
-        }
+        .xta-led-red.active { background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ff4d4d 40%, #dc2626 100%); box-shadow: 0 0 8px #ef4444, 0 0 2px #ffffff; border-color: #fca5a5; }
         .xta-led-yellow { background: radial-gradient(circle, #382d0a 0%, #171204 100%); border-color: #453712; }
-        .xta-led-yellow.active {
-            background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ffe04d 40%, #ca8a04 100%);
-            box-shadow: 0 0 8px #eab308, 0 0 2px #ffffff; border-color: #fef08a;
-        }
+        .xta-led-yellow.active { background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ffe04d 40%, #ca8a04 100%); box-shadow: 0 0 8px #eab308, 0 0 2px #ffffff; border-color: #fef08a; }
         .xta-led-green { background: radial-gradient(circle, #0a3814 0%, #041708 100%); border-color: #12451d; }
-        .xta-led-green.active {
-            background: radial-gradient(circle at 40% 40%, #ffffff 0%, #4dff88 40%, #16a34a 100%);
-            box-shadow: 0 0 8px #22c55e, 0 0 2px #ffffff; border-color: #86efac;
-        }
+        .xta-led-green.active { background: radial-gradient(circle at 40% 40%, #ffffff 0%, #4dff88 40%, #16a34a 100%); box-shadow: 0 0 8px #22c55e, 0 0 2px #ffffff; border-color: #86efac; }
 
-        .encoder-knob {
-            width: 28px; height: 28px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #475569 70%, #1e293b 100%);
-            box-shadow: 0 3px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.8);
-            border: 1px solid #0f172a; position: relative; cursor: ns-resize; user-select: none; touch-action: none;
-            will-change: transform;
-        }
+        .encoder-knob { width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #94a3b8 0%, #475569 70%, #1e293b 100%); box-shadow: 0 3px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.8); border: 1px solid #0f172a; position: relative; cursor: ns-resize; user-select: none; touch-action: none; will-change: transform; }
         @media (min-width: 640px) { .encoder-knob { width: 34px; height: 34px; } }
-        .knob-dot {
-            position: absolute; top: 3px; left: 50%; width: 3px; height: 3px;
-            background-color: #0f172a; transform: translateX(-50%); border-radius: 50%;
-        }
+        .knob-dot { position: absolute; top: 3px; left: 50%; width: 3px; height: 3px; background-color: #0f172a; transform: translateX(-50%); border-radius: 50%; }
 
-        .bbe-chassis {
-            background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 20%, #94a3b8 50%, #64748b 80%, #475569 100%);
-            border: 1px solid #334155;
-        }
-        .bbe-red-panel {
-            background: linear-gradient(180deg, #dc2626 0%, #b91c1c 40%, #991b1b 75%, #7f1d1d 100%);
-            border: 2px solid #450a0a;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(255,255,255,0.2);
-        }
-        .bbe-knob {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 45%, #64748b 85%, #334155 100%);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.8);
-            border: 1px solid #1e293b; position: relative; cursor: ns-resize; user-select: none; touch-action: none;
-            will-change: transform;
-        }
+        .bbe-chassis { background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 20%, #94a3b8 50%, #64748b 80%, #475569 100%); border: 1px solid #334155; }
+        .bbe-red-panel { background: linear-gradient(180deg, #dc2626 0%, #b91c1c 40%, #991b1b 75%, #7f1d1d 100%); border: 2px solid #450a0a; box-shadow: inset 0 2px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(255,255,255,0.2); }
+        .bbe-knob { width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 45%, #64748b 85%, #334155 100%); box-shadow: 0 3px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.9), inset 0 -2px 4px rgba(0,0,0,0.8); border: 1px solid #1e293b; position: relative; cursor: ns-resize; user-select: none; touch-action: none; will-change: transform; }
         @media (min-width: 640px) { .bbe-knob { width: 40px; height: 40px; } }
-        .bbe-knob-pointer {
-            position: absolute; top: 4px; left: 50%; width: 2px; height: 10px;
-            background-color: #0f172a; transform: translateX(-50%); border-radius: 2px;
-        }
+        .bbe-knob-pointer { position: absolute; top: 4px; left: 50%; width: 2px; height: 10px; background-color: #0f172a; transform: translateX(-50%); border-radius: 2px; }
 
-        .push-btn {
-            background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
-            border: 1px solid #334155; box-shadow: 0 2px 3px rgba(0,0,0,0.6); cursor: pointer;
-            transition: all 0.1s ease;
-        }
+        .push-btn { background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%); border: 1px solid #334155; box-shadow: 0 2px 3px rgba(0,0,0,0.6); cursor: pointer; transition: all 0.1s ease; }
         .push-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
-        .push-btn-active {
-            background: linear-gradient(180deg, #fef08a 0%, #eab308 100%) !important;
-            border-color: #854d0e !important; color: #000 !important;
-            box-shadow: 0 0 6px rgba(234, 179, 8, 0.8) !important;
-        }
-        .ch-btn-active {
-            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%) !important;
-            border-color: #0369a1 !important; color: #fff !important;
-            box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
-        }
-        .dvc-btn-active {
-            background: linear-gradient(180deg, #4ade80 0%, #15803d 100%) !important;
-            color: #ffffff !important; border-color: #14532d !important;
-            box-shadow: 0 0 8px rgba(74, 222, 128, 0.9) !important;
-        }
+        .push-btn-active { background: linear-gradient(180deg, #fef08a 0%, #eab308 100%) !important; border-color: #854d0e !important; color: #000 !important; box-shadow: 0 0 6px rgba(234, 179, 8, 0.8) !important; }
+        .ch-btn-active { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%) !important; border-color: #0369a1 !important; color: #fff !important; box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important; }
+        .dvc-btn-active { background: linear-gradient(180deg, #4ade80 0%, #15803d 100%) !important; color: #ffffff !important; border-color: #14532d !important; box-shadow: 0 0 8px rgba(74, 222, 128, 0.9) !important; }
 
         .led-dot { width: 5px; height: 5px; border-radius: 50%; background-color: #1e293b; transition: background-color 0.1s, box-shadow 0.1s; }
         .led-red.active { background-color: #ef4444; box-shadow: 0 0 6px #ef4444; }
         .led-yellow.active { background-color: #eab308; box-shadow: 0 0 6px #eab308; }
         .led-green.active { background-color: #22c55e; box-shadow: 0 0 6px #22c55e; }
 
-        .btn-mute-active {
-            background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%) !important;
-            color: #ffffff !important; border-color: #7f1d1d !important;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.9) !important;
-        }
+        .btn-mute-active { background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%) !important; color: #ffffff !important; border-color: #7f1d1d !important; box-shadow: 0 0 8px rgba(239, 68, 68, 0.9) !important; }
 
-        .rocker-switch {
-            width: 12px; height: 22px; background: #000; border-radius: 2px;
-            border: 1px solid #444; position: relative; cursor: pointer;
-        }
-        .rocker-switch::before {
-            content: ''; position: absolute; top: 2px; left: 2px; right: 2px; height: 8px;
-            background: #ef4444; border-radius: 1px; box-shadow: 0 0 4px #ef4444;
-        }
+        .rocker-switch { width: 12px; height: 22px; background: #000; border-radius: 2px; border: 1px solid #444; position: relative; cursor: pointer; }
+        .rocker-switch::before { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; height: 8px; background: #ef4444; border-radius: 1px; box-shadow: 0 0 4px #ef4444; }
+
+        .slot-btn-active { background: linear-gradient(180deg, #22d3ee 0%, #0891b2 100%) !important; color: #001018 !important; border-color: #0e7490 !important; box-shadow: 0 0 6px rgba(34, 211, 238, 0.9) !important; }
+        .slot-dot-empty { color: #475569; }
+        .slot-dot-filled { color: #10b981; text-shadow: 0 0 3px #10b981; }
     </style>
 </head>
 <body class="bg-stone-950 min-h-screen flex items-center justify-center p-1 overflow-x-hidden select-none">
@@ -168,25 +74,20 @@
             <div class="w-4 sm:w-6 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
-
             <div class="flex-1 rcf-cyan-panel flex flex-nowrap items-center justify-between px-2 sm:px-3 py-1.5 my-[1px] gap-2 overflow-hidden min-w-0">
                 <div class="flex flex-col items-start shrink-0 pr-1.5 border-r border-cyan-300/40">
                     <span class="font-brand text-white font-black text-xs sm:text-sm tracking-tighter leading-none drop-shadow">RCF</span>
                     <span class="font-label text-[6px] sm:text-[8px] text-cyan-100 tracking-widest font-bold">MEDIA PLAYER & DVC</span>
                 </div>
-
                 <div class="flex items-center gap-1 shrink-0">
                     <input type="file" id="audio-file-input" accept="audio/*" class="hidden">
                     <button onclick="document.getElementById('audio-file-input').click()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-900 bg-white hover:bg-slate-100 flex items-center gap-1">📂 <span>File</span></button>
-                    
                     <input type="text" id="ytUrlInput" placeholder="Link YouTube..." class="text-[8px] sm:text-[10px] px-1.5 py-0.5 rounded bg-black/70 text-amber-300 border border-cyan-400/50 w-24 sm:w-32 focus:outline-none">
                     <button id="extractYtBtn" onclick="sendUrlToAndroid()" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-950 bg-cyan-300 hover:bg-white">EXTRACT</button>
-
                     <button onclick="skipAudio(-5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Mundur 5 detik">⏪ -5s</button>
                     <button id="btn-play-pause" onclick="togglePlayPause()" class="push-btn text-[8px] sm:text-[10px] font-bold px-2 py-0.5 rounded text-slate-800 disabled:opacity-50" disabled>▶ PLAY</button>
                     <button onclick="skipAudio(5)" class="push-btn text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800" title="Maju 5 detik">⏩ +5s</button>
                 </div>
-
                 <div class="bg-black/80 border border-cyan-400/50 rounded px-2 py-0.5 flex-1 max-w-xs overflow-hidden">
                     <div class="font-lcd text-amber-300 text-xs truncate" id="audio-status-text">SIAP: SILAHKAN PILIH LAGU / YOUTUBE</div>
                     <div class="flex justify-between font-mono text-[8px] text-cyan-200 mt-0.5">
@@ -194,15 +95,12 @@
                         <span id="audio-time-dur">00:00</span>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-1.5 shrink-0 border-l border-cyan-300/40 pl-1.5">
                     <button id="btn-dvc-toggle" onclick="toggleDvcEngine()" class="push-btn dvc-btn-active text-[8px] sm:text-[10px] px-2 py-0.5 rounded font-extrabold tracking-wide transition">🛡️ DVC: ON</button>
                     <div class="rocker-switch" title="Power Switch"></div>
                 </div>
-
                 <audio id="audio-player" crossorigin="anonymous" loop preload="auto" class="hidden"></audio>
             </div>
-
             <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
@@ -213,14 +111,13 @@
             <div class="w-4 sm:w-6 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
             </div>
-
             <div class="flex-1 xta-blue-panel flex flex-nowrap items-center justify-between px-2 sm:px-3 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
                 <div class="flex flex-col items-start shrink-0 pr-1 border-r border-blue-900/60">
                     <span class="font-brand text-amber-400 font-extrabold text-xs sm:text-sm tracking-tighter leading-none">xta</span>
                     <span class="font-label text-[5px] sm:text-[7px] text-blue-200 tracking-widest uppercase">ELECTRONICS</span>
                     <span class="font-mono text-[6px] sm:text-[8px] text-emerald-400 font-bold mt-0.5">DP220</span>
+                    <span id="dsp-mode-badge" class="font-mono text-[5px] sm:text-[6px] leading-none mt-0.5 px-1 rounded bg-yellow-900/40 text-yellow-300">NATIVE</span>
                 </div>
-
                 <div class="flex items-center gap-1.5 px-1 border-r border-blue-900/60 shrink-0">
                     <div class="flex flex-col items-center gap-0.5">
                         <span class="text-[6px] text-amber-300 font-mono font-bold">IN A</span>
@@ -231,7 +128,6 @@
                         <button onclick="selectChannel('IN_B')" id="btn-ch-IN_B" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold">SEL</button>
                     </div>
                 </div>
-
                 <div class="xta-lcd rounded px-2 py-0.5 w-36 sm:w-56 shrink-0">
                     <div class="lcd-text-green font-lcd text-xs sm:text-sm leading-tight tracking-wider">
                         <div class="flex justify-between">
@@ -244,7 +140,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-3 gap-0.5 shrink-0">
                     <button id="nav-xover" class="push-btn push-btn-active text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('XOVER')">XOVER</button>
                     <button id="nav-peq" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('PEQ')">PEQ</button>
@@ -256,7 +151,6 @@
                     <button id="nav-save" onclick="saveXtaPreset()" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">SAVE</button>
                     <button id="nav-load" onclick="loadXtaPreset()" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">LOAD</button>
                 </div>
-
                 <div class="flex items-center gap-1.5 sm:gap-2 px-1 border-x border-blue-900/60 shrink-0">
                     <div class="flex flex-col items-center">
                         <div class="encoder-knob" id="knob-param"><div class="knob-dot"></div></div>
@@ -267,7 +161,6 @@
                         <span class="font-label text-blue-200 text-[7px] sm:text-[9px] mt-0.5">VALUE</span>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-1.5 shrink-0">
                     <div class="flex flex-col items-center gap-0.5">
                         <span class="text-[5px] sm:text-[6px] text-blue-300 font-mono font-bold">OUT 1</span>
@@ -289,7 +182,6 @@
                             <button onclick="toggleMute('OUT1')" id="btn-mute-OUT1" class="push-btn text-[6px] sm:text-[7px] px-1 py-0.5 rounded font-bold">M</button>
                         </div>
                     </div>
-
                     <div class="flex flex-col items-center gap-0.5">
                         <span class="text-[5px] sm:text-[6px] text-blue-300 font-mono font-bold">OUT 2</span>
                         <div class="xta-led-housing flex gap-0.5 items-center">
@@ -312,10 +204,41 @@
                     </div>
                 </div>
             </div>
-
             <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
             </div>
+        </div>
+
+        <!-- FEATURE 6: PRESET SLOT BAR -->
+        <div class="w-full bg-black rounded overflow-hidden shadow-2xl border border-stone-800 flex relative">
+            <div class="w-4 sm:w-6 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
+            </div>
+            <div class="flex-1 bg-slate-900 border-y border-slate-700 flex flex-wrap items-center px-2 py-1 gap-1 min-w-0">
+                <span class="font-brand text-[8px] sm:text-[10px] text-amber-400 font-bold tracking-wider shrink-0 mr-1">MEMORY</span>
+                <div class="flex gap-0.5 flex-1 flex-wrap" id="slot-bar"></div>
+                <button onclick="renameActiveSlot()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">RENAME</button>
+                <button onclick="exportBank()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">EXPORT</button>
+                <button onclick="importBank()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">IMPORT</button>
+            </div>
+            <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
+                <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
+            </div>
+        </div>
+
+        <!-- FEATURE 8: EQ RESPONSE GRAPH -->
+        <div class="w-full bg-black rounded overflow-hidden shadow-2xl border border-stone-800">
+            <div class="flex items-center justify-between px-2 sm:px-3 py-1 bg-slate-900 border-b border-slate-700">
+                <div class="flex items-center gap-2">
+                    <span class="font-brand text-[8px] sm:text-[10px] text-cyan-300 font-bold tracking-wider">FREQ RESPONSE</span>
+                    <span id="eq-channel-label" class="font-mono text-[7px] sm:text-[9px] text-slate-400">OUT1</span>
+                </div>
+                <div class="flex gap-1">
+                    <button id="eq-ch-out1" onclick="setEqChannel('OUT1')" class="push-btn ch-btn-active text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">OUT1</button>
+                    <button id="eq-ch-out2" onclick="setEqChannel('OUT2')" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">OUT2</button>
+                </div>
+            </div>
+            <canvas id="eq-canvas" class="block w-full bg-black" style="height: 120px;"></canvas>
         </div>
 
         <!-- 3. BBE CHANNEL 1 RACK -->
@@ -323,14 +246,12 @@
             <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
-
             <div class="flex-1 bbe-red-panel flex flex-nowrap items-center justify-between px-2 sm:px-4 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
                 <div class="flex flex-col shrink-0">
                     <span class="font-brand text-white font-extrabold text-xs sm:text-base italic tracking-tighter drop-shadow-md">D82</span>
                     <span class="font-label text-[6px] sm:text-[8px] text-red-100 font-bold tracking-wider uppercase">LOW-SUB SHELF</span>
                     <span class="font-mono text-[5px] sm:text-[7px] text-red-200">CHANNEL 1 ENHANCER</span>
                 </div>
-
                 <div class="flex flex-col items-center gap-0.5 shrink-0">
                     <div class="flex items-center gap-1">
                         <div class="led-dot led-green" id="bbe1-led-in"></div>
@@ -341,7 +262,6 @@
                     </button>
                     <span class="text-[6px] sm:text-[7px] text-white font-bold tracking-wider font-label">PROCESS</span>
                 </div>
-
                 <div class="flex items-center gap-2 sm:gap-6 my-auto">
                     <div class="flex flex-col items-center">
                         <div class="bbe-knob" id="bbe1-knob-freq"><div class="bbe-knob-pointer"></div></div>
@@ -359,7 +279,6 @@
                         <span id="bbe1-val-gain" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.0 dB</span>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-2 shrink-0">
                     <div class="flex gap-1.5 bg-black/50 p-1 rounded border border-red-950/80">
                         <div class="flex flex-col items-center gap-0.5 text-[5px] font-mono text-red-200 leading-none">
@@ -379,7 +298,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
@@ -390,14 +308,12 @@
             <div class="w-4 sm:w-6 bg-slate-400 border-r border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
-
             <div class="flex-1 bbe-red-panel flex flex-nowrap items-center justify-between px-2 sm:px-4 py-1.5 my-[1px] gap-1.5 overflow-hidden min-w-0">
                 <div class="flex flex-col shrink-0">
                     <span class="font-brand text-white font-extrabold text-xs sm:text-base italic tracking-tighter drop-shadow-md">D82</span>
                     <span class="font-label text-[6px] sm:text-[8px] text-red-100 font-bold tracking-wider uppercase">MID-HIGH SHELF</span>
                     <span class="font-mono text-[5px] sm:text-[7px] text-red-200">CHANNEL 2 ENHANCER</span>
                 </div>
-
                 <div class="flex flex-col items-center gap-0.5 shrink-0">
                     <div class="flex items-center gap-1">
                         <div class="led-dot led-green" id="bbe2-led-in"></div>
@@ -408,7 +324,6 @@
                     </button>
                     <span class="text-[6px] sm:text-[7px] text-white font-bold tracking-wider font-label">PROCESS</span>
                 </div>
-
                 <div class="flex items-center gap-2 sm:gap-6 my-auto">
                     <div class="flex flex-col items-center">
                         <div class="bbe-knob" id="bbe2-knob-freq"><div class="bbe-knob-pointer"></div></div>
@@ -426,7 +341,6 @@
                         <span id="bbe2-val-gain" class="text-[8px] sm:text-[10px] font-mono text-yellow-300 font-bold bg-black/40 px-1 rounded">0.0 dB</span>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-2 shrink-0">
                     <div class="flex gap-1.5 bg-black/50 p-1 rounded border border-red-950/80">
                         <div class="flex flex-col items-center gap-0.5 text-[5px] font-mono text-red-200 leading-none">
@@ -446,22 +360,59 @@
                     </div>
                 </div>
             </div>
-
             <div class="w-4 sm:w-6 bg-slate-400 border-l border-slate-500 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-silver"></div><div class="rack-screw-silver"></div>
             </div>
         </div>
-
     </div>
 
     <script>
         /* =========================================================================
-           AUDIO ENGINE v2 — Anti-Stutter / Anti-Click / Anti-Aliasing Build
-           Changes: latencyHint:playback, setParam smoothing, DVC real bypass,
-                    feedback guard, compressor bypass, AudioBufferSource for files
+           AUDIO ENGINE v3 — Fase 1: AudioWorklet Soft-Clipper Migration
+           - WaveShaper (native 4x) diganti AudioWorklet (custom cubic + 2x AA)
+           - Fallback otomatis ke WaveShaper jika worklet gagal load
+           - Badge indikator DSP mode di panel XTA
            ========================================================================= */
 
-        /* --- ANDROID BRIDGE & STREAMING --- */
+        /* --- DVC AUDIOWORKLET SOURCE CODE (inline string) --- */
+        const DVC_WORKLET_CODE = `
+class DvcSoftClipProcessor extends AudioWorkletProcessor {
+    static get parameterDescriptors() {
+        return [
+            { name: 'active', defaultValue: 1, minValue: 0, maxValue: 1, automationRate: 'k-rate' }
+        ];
+    }
+    process(inputs, outputs, parameters) {
+        const active = parameters.active[0];
+        const input = inputs[0];
+        const output = outputs[0];
+        if (!input || !input[0]) return true;
+        const numCh = input.length;
+        for (let ch = 0; ch < numCh; ch++) {
+            const inCh = input[ch];
+            const outCh = output[ch];
+            if (active < 0.5) {
+                for (let i = 0; i < inCh.length; i++) outCh[i] = inCh[i];
+                continue;
+            }
+            for (let i = 0; i < inCh.length; i++) {
+                const curr = inCh[i];
+                const next = (i + 1 < inCh.length) ? inCh[i + 1] : curr;
+                let p1 = curr > 1 ? 1 : (curr < -1 ? -1 : curr);
+                p1 = 1.5 * p1 - 0.5 * p1 * p1 * p1;
+                const mid = (curr + next) * 0.5;
+                let p2 = mid > 1 ? 1 : (mid < -1 ? -1 : mid);
+                p2 = 1.5 * p2 - 0.5 * p2 * p2 * p2;
+                outCh[i] = (p1 + p2) * 0.5;
+            }
+        }
+        return true;
+    }
+}
+registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
+`;
+
+        /* --- ANDROID BRIDGE --- */
         function sendUrlToAndroid() {
             const url = document.getElementById('ytUrlInput').value.trim();
             if (!url) return alert('Masukkan link YouTube terlebih dahulu!');
@@ -476,19 +427,15 @@
         function onAudioExtracted(audioUrl) {
             const extractBtn = document.getElementById('extractYtBtn');
             if (extractBtn) extractBtn.innerText = "EXTRACT";
-            
             initAudioEngine();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-
             stopBufferSource();
             currentBufferAudio = null;
-
             const audioPlayer = document.getElementById('audio-player');
             if (!sourceNode && audioPlayer) {
                 sourceNode = audioCtx.createMediaElementSource(audioPlayer);
                 sourceNode.connect(dsp.splitter);
             }
-
             if (audioPlayer) {
                 audioPlayer.src = audioUrl;
                 audioPlayer.play().catch(err => {
@@ -497,13 +444,8 @@
                     if (s) s.textContent = 'ERROR: Playback gagal';
                 });
             }
-
             const btnPlayPause = document.getElementById('btn-play-pause');
-            if (btnPlayPause) {
-                btnPlayPause.disabled = false;
-                btnPlayPause.textContent = '❚❚ PAUSE';
-            }
-
+            if (btnPlayPause) { btnPlayPause.disabled = false; btnPlayPause.textContent = '❚❚ PAUSE'; }
             const audioStatus = document.getElementById('audio-status-text');
             if (audioStatus) audioStatus.textContent = 'PLAYING: EXTRACTED YOUTUBE AUDIO';
         }
@@ -517,31 +459,19 @@
         function playAudioStream(streamUrl) {
             initAudioEngine();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-
             stopBufferSource();
             currentBufferAudio = null;
-
             const audioPlayer = document.getElementById('audio-player');
             if (!sourceNode && audioPlayer) {
                 sourceNode = audioCtx.createMediaElementSource(audioPlayer);
                 sourceNode.connect(dsp.splitter);
             }
-
             if (audioPlayer) {
                 audioPlayer.src = streamUrl;
-                audioPlayer.play().catch(err => {
-                    console.error('Play error:', err);
-                    const s = document.getElementById('audio-status-text');
-                    if (s) s.textContent = 'ERROR: Playback gagal';
-                });
+                audioPlayer.play().catch(err => console.error('Play error:', err));
             }
-
             const btnPlayPause = document.getElementById('btn-play-pause');
-            if (btnPlayPause) {
-                btnPlayPause.disabled = false;
-                btnPlayPause.textContent = '❚❚ PAUSE';
-            }
-
+            if (btnPlayPause) { btnPlayPause.disabled = false; btnPlayPause.textContent = '❚❚ PAUSE'; }
             const audioStatus = document.getElementById('audio-status-text');
             if (audioStatus) audioStatus.textContent = 'PLAYING: YOUTUBE AUDIO STREAM';
         }
@@ -554,56 +484,248 @@
         let isDvcEnabled = true;
 
         const PRESET_STORAGE_KEY = 'xta_dp226_user_preset_v1';
+        const PRESET_BANK_KEY = 'xta_bank_v2';
+        const SLOT_COUNT = 8;
 
-        /* --- SAVE PRESET --- */
-        function saveXtaPreset() {
+        /* ============ FEATURE 6: PRESET BANK ============ */
+        let presetBank = { activeSlot: 1, slots: {} };
+
+        function loadBankFromStorage() {
             try {
-                const presetObj = {
-                    version: '1.3',
-                    timestamp: new Date().toISOString(),
-                    dlmsData: dlmsData,
-                    bbeRackData: bbeRackData,
-                    muteState: muteState,
-                    isDvcEnabled: isDvcEnabled
-                };
-                localStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify(presetObj));
-                lcdTitle.textContent = "SYSTEM MEMORY";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "PRESET SAVED!";
-                setTimeout(() => { renderDlmsLcd(); }, 1500);
-
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetObj, null, 2));
-                const a = document.createElement('a');
-                a.setAttribute("href", dataStr);
-                a.setAttribute("download", `xta_dsp_preset_${Date.now()}.json`);
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
+                const raw = localStorage.getItem(PRESET_BANK_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.slots) {
+                        presetBank = parsed;
+                        if (!presetBank.activeSlot) presetBank.activeSlot = 1;
+                        return;
+                    }
+                }
+                const v1 = localStorage.getItem(PRESET_STORAGE_KEY);
+                if (v1) {
+                    try {
+                        const v1Data = JSON.parse(v1);
+                        presetBank.slots[1] = { name: 'Imported V1', data: v1Data, savedAt: new Date().toISOString() };
+                        presetBank.activeSlot = 1;
+                        saveBankToStorage();
+                    } catch(e) {}
+                }
             } catch (e) {
-                console.error("Gagal menyimpan preset:", e);
-                alert("Gagal menyimpan preset.");
+                console.warn('Bank load error:', e);
             }
         }
 
-        function loadXtaPreset() {
-            const savedJson = localStorage.getItem(PRESET_STORAGE_KEY);
-            if (savedJson) {
-                const choice = confirm("Preset ditemukan di memori browser!\n\n• Klik [OK] untuk memuat dari Browser Local Storage.\n• Klik [Batal] untuk memilih file preset .json dari HP/Komputer Anda.");
-                if (choice) { applyPresetObj(JSON.parse(savedJson)); return; }
+        function saveBankToStorage() {
+            try { localStorage.setItem(PRESET_BANK_KEY, JSON.stringify(presetBank)); }
+            catch (e) { console.warn('Bank save error:', e); }
+        }
+
+        function currentStateSnapshot() {
+            return {
+                version: '1.4',
+                timestamp: new Date().toISOString(),
+                dlmsData: JSON.parse(JSON.stringify(dlmsData)),
+                bbeRackData: JSON.parse(JSON.stringify(bbeRackData)),
+                muteState: Object.assign({}, muteState),
+                isDvcEnabled: isDvcEnabled
+            };
+        }
+
+        function saveToSlot(slotNum) {
+            const existing = presetBank.slots[slotNum];
+            if (existing && !confirm(`Overwrite slot ${slotNum} "${existing.name}"?`)) return;
+            const defaultName = existing ? existing.name : `Preset ${slotNum}`;
+            const name = prompt(`Nama untuk slot ${slotNum}:`, defaultName);
+            if (name === null) return;
+            presetBank.slots[slotNum] = {
+                name: (name.trim() || defaultName).substring(0, 24),
+                data: currentStateSnapshot(),
+                savedAt: new Date().toISOString()
+            };
+            presetBank.activeSlot = slotNum;
+            saveBankToStorage();
+            renderSlotBar();
+            flashLcd(`SLOT ${slotNum}`, 'SAVED!');
+        }
+
+        function loadFromSlot(slotNum) {
+            const slot = presetBank.slots[slotNum];
+            if (!slot) {
+                if (confirm(`Slot ${slotNum} kosong. Simpan konfigurasi saat ini ke slot ini?`)) {
+                    saveToSlot(slotNum);
+                }
+                return;
             }
+            if (!confirm(`Load "${slot.name}" dari slot ${slotNum}?\n(Akan menimpa konfigurasi saat ini)`)) return;
+            applyPresetObj(slot.data);
+            presetBank.activeSlot = slotNum;
+            saveBankToStorage();
+            renderSlotBar();
+            flashLcd(`SLOT ${slotNum}`, 'LOADED!');
+        }
+
+        function renameActiveSlot() {
+            const slotNum = presetBank.activeSlot;
+            if (!presetBank.slots[slotNum]) {
+                alert(`Slot ${slotNum} masih kosong. Simpan dulu sebelum rename.`);
+                return;
+            }
+            const name = prompt(`Nama baru untuk slot ${slotNum}:`, presetBank.slots[slotNum].name);
+            if (name === null) return;
+            presetBank.slots[slotNum].name = (name.trim() || presetBank.slots[slotNum].name).substring(0, 24);
+            saveBankToStorage();
+            renderSlotBar();
+            flashLcd(`SLOT ${slotNum}`, 'RENAMED');
+        }
+
+        function flashLcd(line1, line2) {
+            const tEl = document.getElementById('dlms-lcd-title');
+            const pEl = document.getElementById('dlms-lcd-page');
+            const mEl = document.getElementById('dlms-lcd-param');
+            const vEl = document.getElementById('dlms-lcd-val');
+            if (!tEl) return;
+            tEl.textContent = line1;
+            if (pEl) pEl.textContent = '';
+            if (mEl) mEl.textContent = 'STATUS:';
+            if (vEl) vEl.textContent = line2;
+            setTimeout(() => { if (typeof renderDlmsLcd === 'function') renderDlmsLcd(); }, 1500);
+        }
+
+        function renderSlotBar() {
+            const bar = document.getElementById('slot-bar');
+            if (!bar) return;
+            bar.innerHTML = '';
+            for (let i = 1; i <= SLOT_COUNT; i++) {
+                const slot = presetBank.slots[i];
+                const isActive = presetBank.activeSlot === i;
+                const btn = document.createElement('button');
+                btn.className = 'push-btn text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded font-bold transition shrink-0';
+                if (isActive) btn.classList.add('slot-btn-active');
+                btn.title = slot ? `${slot.name}\nSaved: ${new Date(slot.savedAt).toLocaleString()}` : `Slot ${i} (kosong)`;
+                const dotClass = slot ? 'slot-dot-filled' : 'slot-dot-empty';
+                const dotChar = slot ? '●' : '○';
+                btn.innerHTML = `${i}<span class="${dotClass} ml-0.5 text-[8px]">${dotChar}</span>`;
+                let pressTimer = null;
+                let isLongPress = false;
+                const handleStart = () => {
+                    isLongPress = false;
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        saveToSlot(i);
+                    }, 600);
+                };
+                const handleEnd = (e) => {
+                    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+                    if (!isLongPress) loadFromSlot(i);
+                };
+                const handleCancel = () => {
+                    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+                    isLongPress = true;
+                };
+                btn.addEventListener('mousedown', handleStart);
+                btn.addEventListener('mouseup', handleEnd);
+                btn.addEventListener('mouseleave', handleCancel);
+                btn.addEventListener('touchstart', handleStart, { passive: true });
+                btn.addEventListener('touchend', (e) => { e.preventDefault(); handleEnd(e); });
+                btn.addEventListener('touchcancel', handleCancel);
+                bar.appendChild(btn);
+            }
+        }
+
+        function exportBank() {
+            const json = JSON.stringify(presetBank, null, 2);
+            const filename = `xta_bank_${Date.now()}.json`;
+            if (window.AndroidBridge && typeof window.AndroidBridge.saveFile === 'function') {
+                try {
+                    window.AndroidBridge.saveFile(filename, json);
+                    flashLcd('BANK EXPORT', 'SAVED TO FILE');
+                    return;
+                } catch (e) { console.warn('Bridge save failed:', e); }
+            }
+            try {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(json);
+                const a = document.createElement('a');
+                a.href = dataStr;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                flashLcd('BANK EXPORT', 'DOWNLOADED');
+            } catch (e) {
+                prompt('Salin JSON bank di bawah ini:', json.substring(0, 2000) + '...[TRUNCATED]');
+            }
+        }
+
+        function importBank() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        const parsed = JSON.parse(evt.target.result);
+                        if (!parsed.slots) throw new Error('Format bukan bank file');
+                        if (!confirm('Import bank akan MENGGANTI semua 8 slot. Lanjutkan?')) return;
+                        presetBank = parsed;
+                        if (!presetBank.activeSlot) presetBank.activeSlot = 1;
+                        saveBankToStorage();
+                        renderSlotBar();
+                        flashLcd('BANK IMPORT', 'SUCCESS');
+                    } catch (err) {
+                        alert('File bank tidak valid: ' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function saveXtaPreset() {
+            const slotNum = presetBank.activeSlot;
+            const existing = presetBank.slots[slotNum];
+            const defaultName = existing ? existing.name : `Preset ${slotNum}`;
+            const name = prompt(`Simpan ke slot ${slotNum} dengan nama:`, defaultName);
+            if (name === null) return;
+            presetBank.slots[slotNum] = {
+                name: (name.trim() || defaultName).substring(0, 24),
+                data: currentStateSnapshot(),
+                savedAt: new Date().toISOString()
+            };
+            saveBankToStorage();
+            renderSlotBar();
+            flashLcd('SYSTEM MEMORY', `SLOT ${slotNum} SAVED!`);
+        }
+
+        function loadXtaPreset() {
             document.getElementById('preset-file-input').click();
         }
 
         document.getElementById('preset-file-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    try { applyPresetObj(JSON.parse(evt.target.result)); }
-                    catch(err) { alert("File JSON preset tidak valid atau rusak."); }
-                };
-                reader.readAsText(file);
-            }
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.slots && typeof parsed.slots === 'object') {
+                        if (!confirm('Ini file BANK. Import semua slot?')) return;
+                        presetBank = parsed;
+                        if (!presetBank.activeSlot) presetBank.activeSlot = 1;
+                        saveBankToStorage();
+                        renderSlotBar();
+                        flashLcd('BANK IMPORT', 'SUCCESS');
+                    } else {
+                        applyPresetObj(parsed);
+                        flashLcd('PRESET', 'LOADED!');
+                    }
+                } catch (err) {
+                    alert("File tidak valid: " + err.message);
+                }
+            };
+            reader.readAsText(file);
         });
 
         function applyPresetObj(parsedObj) {
@@ -620,7 +742,6 @@
                         });
                     }
                 });
-
                 if (parsedObj.bbeRackData) {
                     [1, 2].forEach(r => {
                         if (parsedObj.bbeRackData[r]) {
@@ -632,7 +753,6 @@
                         }
                     });
                 }
-
                 if (parsedObj.muteState) {
                     muteState.OUT1 = !!parsedObj.muteState.OUT1;
                     muteState.OUT2 = !!parsedObj.muteState.OUT2;
@@ -644,7 +764,6 @@
                         }
                     });
                 }
-
                 if (typeof parsedObj.isDvcEnabled === 'boolean') {
                     isDvcEnabled = parsedObj.isDvcEnabled;
                     const btn = document.getElementById('btn-dvc-toggle');
@@ -653,13 +772,9 @@
                         else { btn.classList.remove('dvc-btn-active'); btn.textContent = '⚠️ DVC: OFF'; }
                     }
                 }
-
                 syncAllDspNodes();
                 renderDlmsLcd();
-                lcdTitle.textContent = "SYSTEM MEMORY";
-                lcdParam.textContent = "STATUS:";
-                lcdVal.textContent = "PRESET LOADED!";
-                setTimeout(() => { renderDlmsLcd(); }, 1500);
+                flashLcd('SYSTEM MEMORY', 'PRESET LOADED!');
             } catch (e) {
                 console.error("Gagal menerapkan preset:", e);
                 alert("Format file preset tidak sesuai.");
@@ -798,12 +913,16 @@
         let sourceNode = null;
         let domLeds = {};
 
-        /* Buffer-source playback (untuk file lokal — anti stutter) */
         let currentBufferSource = null;
         let currentBufferAudio = null;
         let bufferStartTime = 0;
         let bufferOffset = 0;
         let isBufferSourcePlaying = false;
+
+        /* --- FASE 1: WORKLET STATE --- */
+        let dvcSoftClipWorklet = null;
+        let workletReadyPromise = null;
+        let workletActive = false;
 
         const dsp = {
             splitter: null, merger: null, dvcHeadroomGain: null, dvcSoftClipper: null, dvcBrickwallLimiter: null,
@@ -813,7 +932,6 @@
             OUT2: { routeA: null, routeB: null, routeOut1: null, peq: [], comp: null, makeup: null, hpf1: null, hpf2: null, lpf1: null, lpf2: null, gain: null, delay: null, shelfFilter: null, limiter: null, mute: null, analyser: null, sendL: null, sendR: null }
         };
 
-        /* --- FIX HELPERS --- */
         function setParam(param, value, timeConstant = 0.015) {
             if (!audioCtx || !param) return;
             const t = audioCtx.currentTime;
@@ -873,24 +991,21 @@
 
         function initAudioEngine() {
             if (audioCtx) return;
-
             const AudioContext = window.AudioContext || window.webkitAudioContext;
-            /* FIX 1: latencyHint playback + sampleRate 44100 */
             try {
                 audioCtx = new AudioContext({ latencyHint: 'playback', sampleRate: 44100 });
             } catch (e) {
                 audioCtx = new AudioContext({ latencyHint: 'playback' });
             }
-
             cacheDomElements();
 
             dsp.splitter = audioCtx.createChannelSplitter(2);
             dsp.merger   = audioCtx.createChannelMerger(2);
 
             dsp.dvcHeadroomGain = audioCtx.createGain();
+            /* Default: WaveShaper (native). Akan diganti worklet jika load sukses */
             dsp.dvcSoftClipper = audioCtx.createWaveShaper();
             dsp.dvcSoftClipper.curve = generateSoftClipCurve();
-            /* FIX 4: oversample 4x -> hilangkan aliasing */
             dsp.dvcSoftClipper.oversample = '4x';
 
             dsp.dvcBrickwallLimiter = audioCtx.createDynamicsCompressor();
@@ -904,7 +1019,6 @@
                 dsp[ch].makeup = audioCtx.createGain();
                 dsp[ch].analyser = audioCtx.createAnalyser();
                 dsp[ch].analyser.fftSize = 32;
-
                 dsp.splitter.connect(dsp[ch].gain, chIdx);
                 dsp[ch].gain.connect(dsp[ch].delay);
                 dsp[ch].delay.connect(dsp[ch].comp);
@@ -915,10 +1029,8 @@
             ['OUT1', 'OUT2'].forEach((ch) => {
                 dsp[ch].routeA = audioCtx.createGain();
                 dsp[ch].routeB = audioCtx.createGain();
-
                 dsp.IN_A.analyser.connect(dsp[ch].routeA);
                 dsp.IN_B.analyser.connect(dsp[ch].routeB);
-
                 dsp[ch].peq = Array.from({length: 5}, () => audioCtx.createBiquadFilter());
                 dsp[ch].comp = audioCtx.createDynamicsCompressor();
                 dsp[ch].makeup = audioCtx.createGain();
@@ -930,22 +1042,18 @@
                 dsp[ch].delay = audioCtx.createDelay(1.0);
                 dsp[ch].shelfFilter = audioCtx.createBiquadFilter();
                 dsp[ch].shelfFilter.type = (ch === 'OUT1') ? 'lowshelf' : 'highshelf';
-
                 dsp[ch].limiter = audioCtx.createDynamicsCompressor();
                 dsp[ch].limiter.ratio.value = 20;
                 dsp[ch].mute = audioCtx.createGain();
                 dsp[ch].analyser = audioCtx.createAnalyser();
                 dsp[ch].analyser.fftSize = 32;
-
                 dsp[ch].sendL = audioCtx.createGain();
                 dsp[ch].sendR = audioCtx.createGain();
 
                 dsp[ch].routeA.connect(dsp[ch].peq[0]);
                 dsp[ch].routeB.connect(dsp[ch].peq[0]);
-
                 let prev = dsp[ch].peq[0];
                 for (let i = 1; i < 5; i++) { prev.connect(dsp[ch].peq[i]); prev = dsp[ch].peq[i]; }
-
                 prev.connect(dsp[ch].comp);
                 dsp[ch].comp.connect(dsp[ch].makeup);
                 dsp[ch].makeup.connect(dsp[ch].hpf1);
@@ -956,10 +1064,8 @@
                 dsp[ch].gain.connect(dsp[ch].delay);
                 dsp[ch].delay.connect(dsp[ch].shelfFilter);
                 dsp[ch].shelfFilter.connect(dsp[ch].limiter);
-
                 dsp[ch].limiter.connect(dsp[ch].mute);
                 dsp[ch].mute.connect(dsp[ch].analyser);
-
                 dsp[ch].analyser.connect(dsp[ch].sendL);
                 dsp[ch].analyser.connect(dsp[ch].sendR);
                 dsp[ch].sendL.connect(dsp.merger, 0, 0);
@@ -968,13 +1074,12 @@
 
             dsp.OUT1.routeOut2 = audioCtx.createGain();
             dsp.OUT2.routeOut1 = audioCtx.createGain();
-
             dsp.OUT1.gain.connect(dsp.OUT2.routeOut1);
             dsp.OUT2.routeOut1.connect(dsp.OUT2.peq[0]);
-
             dsp.OUT2.gain.connect(dsp.OUT1.routeOut2);
             dsp.OUT1.routeOut2.connect(dsp.OUT1.peq[0]);
 
+            /* Chain DVC lengkap (default WaveShaper) */
             dsp.merger.connect(dsp.dvcHeadroomGain);
             dsp.dvcHeadroomGain.connect(dsp.dvcSoftClipper);
             dsp.dvcSoftClipper.connect(dsp.dvcBrickwallLimiter);
@@ -982,6 +1087,77 @@
 
             syncAllDspNodes();
             requestAnimationFrame(updateMeters);
+            if (typeof requestEqRender === 'function') requestEqRender();
+
+            /* FASE 1: Upgrade async ke AudioWorklet */
+            workletReadyPromise = tryUpgradeToWorklet();
+        }
+
+        /* --- FASE 1: TRY UPGRADE TO WORKLET --- */
+        async function tryUpgradeToWorklet() {
+            if (!audioCtx) return;
+            if (!audioCtx.audioWorklet) {
+                console.warn('[DSP] AudioWorklet NOT available in this browser. Using NATIVE nodes.');
+                updateDspModeIndicator(false);
+                return;
+            }
+            try {
+                const blob = new Blob([DVC_WORKLET_CODE], { type: 'application/javascript' });
+                const url = URL.createObjectURL(blob);
+                await audioCtx.audioWorklet.addModule(url);
+                URL.revokeObjectURL(url);
+
+                /* Buat worklet node — 2 channel (stereo) */
+                const workletNode = new AudioWorkletNode(audioCtx, 'dvc-softclip-processor', {
+                    numberOfInputs: 1,
+                    numberOfOutputs: 1,
+                    outputChannelCount: [2],
+                    channelCount: 2,
+                    channelCountMode: 'explicit',
+                    channelInterpretation: 'speakers',
+                    parameterData: { active: isDvcEnabled ? 1 : 0 }
+                });
+
+                /* Rewire: HeadroomGain → Worklet → BrickwallLimiter */
+                try { dsp.dvcHeadroomGain.disconnect(); } catch (e) {}
+                dsp.dvcHeadroomGain.connect(workletNode);
+                workletNode.connect(dsp.dvcBrickwallLimiter);
+
+                /* Biarkan WaveShaper terputus (tidak disconnect — biar GC yang handle) */
+                /* Old: dsp.dvcSoftClipper masih alokasi tapi tidak dalam chain */
+
+                dvcSoftClipWorklet = workletNode;
+                workletActive = true;
+                updateDspModeIndicator(true);
+                syncAllDspNodes();
+
+                console.log('[DSP] ✅ AudioWorklet loaded. Soft-clipper now runs in WORKLET mode.');
+            } catch (e) {
+                console.warn('[DSP] ⚠️ Worklet load failed, using NATIVE WaveShaper:', e);
+                updateDspModeIndicator(false);
+            }
+        }
+
+        function updateDspModeIndicator(isWorklet) {
+            const badge = document.getElementById('dsp-mode-badge');
+            if (!badge) return;
+            if (isWorklet) {
+                badge.textContent = 'WORKLET';
+                badge.className = 'font-mono text-[5px] sm:text-[6px] leading-none mt-0.5 px-1 rounded bg-emerald-900/60 text-emerald-300';
+                badge.title = 'DSP running in AudioWorklet (dedicated thread)';
+            } else {
+                badge.textContent = 'NATIVE';
+                badge.className = 'font-mono text-[5px] sm:text-[6px] leading-none mt-0.5 px-1 rounded bg-yellow-900/40 text-yellow-300';
+                badge.title = 'DSP running on native nodes (fallback mode)';
+            }
+        }
+
+        function syncWorkletParams() {
+            if (!dvcSoftClipWorklet) return;
+            const param = dvcSoftClipWorklet.parameters.get('active');
+            if (param) {
+                try { param.setTargetAtTime(isDvcEnabled ? 1 : 0, audioCtx.currentTime, 0.015); } catch (e) {}
+            }
         }
 
         function dbToLinear(db) { return Math.pow(10, db / 20); }
@@ -1005,7 +1181,6 @@
             node2.type = type;
             setParam(node1.frequency, freq);
             setParam(node2.frequency, freq);
-
             switch (slope) {
                 case 'BW 12':      setParam(node1.Q, 0.7071); node2.type = 'allpass'; setParam(node2.Q, 0.7071); break;
                 case 'LR 12':      setParam(node1.Q, 0.5000); node2.type = 'allpass'; setParam(node2.Q, 0.5000); break;
@@ -1018,37 +1193,42 @@
             }
         }
 
-        /* ================================
-           SYNC ALL DSP (fully smoothed)
-           ================================ */
         function syncAllDspNodes() {
             if (!audioCtx) return;
 
-            /* FIX 5: DVC OFF = benar-benar bypass */
+            /* DVC: headroom + limiter (native) */
             if (isDvcEnabled) {
                 setParam(dsp.dvcHeadroomGain.gain, dbToLinear(-5.0));
                 setParam(dsp.dvcBrickwallLimiter.threshold, -1.0);
                 setParam(dsp.dvcBrickwallLimiter.ratio, 20);
-                if (dsp.dvcSoftClipper._dvcOn !== true) {
-                    dsp.dvcSoftClipper.curve = generateSoftClipCurve();
-                    dsp.dvcSoftClipper._dvcOn = true;
-                }
             } else {
                 setParam(dsp.dvcHeadroomGain.gain, 1.0);
                 setParam(dsp.dvcBrickwallLimiter.threshold, 0.0);
-                setParam(dsp.dvcBrickwallLimiter.ratio, 1.0);   /* ratio 1 = bypass */
-                if (dsp.dvcSoftClipper._dvcOn !== false) {
-                    dsp.dvcSoftClipper.curve = generateIdentityCurve();
-                    dsp.dvcSoftClipper._dvcOn = false;
+                setParam(dsp.dvcBrickwallLimiter.ratio, 1.0);
+            }
+
+            /* FASE 1: Soft-clip — worklet jika ada, WaveShaper jika fallback */
+            if (workletActive && dvcSoftClipWorklet) {
+                syncWorkletParams();
+            } else if (dsp.dvcSoftClipper) {
+                /* Native fallback mode */
+                if (isDvcEnabled) {
+                    if (dsp.dvcSoftClipper._dvcOn !== true) {
+                        dsp.dvcSoftClipper.curve = generateSoftClipCurve();
+                        dsp.dvcSoftClipper._dvcOn = true;
+                    }
+                } else {
+                    if (dsp.dvcSoftClipper._dvcOn !== false) {
+                        dsp.dvcSoftClipper.curve = generateIdentityCurve();
+                        dsp.dvcSoftClipper._dvcOn = false;
+                    }
                 }
             }
 
-            /* FIX 6: feedback loop guard */
             const route1Val = dlmsData.OUT1.MATRIX.find(i => i.key === 'routeSource').val;
             const route2Val = dlmsData.OUT2.MATRIX.find(i => i.key === 'routeSource').val;
             const isFeedback = (route1Val === 'LINK OUT 2' && route2Val === 'LINK OUT 1');
 
-            /* BBE shelf */
             if (dsp.OUT1.shelfFilter) {
                 const bbe1 = bbeRackData[1];
                 setParam(dsp.OUT1.shelfFilter.frequency, bbe1.freq);
@@ -1068,7 +1248,6 @@
                 const polVal = (data.GAIN_POL.find(i => i.key === 'polarity') || {}).val;
                 const polFactor = polVal === 'INVERT (180°)' ? -1 : 1;
                 const dVal = (data.DELAY.find(i => i.key === 'delay') || {}).val || 0;
-
                 setParam(dsp[ch].gain.gain, dbToLinear(gVal) * polFactor);
                 setParam(dsp[ch].delay.delayTime, dVal / 1000);
 
@@ -1080,23 +1259,19 @@
                         const gain = peqList.find(i => i.key === `peq_${b}_gain`).val;
                         const q    = peqList.find(i => i.key === `peq_${b}_q`).val;
                         const typeStr = peqList.find(i => i.key === `peq_${b}_type`).val;
-
                         if (typeStr === 'LOW SHELF') filterNode.type = 'lowshelf';
                         else if (typeStr === 'HIGH SHELF') filterNode.type = 'highshelf';
                         else filterNode.type = 'peaking';
-
                         setParam(filterNode.frequency, freq);
                         setParam(filterNode.gain, gain);
                         setParam(filterNode.Q, q);
                     }
                 }
 
-                /* FIX 7: compressor bypass when effectively OFF */
                 const compData = data.COMPRESSOR;
                 const ratioNum = parseFloat((compData.find(i => i.key === 'compRatio').val).split(':')[0]) || 1;
                 const threshVal = compData.find(i => i.key === 'compThresh').val;
                 const makeupVal = compData.find(i => i.key === 'compMakeup').val;
-
                 if (ratioNum <= 1 || threshVal <= -39) {
                     setParam(dsp[ch].comp.threshold, 0);
                     setParam(dsp[ch].comp.ratio, 1);
@@ -1113,7 +1288,6 @@
 
                 if (ch === 'OUT1' || ch === 'OUT2') {
                     setParam(dsp[ch].mute.gain, muteState[ch] ? 0 : 1);
-
                     const matrixSource = data.MATRIX ? data.MATRIX.find(i => i.key === 'routeSource') : null;
                     const routeVal = matrixSource ? matrixSource.val : (ch === 'OUT1' ? 'INPUT A' : 'INPUT B');
 
@@ -1165,7 +1339,6 @@
 
                     const matrixOut = data.MATRIX ? data.MATRIX.find(i => i.key === 'outAssign') : null;
                     const outVal = matrixOut ? matrixOut.val : (ch === 'OUT1' ? 'LEFT (CH 1)' : 'RIGHT (CH 2)');
-
                     if (dsp[ch].sendL && dsp[ch].sendR) {
                         if (outVal === 'LEFT (CH 1)') {
                             setParam(dsp[ch].sendL.gain, 1.0);
@@ -1194,9 +1367,158 @@
             });
 
             if (isFeedback) {
-                lcdParam.textContent = 'ROUTING:';
-                lcdVal.textContent = 'FEEDBACK ERR';
+                const pEl = document.getElementById('dlms-lcd-param');
+                const vEl = document.getElementById('dlms-lcd-val');
+                if (pEl) pEl.textContent = 'ROUTING:';
+                if (vEl) vEl.textContent = 'FEEDBACK ERR';
             }
+
+            if (typeof requestEqRender === 'function') requestEqRender();
+        }
+
+        /* ============ FEATURE 8: EQ RESPONSE GRAPH ============ */
+        let eqCanvas = null;
+        let eqCtx = null;
+        let eqChannelMode = 'OUT1';
+        let eqRenderPending = false;
+
+        function initEqCanvas() {
+            eqCanvas = document.getElementById('eq-canvas');
+            if (!eqCanvas) return;
+            eqCtx = eqCanvas.getContext('2d');
+            resizeEqCanvas();
+            window.addEventListener('resize', resizeEqCanvas);
+            requestEqRender();
+        }
+
+        function resizeEqCanvas() {
+            if (!eqCanvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = eqCanvas.getBoundingClientRect();
+            if (rect.width === 0) return;
+            eqCanvas.width = Math.floor(rect.width * dpr);
+            eqCanvas.height = Math.floor(rect.height * dpr);
+            if (eqCtx) eqCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            requestEqRender();
+        }
+
+        function setEqChannel(ch) {
+            eqChannelMode = ch;
+            const b1 = document.getElementById('eq-ch-out1');
+            const b2 = document.getElementById('eq-ch-out2');
+            if (b1) b1.classList.toggle('ch-btn-active', ch === 'OUT1');
+            if (b2) b2.classList.toggle('ch-btn-active', ch === 'OUT2');
+            const lbl = document.getElementById('eq-channel-label');
+            if (lbl) lbl.textContent = ch;
+            requestEqRender();
+        }
+
+        function requestEqRender() {
+            if (eqRenderPending) return;
+            eqRenderPending = true;
+            requestAnimationFrame(() => {
+                eqRenderPending = false;
+                renderEqGraph();
+            });
+        }
+
+        function renderEqGraph() {
+            if (!eqCanvas || !eqCtx) return;
+            const rect = eqCanvas.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
+            if (w === 0 || h === 0) return;
+            eqCtx.fillStyle = '#05080e';
+            eqCtx.fillRect(0, 0, w, h);
+            drawEqGrid(w, h);
+            if (!audioCtx) {
+                eqCtx.fillStyle = '#4a5568';
+                eqCtx.font = '10px monospace';
+                eqCtx.textAlign = 'center';
+                eqCtx.textBaseline = 'middle';
+                eqCtx.fillText('AUDIO ENGINE IDLE', w / 2, h / 2);
+                return;
+            }
+            const dspCh = dsp[eqChannelMode];
+            if (!dspCh) return;
+            const filters = [
+                ...dspCh.peq,
+                dspCh.hpf1, dspCh.hpf2,
+                dspCh.lpf1, dspCh.lpf2,
+                dspCh.shelfFilter
+            ].filter(f => f && typeof f.getFrequencyResponse === 'function');
+            if (filters.length === 0) return;
+            const N = 256;
+            const freqs = new Float32Array(N);
+            for (let i = 0; i < N; i++) freqs[i] = 20 * Math.pow(1000, i / (N - 1));
+            const totalMag = new Float32Array(N).fill(1.0);
+            const tempMag = new Float32Array(N);
+            const tempPhase = new Float32Array(N);
+            filters.forEach(f => {
+                try {
+                    f.getFrequencyResponse(freqs, tempMag, tempPhase);
+                    for (let i = 0; i < N; i++) totalMag[i] *= tempMag[i];
+                } catch (e) {}
+            });
+            const color = eqChannelMode === 'OUT1' ? '#22d3ee' : '#f59e0b';
+            const points = [];
+            for (let i = 0; i < N; i++) {
+                const x = (i / (N - 1)) * w;
+                const db = 20 * Math.log10(totalMag[i] + 1e-9);
+                const clampedDb = Math.max(-24, Math.min(24, db));
+                const y = h / 2 - (clampedDb / 24) * (h / 2 - 8);
+                points.push({ x, y });
+            }
+            eqCtx.beginPath();
+            eqCtx.moveTo(points[0].x, h / 2);
+            points.forEach(p => eqCtx.lineTo(p.x, p.y));
+            eqCtx.lineTo(points[points.length - 1].x, h / 2);
+            eqCtx.closePath();
+            eqCtx.fillStyle = color + '20';
+            eqCtx.fill();
+            eqCtx.beginPath();
+            eqCtx.strokeStyle = color;
+            eqCtx.lineWidth = 2;
+            eqCtx.shadowColor = color;
+            eqCtx.shadowBlur = 6;
+            points.forEach((p, i) => {
+                if (i === 0) eqCtx.moveTo(p.x, p.y);
+                else eqCtx.lineTo(p.x, p.y);
+            });
+            eqCtx.stroke();
+            eqCtx.shadowBlur = 0;
+        }
+
+        function drawEqGrid(w, h) {
+            const freqs = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
+            const dbs = [-18, -12, -6, 0, 6, 12, 18];
+            eqCtx.lineWidth = 0.5;
+            eqCtx.font = '7px monospace';
+            eqCtx.textAlign = 'center';
+            eqCtx.textBaseline = 'bottom';
+            freqs.forEach(f => {
+                const x = (Math.log10(f / 20) / Math.log10(1000)) * w;
+                eqCtx.strokeStyle = (f === 1000) ? '#2a3a52' : '#1a2332';
+                eqCtx.beginPath();
+                eqCtx.moveTo(x, 0);
+                eqCtx.lineTo(x, h - 8);
+                eqCtx.stroke();
+                eqCtx.fillStyle = '#64748b';
+                const label = f >= 1000 ? (f / 1000) + 'k' : f.toString();
+                eqCtx.fillText(label, x, h - 1);
+            });
+            eqCtx.textAlign = 'left';
+            eqCtx.textBaseline = 'middle';
+            dbs.forEach(db => {
+                const y = h / 2 - (db / 24) * (h / 2 - 8);
+                eqCtx.strokeStyle = (db === 0) ? '#334155' : '#1a2332';
+                eqCtx.beginPath();
+                eqCtx.moveTo(0, y);
+                eqCtx.lineTo(w, y);
+                eqCtx.stroke();
+                eqCtx.fillStyle = (db === 0) ? '#94a3b8' : '#4a5568';
+                eqCtx.fillText(db + 'dB', 2, y);
+            });
         }
 
         /* =================== AUDIO FILE / STREAM =================== */
@@ -1205,28 +1527,26 @@
         const btnPlayPause = document.getElementById('btn-play-pause');
         const audioStatus = document.getElementById('audio-status-text');
 
-        /* FIX 8: pakai decodeAudioData untuk file lokal (anti-stutter) */
         async function playLocalFile(file) {
             initAudioEngine();
+            /* FASE 1: tunggu worklet siap (max 500ms) sebelum play */
+            if (workletReadyPromise) {
+                await Promise.race([workletReadyPromise, new Promise(r => setTimeout(r, 500))]);
+            }
             if (audioCtx.state === 'suspended') await audioCtx.resume();
-
             stopBufferSource();
             if (audioPlayer && !audioPlayer.paused) audioPlayer.pause();
-
             const arrayBuf = await file.arrayBuffer();
             const audioBuf = await audioCtx.decodeAudioData(arrayBuf);
-
             currentBufferAudio = audioBuf;
             currentBufferSource = audioCtx.createBufferSource();
             currentBufferSource.buffer = audioBuf;
             currentBufferSource.loop = true;
             currentBufferSource.connect(dsp.splitter);
             currentBufferSource.start(0);
-
             bufferStartTime = audioCtx.currentTime;
             bufferOffset = 0;
             isBufferSourcePlaying = true;
-
             btnPlayPause.disabled = false;
             btnPlayPause.textContent = '❚❚ PAUSE';
             audioStatus.textContent = `PLAYING: ${file.name.toUpperCase()}`;
@@ -1245,7 +1565,6 @@
         });
 
         function togglePlayPause() {
-            /* Buffer-source path */
             if (currentBufferAudio && (isBufferSourcePlaying || bufferOffset > 0)) {
                 if (isBufferSourcePlaying && currentBufferSource) {
                     bufferOffset += audioCtx.currentTime - bufferStartTime;
@@ -1268,12 +1587,9 @@
                 }
                 return;
             }
-
-            /* Media element path */
             if (!audioPlayer.src) return;
             initAudioEngine();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-
             if (audioPlayer.paused) {
                 audioPlayer.play().catch(err => console.error('Play error:', err));
                 btnPlayPause.textContent = '❚❚ PAUSE';
@@ -1288,21 +1604,17 @@
                 const dur = currentBufferAudio.duration;
                 const cur = bufferOffset + (audioCtx.currentTime - bufferStartTime);
                 const newPos = ((cur + seconds) % dur + dur) % dur;
-
                 try { currentBufferSource.stop(); } catch (e) {}
                 try { currentBufferSource.disconnect(); } catch (e) {}
-
                 currentBufferSource = audioCtx.createBufferSource();
                 currentBufferSource.buffer = currentBufferAudio;
                 currentBufferSource.loop = true;
                 currentBufferSource.connect(dsp.splitter);
                 currentBufferSource.start(0, newPos);
-
                 bufferStartTime = audioCtx.currentTime;
                 bufferOffset = newPos;
                 return;
             }
-
             if (audioPlayer && audioPlayer.src) {
                 audioPlayer.currentTime = Math.max(0, Math.min(audioPlayer.duration || 0, audioPlayer.currentTime + seconds));
             }
@@ -1316,12 +1628,11 @@
         }
 
         audioPlayer.addEventListener('timeupdate', () => {
-            if (isBufferSourcePlaying) return; /* dikendalikan BufferSource */
+            if (isBufferSourcePlaying) return;
             document.getElementById('audio-time-curr').textContent = formatTime(audioPlayer.currentTime);
             document.getElementById('audio-time-dur').textContent  = formatTime(audioPlayer.duration);
         });
 
-        /* FIX 10: error listener + display untuk buffer source */
         audioPlayer.addEventListener('error', (e) => {
             console.error('Audio player error:', e);
             if (!isBufferSourcePlaying) {
@@ -1354,16 +1665,13 @@
         const meterChannels = ['OUT1', 'OUT2'];
 
         function updateMeters(now) {
-            /* FIX 9: turunkan ke 20 fps */
             if (audioCtx && (now - lastMeterUpdate > 50)) {
                 lastMeterUpdate = now;
                 const isAudioPlaying = (isBufferSourcePlaying && currentBufferAudio) || (audioPlayer && !audioPlayer.paused);
-
                 for (let idx = 0; idx < 2; idx++) {
                     const ch = meterChannels[idx];
                     const analyser = dsp[ch].analyser;
                     let rms = 0;
-
                     if (analyser && isAudioPlaying) {
                         analyser.getByteTimeDomainData(dataArray);
                         let sum = 0;
@@ -1373,19 +1681,15 @@
                         }
                         rms = Math.sqrt(sum * 0.03125);
                     }
-
                     setLedState(domLeds[`sig_${ch}`], rms > 0.005);
                     setLedState(domLeds[`m12_${ch}`], rms > 0.04);
                     setLedState(domLeds[`m6_${ch}`],  rms > 0.12);
                     setLedState(domLeds[`m3_${ch}`],  rms > 0.28);
-
                     const compRed = dsp[ch].comp ? dsp[ch].comp.reduction : 0;
                     const limRed  = dsp[ch].limiter ? dsp[ch].limiter.reduction : 0;
                     const isLimiterActive = (compRed < -0.5) || (limRed < -0.5) || (rms > 0.52);
-
                     setLedState(domLeds[`lim_${ch}`], isLimiterActive);
                     setLedState(domLeds[`clip_${ch}`], rms > 0.72);
-
                     if (ch === 'OUT1') updateBbeLadders(1, rms);
                     if (ch === 'OUT2') updateBbeLadders(2, rms);
                 }
@@ -1408,22 +1712,18 @@
             const ledOut = document.getElementById(`bbe${rackNum}-led-out`);
             setLedState(ledIn, data.active);
             setLedState(ledOut, !data.active);
-
             const freqStr = data.freq >= 1000 ? (data.freq / 1000).toFixed(2) + ' kHz' : Math.round(data.freq) + ' Hz';
             document.getElementById(`bbe${rackNum}-val-freq`).textContent = freqStr;
             document.getElementById(`bbe${rackNum}-val-q`).textContent = data.q.toFixed(2);
             document.getElementById(`bbe${rackNum}-val-gain`).textContent = (data.gain > 0 ? '+' : '') + data.gain.toFixed(1) + ' dB';
-
             const freqMin = rackNum === 1 ? 20 : 1000;
             const freqMax = rackNum === 1 ? 200 : 16000;
             const freqAngle = -135 + ((data.freq - freqMin) / (freqMax - freqMin)) * 270;
             const kFreq = document.getElementById(`bbe${rackNum}-knob-freq`);
             if (kFreq) kFreq.style.transform = `rotate(${freqAngle}deg)`;
-
             const qAngle = -135 + ((data.q - 0.1) / (10.0 - 0.1)) * 270;
             const kQ = document.getElementById(`bbe${rackNum}-knob-q`);
             if (kQ) kQ.style.transform = `rotate(${qAngle}deg)`;
-
             const gAngle = -135 + ((data.gain - (-15.0)) / (15.0 - (-15.0))) * 270;
             const kGain = document.getElementById(`bbe${rackNum}-knob-gain`);
             if (kGain) kGain.style.transform = `rotate(${gAngle}deg)`;
@@ -1442,6 +1742,7 @@
             const btn = document.getElementById(`btn-ch-${ch}`);
             if (btn) btn.classList.add('ch-btn-active');
             renderDlmsLcd();
+            if (ch === 'OUT1' || ch === 'OUT2') setEqChannel(ch);
         }
 
         function setDlmsMenu(menuKey) {
@@ -1451,10 +1752,7 @@
                 const btn = document.getElementById(`nav-${m}`);
                 if (btn) btn.classList.remove('push-btn-active');
             });
-            const keyMap = {
-                'XOVER':'xover','PEQ':'peq','GAIN_POL':'gain',
-                'COMPRESSOR':'comp','LIMITER':'lim','DELAY':'delay','MATRIX':'matrix'
-            };
+            const keyMap = { 'XOVER':'xover','PEQ':'peq','GAIN_POL':'gain','COMPRESSOR':'comp','LIMITER':'lim','DELAY':'delay','MATRIX':'matrix' };
             const activeBtnId = keyMap[menuKey];
             if (activeBtnId && document.getElementById(`nav-${activeBtnId}`)) {
                 document.getElementById(`nav-${activeBtnId}`).classList.add('push-btn-active');
@@ -1475,20 +1773,16 @@
         function renderDlmsLcd() {
             const chData = dlmsData[activeChannel];
             if (!chData) return;
-
             lcdTitle.textContent = chData.label;
             const paramList = chData[activeDlmsMenu];
-
             if (!paramList || paramList.length === 0) {
                 lcdPage.textContent = "N/A";
                 lcdParam.textContent = "STATUS:";
                 lcdVal.textContent = "N/A FOR THIS CH";
                 return;
             }
-
             if (currentParamIdx >= paramList.length) currentParamIdx = 0;
             if (currentParamIdx < 0) currentParamIdx = paramList.length - 1;
-
             const item = paramList[currentParamIdx];
             lcdPage.textContent = `${currentParamIdx + 1}/${paramList.length}`;
             lcdParam.textContent = item.name + ":";
@@ -1502,7 +1796,6 @@
             if (!chData) return;
             const paramList = chData[activeDlmsMenu];
             if (!paramList || paramList.length === 0) return;
-
             currentParamIdx += (delta > 0 ? 1 : -1);
             if (currentParamIdx >= paramList.length) currentParamIdx = 0;
             if (currentParamIdx < 0) currentParamIdx = paramList.length - 1;
@@ -1514,10 +1807,8 @@
             if (!chData) return;
             const paramList = chData[activeDlmsMenu];
             if (!paramList || paramList.length === 0) return;
-
             const item = paramList[currentParamIdx];
             if (!item || item.readonly) return;
-
             if (item.type === 'select') {
                 const idx = item.options.indexOf(item.val);
                 let newIdx = idx + (delta > 0 ? 1 : -1);
@@ -1537,12 +1828,10 @@
                 }
                 item.val = newVal;
             }
-
             if (item.key === 'delay') {
                 const distItem = paramList.find(i => i.key === 'dist');
                 if (distItem) distItem.val = parseFloat((item.val * 0.343).toFixed(2));
             }
-
             syncAllDspNodes();
             renderDlmsLcd();
         }
@@ -1551,7 +1840,6 @@
         function setupKnobDrag(element, onDrag) {
             let startY = 0;
             let isDragging = false;
-
             function handleStart(y) { isDragging = true; startY = y; }
             function handleMove(y, e) {
                 if (!isDragging) return;
@@ -1561,7 +1849,6 @@
                 onDrag(deltaY);
             }
             function handleEnd() { isDragging = false; }
-
             element.addEventListener('mousedown', (e) => {
                 handleStart(e.clientY);
                 const onMouseMove = (me) => handleMove(me.clientY, me);
@@ -1573,15 +1860,12 @@
                 window.addEventListener('mousemove', onMouseMove);
                 window.addEventListener('mouseup', onMouseUp);
             });
-
             element.addEventListener('touchstart', (e) => {
                 if (e.touches.length === 1) handleStart(e.touches[0].clientY);
             }, { passive: true });
-
             element.addEventListener('touchmove', (e) => {
                 if (isDragging && e.touches.length === 1) handleMove(e.touches[0].clientY, e);
             }, { passive: false });
-
             element.addEventListener('touchend', handleEnd);
             element.addEventListener('touchcancel', handleEnd);
         }
@@ -1622,7 +1906,6 @@
 
         [1, 2].forEach(rack => {
             const data = bbeRackData[rack];
-
             const kFreq = document.getElementById(`bbe${rack}-knob-freq`);
             if (kFreq) setupKnobDrag(kFreq, (deltaY) => {
                 const stepPerPx = (rack === 1) ? 0.5 : 40;
@@ -1633,7 +1916,6 @@
                 updateBbeUi(rack);
                 syncAllDspNodes();
             });
-
             const kQ = document.getElementById(`bbe${rack}-knob-q`);
             if (kQ) setupKnobDrag(kQ, (deltaY) => {
                 let newQ = data.q + (deltaY * 0.02);
@@ -1641,7 +1923,6 @@
                 updateBbeUi(rack);
                 syncAllDspNodes();
             });
-
             const kGain = document.getElementById(`bbe${rack}-knob-gain`);
             if (kGain) setupKnobDrag(kGain, (deltaY) => {
                 let newGain = data.gain + (deltaY * 0.1);
@@ -1651,7 +1932,10 @@
             });
         });
 
-        /* INISIALISASI */
+        /* =================== INISIALISASI =================== */
+        loadBankFromStorage();
+        renderSlotBar();
+        initEqCanvas();
         renderDlmsLcd();
         updateBbeUi(1);
         updateBbeUi(2);
