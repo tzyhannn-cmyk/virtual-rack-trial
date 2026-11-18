@@ -57,10 +57,6 @@
 
         .rocker-switch { width: 12px; height: 22px; background: #000; border-radius: 2px; border: 1px solid #444; position: relative; cursor: pointer; }
         .rocker-switch::before { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; height: 8px; background: #ef4444; border-radius: 1px; box-shadow: 0 0 4px #ef4444; }
-
-        .slot-btn-active { background: linear-gradient(180deg, #22d3ee 0%, #0891b2 100%) !important; color: #001018 !important; border-color: #0e7490 !important; box-shadow: 0 0 6px rgba(34, 211, 238, 0.9) !important; }
-        .slot-dot-empty { color: #475569; }
-        .slot-dot-filled { color: #10b981; text-shadow: 0 0 3px #10b981; }
     </style>
 </head>
 <body class="bg-stone-950 min-h-screen flex items-center justify-center p-1 overflow-x-hidden select-none">
@@ -148,8 +144,8 @@
                     <button id="nav-lim" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('LIMITER')">LIMITER</button>
                     <button id="nav-delay" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('DELAY')">DELAY</button>
                     <button id="nav-matrix" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800" onclick="setDlmsMenu('MATRIX')">MATRIX</button>
-                    <button id="nav-save" onclick="saveXtaPreset()" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">SAVE</button>
-                    <button id="nav-load" onclick="loadXtaPreset()" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">LOAD</button>
+                    <button id="nav-save" onclick="openPresetModal('save')" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">SAVE</button>
+                    <button id="nav-load" onclick="openPresetModal('load')" class="push-btn text-[5px] sm:text-[7px] font-bold px-1 py-0.5 rounded text-slate-800">LOAD</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2 px-1 border-x border-blue-900/60 shrink-0">
                     <div class="flex flex-col items-center">
@@ -162,19 +158,23 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
+                    <!-- OUT1 VU METER (grid aligned) -->
                     <div class="flex flex-col items-center gap-0.5">
                         <span class="text-[5px] sm:text-[6px] text-blue-300 font-mono font-bold">OUT 1</span>
-                        <div class="xta-led-housing flex gap-0.5 items-center">
-                            <div class="flex flex-col gap-[1px]">
-                                <div class="xta-led xta-led-red" id="led-clip-OUT1"></div>
+                        <div class="xta-led-housing">
+                            <div class="grid gap-x-0.5 gap-y-[1px] items-center" style="grid-template-columns: 8px auto;">
+                                <div class="xta-led xta-led-red"    id="led-clip-OUT1"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">CLIP</span>
                                 <div class="xta-led xta-led-yellow" id="led-lim-OUT1"></div>
-                                <div class="xta-led xta-led-green" id="led-3-OUT1"></div>
-                                <div class="xta-led xta-led-green" id="led-6-OUT1"></div>
-                                <div class="xta-led xta-led-green" id="led-12-OUT1"></div>
-                                <div class="xta-led xta-led-green" id="led-sig-OUT1"></div>
-                            </div>
-                            <div class="flex flex-col gap-[1px] font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">
-                                <span>CLIP</span><span>LIM</span><span>-3</span><span>-6</span><span>-12</span><span>SIG</span>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">LIM</span>
+                                <div class="xta-led xta-led-green"  id="led-3-OUT1"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">-3</span>
+                                <div class="xta-led xta-led-green"  id="led-6-OUT1"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">-6</span>
+                                <div class="xta-led xta-led-green"  id="led-12-OUT1"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">-12</span>
+                                <div class="xta-led xta-led-green"  id="led-sig-OUT1"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">SIG</span>
                             </div>
                         </div>
                         <div class="flex gap-0.5">
@@ -182,19 +182,23 @@
                             <button onclick="toggleMute('OUT1')" id="btn-mute-OUT1" class="push-btn text-[6px] sm:text-[7px] px-1 py-0.5 rounded font-bold">M</button>
                         </div>
                     </div>
+                    <!-- OUT2 VU METER (grid aligned) -->
                     <div class="flex flex-col items-center gap-0.5">
                         <span class="text-[5px] sm:text-[6px] text-blue-300 font-mono font-bold">OUT 2</span>
-                        <div class="xta-led-housing flex gap-0.5 items-center">
-                            <div class="flex flex-col gap-[1px]">
-                                <div class="xta-led xta-led-red" id="led-clip-OUT2"></div>
+                        <div class="xta-led-housing">
+                            <div class="grid gap-x-0.5 gap-y-[1px] items-center" style="grid-template-columns: 8px auto;">
+                                <div class="xta-led xta-led-red"    id="led-clip-OUT2"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">CLIP</span>
                                 <div class="xta-led xta-led-yellow" id="led-lim-OUT2"></div>
-                                <div class="xta-led xta-led-green" id="led-3-OUT2"></div>
-                                <div class="xta-led xta-led-green" id="led-6-OUT2"></div>
-                                <div class="xta-led xta-led-green" id="led-12-OUT2"></div>
-                                <div class="xta-led xta-led-green" id="led-sig-OUT2"></div>
-                            </div>
-                            <div class="flex flex-col gap-[1px] font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">
-                                <span>CLIP</span><span>LIM</span><span>-3</span><span>-6</span><span>-12</span><span>SIG</span>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">LIM</span>
+                                <div class="xta-led xta-led-green"  id="led-3-OUT2"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">-3</span>
+                                <div class="xta-led xta-led-green"  id="led-6-OUT2"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">-6</span>
+                                <div class="xta-led xta-led-green"  id="led-12-OUT2"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">-12</span>
+                                <div class="xta-led xta-led-green"  id="led-sig-OUT2"></div>
+                                <span class="font-mono text-[4px] sm:text-[5px] text-slate-300 leading-none font-bold">SIG</span>
                             </div>
                         </div>
                         <div class="flex gap-0.5">
@@ -203,23 +207,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
-                <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
-            </div>
-        </div>
-
-        <!-- FEATURE 6: PRESET SLOT BAR -->
-        <div class="w-full bg-black rounded overflow-hidden shadow-2xl border border-stone-800 flex relative">
-            <div class="w-4 sm:w-6 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
-                <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
-            </div>
-            <div class="flex-1 bg-slate-900 border-y border-slate-700 flex flex-wrap items-center px-2 py-1 gap-1 min-w-0">
-                <span class="font-brand text-[8px] sm:text-[10px] text-amber-400 font-bold tracking-wider shrink-0 mr-1">MEMORY</span>
-                <div class="flex gap-0.5 flex-1 flex-wrap" id="slot-bar"></div>
-                <button onclick="renameActiveSlot()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">RENAME</button>
-                <button onclick="exportBank()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">EXPORT</button>
-                <button onclick="importBank()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">IMPORT</button>
             </div>
             <div class="w-4 sm:w-6 bg-zinc-900 border-l border-zinc-800 flex flex-col justify-between items-center py-2 shrink-0 z-20">
                 <div class="rack-screw-black"></div><div class="rack-screw-black"></div>
@@ -366,15 +353,30 @@
         </div>
     </div>
 
+    <!-- ============ PRESET MODAL (SAVE / LOAD) ============ -->
+    <div id="preset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-3">
+        <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-600 rounded-lg shadow-2xl w-full max-w-sm overflow-hidden">
+            <div class="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-amber-900/60 to-slate-800 border-b border-slate-600">
+                <div class="min-w-0">
+                    <div class="font-brand text-xs text-amber-400 font-bold tracking-widest" id="preset-modal-title">STORE PRESET</div>
+                    <div class="font-mono text-[8px] text-slate-400 truncate" id="preset-modal-subtitle">Pilih slot tujuan</div>
+                </div>
+                <button onclick="closePresetModal()" class="text-slate-400 hover:text-white text-lg px-2 leading-none">✕</button>
+            </div>
+            <div class="p-2 grid grid-cols-2 gap-1" id="preset-modal-slots"></div>
+            <div class="flex flex-wrap gap-1 px-2 pb-2 pt-2 border-t border-slate-700">
+                <button onclick="renameActiveSlot()" class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">RENAME</button>
+                <button onclick="exportBank()"     class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">EXPORT</button>
+                <button onclick="importBank()"     class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">IMPORT</button>
+                <button onclick="loadXtaPreset()"  class="push-btn text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded font-bold text-slate-800">FROM FILE</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* =========================================================================
            AUDIO ENGINE v3 — Fase 1: AudioWorklet Soft-Clipper Migration
-           - WaveShaper (native 4x) diganti AudioWorklet (custom cubic + 2x AA)
-           - Fallback otomatis ke WaveShaper jika worklet gagal load
-           - Badge indikator DSP mode di panel XTA
            ========================================================================= */
-
-        /* --- DVC AUDIOWORKLET SOURCE CODE (inline string) --- */
         const DVC_WORKLET_CODE = `
 class DvcSoftClipProcessor extends AudioWorkletProcessor {
     static get parameterDescriptors() {
@@ -487,7 +489,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
         const PRESET_BANK_KEY = 'xta_bank_v2';
         const SLOT_COUNT = 8;
 
-        /* ============ FEATURE 6: PRESET BANK ============ */
         let presetBank = { activeSlot: 1, slots: {} };
 
         function loadBankFromStorage() {
@@ -531,36 +532,119 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             };
         }
 
-        function saveToSlot(slotNum) {
-            const existing = presetBank.slots[slotNum];
-            if (existing && !confirm(`Overwrite slot ${slotNum} "${existing.name}"?`)) return;
-            const defaultName = existing ? existing.name : `Preset ${slotNum}`;
-            const name = prompt(`Nama untuk slot ${slotNum}:`, defaultName);
-            if (name === null) return;
-            presetBank.slots[slotNum] = {
-                name: (name.trim() || defaultName).substring(0, 24),
-                data: currentStateSnapshot(),
-                savedAt: new Date().toISOString()
-            };
-            presetBank.activeSlot = slotNum;
-            saveBankToStorage();
-            renderSlotBar();
-            flashLcd(`SLOT ${slotNum}`, 'SAVED!');
+        /* ============ PRESET MODAL (SAVE / LOAD) ============ */
+        let presetModalMode = 'save';
+
+        function openPresetModal(mode) {
+            presetModalMode = mode || 'save';
+            const modal = document.getElementById('preset-modal');
+            const title = document.getElementById('preset-modal-title');
+            const sub   = document.getElementById('preset-modal-subtitle');
+
+            if (title) title.textContent = presetModalMode === 'save' ? 'STORE PRESET' : 'LOAD PRESET';
+            if (sub) sub.textContent = presetModalMode === 'save'
+                ? 'Klik slot untuk menyimpan konfigurasi saat ini'
+                : 'Klik slot untuk memuat preset tersimpan';
+
+            renderPresetModalSlots();
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
         }
 
-        function loadFromSlot(slotNum) {
+        function closePresetModal() {
+            const modal = document.getElementById('preset-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function renderPresetModalSlots() {
+            const container = document.getElementById('preset-modal-slots');
+            if (!container) return;
+            container.innerHTML = '';
+
+            for (let i = 1; i <= SLOT_COUNT; i++) {
+                const slot = presetBank.slots[i];
+                const isActive = presetBank.activeSlot === i;
+
+                const btn = document.createElement('button');
+                let cls = 'text-left px-2 py-1.5 rounded border transition font-mono ';
+                if (slot) {
+                    cls += 'bg-slate-800 border-slate-600 hover:bg-slate-700 text-white';
+                    if (isActive) cls += ' ring-1 ring-cyan-400';
+                } else {
+                    cls += 'bg-slate-900/60 border-slate-700 text-slate-500 border-dashed hover:bg-slate-800';
+                }
+                btn.className = cls;
+
+                const dot  = slot ? '<span class="text-emerald-400 text-[9px]">●</span>'
+                                  : '<span class="text-slate-600 text-[9px]">○</span>';
+                const name = slot ? slot.name : '(kosong)';
+                const date = slot ? new Date(slot.savedAt).toLocaleDateString('id-ID') : '';
+                btn.innerHTML = `
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-amber-400 text-sm w-4">${i}</span>
+                        ${dot}
+                        <span class="text-[9px] truncate flex-1">${name}</span>
+                    </div>
+                    ${date ? `<div class="text-[7px] text-slate-500 pl-6">${date}</div>` : ''}
+                `;
+                btn.addEventListener('click', () => handlePresetSlotClick(i));
+                container.appendChild(btn);
+            }
+        }
+
+        function handlePresetSlotClick(slotNum) {
+            if (presetModalMode === 'save') {
+                const existing = presetBank.slots[slotNum];
+                const defaultName = existing ? existing.name : `Preset ${slotNum}`;
+                const msg = existing
+                    ? `Overwrite slot ${slotNum} "${existing.name}"?`
+                    : `Simpan konfigurasi saat ini ke slot ${slotNum}?`;
+                if (!confirm(msg)) return;
+                const name = prompt(`Nama preset:`, defaultName);
+                if (name === null) return;
+
+                presetBank.slots[slotNum] = {
+                    name: (name.trim() || defaultName).substring(0, 24),
+                    data: currentStateSnapshot(),
+                    savedAt: new Date().toISOString()
+                };
+                presetBank.activeSlot = slotNum;
+                saveBankToStorage();
+                closePresetModal();
+                flashLcd(`SLOT ${slotNum}`, 'SAVED!');
+                return;
+            }
+
+            /* mode LOAD */
             const slot = presetBank.slots[slotNum];
             if (!slot) {
                 if (confirm(`Slot ${slotNum} kosong. Simpan konfigurasi saat ini ke slot ini?`)) {
-                    saveToSlot(slotNum);
+                    const name = prompt('Nama preset:', `Preset ${slotNum}`);
+                    if (name === null) return;
+                    presetBank.slots[slotNum] = {
+                        name: (name.trim() || `Preset ${slotNum}`).substring(0, 24),
+                        data: currentStateSnapshot(),
+                        savedAt: new Date().toISOString()
+                    };
+                    presetBank.activeSlot = slotNum;
+                    saveBankToStorage();
+                    closePresetModal();
+                    flashLcd(`SLOT ${slotNum}`, 'SAVED!');
                 }
                 return;
             }
             if (!confirm(`Load "${slot.name}" dari slot ${slotNum}?\n(Akan menimpa konfigurasi saat ini)`)) return;
+
             applyPresetObj(slot.data);
             presetBank.activeSlot = slotNum;
             saveBankToStorage();
-            renderSlotBar();
+            closePresetModal();
             flashLcd(`SLOT ${slotNum}`, 'LOADED!');
         }
 
@@ -591,44 +675,11 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             setTimeout(() => { if (typeof renderDlmsLcd === 'function') renderDlmsLcd(); }, 1500);
         }
 
+        /* renderSlotBar now refreshes modal instead (bar removed) */
         function renderSlotBar() {
-            const bar = document.getElementById('slot-bar');
-            if (!bar) return;
-            bar.innerHTML = '';
-            for (let i = 1; i <= SLOT_COUNT; i++) {
-                const slot = presetBank.slots[i];
-                const isActive = presetBank.activeSlot === i;
-                const btn = document.createElement('button');
-                btn.className = 'push-btn text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded font-bold transition shrink-0';
-                if (isActive) btn.classList.add('slot-btn-active');
-                btn.title = slot ? `${slot.name}\nSaved: ${new Date(slot.savedAt).toLocaleString()}` : `Slot ${i} (kosong)`;
-                const dotClass = slot ? 'slot-dot-filled' : 'slot-dot-empty';
-                const dotChar = slot ? '●' : '○';
-                btn.innerHTML = `${i}<span class="${dotClass} ml-0.5 text-[8px]">${dotChar}</span>`;
-                let pressTimer = null;
-                let isLongPress = false;
-                const handleStart = () => {
-                    isLongPress = false;
-                    pressTimer = setTimeout(() => {
-                        isLongPress = true;
-                        saveToSlot(i);
-                    }, 600);
-                };
-                const handleEnd = (e) => {
-                    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-                    if (!isLongPress) loadFromSlot(i);
-                };
-                const handleCancel = () => {
-                    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-                    isLongPress = true;
-                };
-                btn.addEventListener('mousedown', handleStart);
-                btn.addEventListener('mouseup', handleEnd);
-                btn.addEventListener('mouseleave', handleCancel);
-                btn.addEventListener('touchstart', handleStart, { passive: true });
-                btn.addEventListener('touchend', (e) => { e.preventDefault(); handleEnd(e); });
-                btn.addEventListener('touchcancel', handleCancel);
-                bar.appendChild(btn);
+            const modal = document.getElementById('preset-modal');
+            if (modal && !modal.classList.contains('hidden')) {
+                renderPresetModalSlots();
             }
         }
 
@@ -681,22 +732,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
                 reader.readAsText(file);
             };
             input.click();
-        }
-
-        function saveXtaPreset() {
-            const slotNum = presetBank.activeSlot;
-            const existing = presetBank.slots[slotNum];
-            const defaultName = existing ? existing.name : `Preset ${slotNum}`;
-            const name = prompt(`Simpan ke slot ${slotNum} dengan nama:`, defaultName);
-            if (name === null) return;
-            presetBank.slots[slotNum] = {
-                name: (name.trim() || defaultName).substring(0, 24),
-                data: currentStateSnapshot(),
-                savedAt: new Date().toISOString()
-            };
-            saveBankToStorage();
-            renderSlotBar();
-            flashLcd('SYSTEM MEMORY', `SLOT ${slotNum} SAVED!`);
         }
 
         function loadXtaPreset() {
@@ -919,7 +954,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
         let bufferOffset = 0;
         let isBufferSourcePlaying = false;
 
-        /* --- FASE 1: WORKLET STATE --- */
         let dvcSoftClipWorklet = null;
         let workletReadyPromise = null;
         let workletActive = false;
@@ -1003,7 +1037,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             dsp.merger   = audioCtx.createChannelMerger(2);
 
             dsp.dvcHeadroomGain = audioCtx.createGain();
-            /* Default: WaveShaper (native). Akan diganti worklet jika load sukses */
             dsp.dvcSoftClipper = audioCtx.createWaveShaper();
             dsp.dvcSoftClipper.curve = generateSoftClipCurve();
             dsp.dvcSoftClipper.oversample = '4x';
@@ -1079,7 +1112,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             dsp.OUT2.gain.connect(dsp.OUT1.routeOut2);
             dsp.OUT1.routeOut2.connect(dsp.OUT1.peq[0]);
 
-            /* Chain DVC lengkap (default WaveShaper) */
             dsp.merger.connect(dsp.dvcHeadroomGain);
             dsp.dvcHeadroomGain.connect(dsp.dvcSoftClipper);
             dsp.dvcSoftClipper.connect(dsp.dvcBrickwallLimiter);
@@ -1089,15 +1121,13 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             requestAnimationFrame(updateMeters);
             if (typeof requestEqRender === 'function') requestEqRender();
 
-            /* FASE 1: Upgrade async ke AudioWorklet */
             workletReadyPromise = tryUpgradeToWorklet();
         }
 
-        /* --- FASE 1: TRY UPGRADE TO WORKLET --- */
         async function tryUpgradeToWorklet() {
             if (!audioCtx) return;
             if (!audioCtx.audioWorklet) {
-                console.warn('[DSP] AudioWorklet NOT available in this browser. Using NATIVE nodes.');
+                console.warn('[DSP] AudioWorklet NOT available. Using NATIVE nodes.');
                 updateDspModeIndicator(false);
                 return;
             }
@@ -1107,7 +1137,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
                 await audioCtx.audioWorklet.addModule(url);
                 URL.revokeObjectURL(url);
 
-                /* Buat worklet node — 2 channel (stereo) */
                 const workletNode = new AudioWorkletNode(audioCtx, 'dvc-softclip-processor', {
                     numberOfInputs: 1,
                     numberOfOutputs: 1,
@@ -1118,22 +1147,18 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
                     parameterData: { active: isDvcEnabled ? 1 : 0 }
                 });
 
-                /* Rewire: HeadroomGain → Worklet → BrickwallLimiter */
                 try { dsp.dvcHeadroomGain.disconnect(); } catch (e) {}
                 dsp.dvcHeadroomGain.connect(workletNode);
                 workletNode.connect(dsp.dvcBrickwallLimiter);
-
-                /* Biarkan WaveShaper terputus (tidak disconnect — biar GC yang handle) */
-                /* Old: dsp.dvcSoftClipper masih alokasi tapi tidak dalam chain */
 
                 dvcSoftClipWorklet = workletNode;
                 workletActive = true;
                 updateDspModeIndicator(true);
                 syncAllDspNodes();
 
-                console.log('[DSP] ✅ AudioWorklet loaded. Soft-clipper now runs in WORKLET mode.');
+                console.log('[DSP] ✅ AudioWorklet loaded.');
             } catch (e) {
-                console.warn('[DSP] ⚠️ Worklet load failed, using NATIVE WaveShaper:', e);
+                console.warn('[DSP] ⚠️ Worklet load failed:', e);
                 updateDspModeIndicator(false);
             }
         }
@@ -1144,11 +1169,11 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             if (isWorklet) {
                 badge.textContent = 'WORKLET';
                 badge.className = 'font-mono text-[5px] sm:text-[6px] leading-none mt-0.5 px-1 rounded bg-emerald-900/60 text-emerald-300';
-                badge.title = 'DSP running in AudioWorklet (dedicated thread)';
+                badge.title = 'DSP running in AudioWorklet';
             } else {
                 badge.textContent = 'NATIVE';
                 badge.className = 'font-mono text-[5px] sm:text-[6px] leading-none mt-0.5 px-1 rounded bg-yellow-900/40 text-yellow-300';
-                badge.title = 'DSP running on native nodes (fallback mode)';
+                badge.title = 'DSP running on native nodes';
             }
         }
 
@@ -1196,7 +1221,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
         function syncAllDspNodes() {
             if (!audioCtx) return;
 
-            /* DVC: headroom + limiter (native) */
             if (isDvcEnabled) {
                 setParam(dsp.dvcHeadroomGain.gain, dbToLinear(-5.0));
                 setParam(dsp.dvcBrickwallLimiter.threshold, -1.0);
@@ -1207,11 +1231,9 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
                 setParam(dsp.dvcBrickwallLimiter.ratio, 1.0);
             }
 
-            /* FASE 1: Soft-clip — worklet jika ada, WaveShaper jika fallback */
             if (workletActive && dvcSoftClipWorklet) {
                 syncWorkletParams();
             } else if (dsp.dvcSoftClipper) {
-                /* Native fallback mode */
                 if (isDvcEnabled) {
                     if (dsp.dvcSoftClipper._dvcOn !== true) {
                         dsp.dvcSoftClipper.curve = generateSoftClipCurve();
@@ -1376,7 +1398,7 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             if (typeof requestEqRender === 'function') requestEqRender();
         }
 
-        /* ============ FEATURE 8: EQ RESPONSE GRAPH ============ */
+        /* ============ EQ RESPONSE GRAPH ============ */
         let eqCanvas = null;
         let eqCtx = null;
         let eqChannelMode = 'OUT1';
@@ -1529,7 +1551,6 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
 
         async function playLocalFile(file) {
             initAudioEngine();
-            /* FASE 1: tunggu worklet siap (max 500ms) sebelum play */
             if (workletReadyPromise) {
                 await Promise.race([workletReadyPromise, new Promise(r => setTimeout(r, 500))]);
             }
@@ -1651,7 +1672,7 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
             }
         }, 250);
 
-        /* =================== METERS =================== */
+        /* =================== METERS (PEAK-BASED, PRESISI) =================== */
         function setLedState(el, active) {
             if (el && el._active !== active) {
                 el._active = active;
@@ -1671,39 +1692,40 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
                 for (let idx = 0; idx < 2; idx++) {
                     const ch = meterChannels[idx];
                     const analyser = dsp[ch].analyser;
-                    let rms = 0;
+                    let peak = 0;
                     if (analyser && isAudioPlaying) {
                         analyser.getByteTimeDomainData(dataArray);
-                        let sum = 0;
                         for (let i = 0; i < 32; i++) {
-                            const v = (dataArray[i] - 128) * 0.0078125;
-                            sum += v * v;
+                            const v = Math.abs((dataArray[i] - 128) * 0.0078125);
+                            if (v > peak) peak = v;
                         }
-                        rms = Math.sqrt(sum * 0.03125);
                     }
-                    setLedState(domLeds[`sig_${ch}`], rms > 0.005);
-                    setLedState(domLeds[`m12_${ch}`], rms > 0.04);
-                    setLedState(domLeds[`m6_${ch}`],  rms > 0.12);
-                    setLedState(domLeds[`m3_${ch}`],  rms > 0.28);
+                    /* Threshold = 10^(dB/20) -> presisi dengan label dB */
+                    setLedState(domLeds[`sig_${ch}`],  peak > 0.010);   // SIG ≈ -40 dB
+                    setLedState(domLeds[`m12_${ch}`],  peak > 0.251);   // -12 dB
+                    setLedState(domLeds[`m6_${ch}`],   peak > 0.501);   // -6 dB
+                    setLedState(domLeds[`m3_${ch}`],   peak > 0.708);   // -3 dB
+
                     const compRed = dsp[ch].comp ? dsp[ch].comp.reduction : 0;
                     const limRed  = dsp[ch].limiter ? dsp[ch].limiter.reduction : 0;
-                    const isLimiterActive = (compRed < -0.5) || (limRed < -0.5) || (rms > 0.52);
-                    setLedState(domLeds[`lim_${ch}`], isLimiterActive);
-                    setLedState(domLeds[`clip_${ch}`], rms > 0.72);
-                    if (ch === 'OUT1') updateBbeLadders(1, rms);
-                    if (ch === 'OUT2') updateBbeLadders(2, rms);
+                    const isLimiterActive = (compRed < -0.5) || (limRed < -0.5) || (peak > 0.89);
+                    setLedState(domLeds[`lim_${ch}`], isLimiterActive); // LIM
+                    setLedState(domLeds[`clip_${ch}`], peak > 0.95);    // CLIP ≈ -0.4 dB
+
+                    if (ch === 'OUT1') updateBbeLadders(1, peak);
+                    if (ch === 'OUT2') updateBbeLadders(2, peak);
                 }
             }
             requestAnimationFrame(updateMeters);
         }
 
-        function updateBbeLadders(rackNum, rms) {
+        function updateBbeLadders(rackNum, peak) {
             const on = bbeRackData[rackNum] && bbeRackData[rackNum].active;
-            setLedState(domLeds[`bbe${rackNum}_20`],  on && rms > 0.01);
-            setLedState(domLeds[`bbe${rackNum}_12`],  on && rms > 0.08);
-            setLedState(domLeds[`bbe${rackNum}_6`],   on && rms > 0.20);
-            setLedState(domLeds[`bbe${rackNum}_0`],   on && rms > 0.40);
-            setLedState(domLeds[`bbe${rackNum}_clip`],on && rms > 0.65);
+            setLedState(domLeds[`bbe${rackNum}_20`],  on && peak > 0.100);  // -20 dB
+            setLedState(domLeds[`bbe${rackNum}_12`],  on && peak > 0.251);  // -12 dB
+            setLedState(domLeds[`bbe${rackNum}_6`],   on && peak > 0.501);  // -6 dB
+            setLedState(domLeds[`bbe${rackNum}_0`],   on && peak > 0.891);  // ~ -1 dB
+            setLedState(domLeds[`bbe${rackNum}_clip`],on && peak > 0.980);  // CLIP
         }
 
         function updateBbeUi(rackNum) {
@@ -1934,11 +1956,30 @@ registerProcessor('dvc-softclip-processor', DvcSoftClipProcessor);
 
         /* =================== INISIALISASI =================== */
         loadBankFromStorage();
-        renderSlotBar();
         initEqCanvas();
         renderDlmsLcd();
         updateBbeUi(1);
         updateBbeUi(2);
+
+        /* Close modal on backdrop click */
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('preset-modal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target.id === 'preset-modal') closePresetModal();
+                });
+            }
+        });
+        /* If DOMContentLoaded already fired */
+        (function() {
+            const modal = document.getElementById('preset-modal');
+            if (modal && !modal._backdropBound) {
+                modal._backdropBound = true;
+                modal.addEventListener('click', (e) => {
+                    if (e.target.id === 'preset-modal') closePresetModal();
+                });
+            }
+        })();
     </script>
 </body>
 </html>
